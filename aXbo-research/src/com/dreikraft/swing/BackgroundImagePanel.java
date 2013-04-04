@@ -12,6 +12,8 @@ package com.dreikraft.swing;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -19,9 +21,12 @@ import java.awt.Image;
  */
 public class BackgroundImagePanel extends javax.swing.JPanel
 {
-
+  private static final Log log = LogFactory.getLog(BackgroundImagePanel.class);
+  
   private boolean scale;
-  private Image backgroundImage = null;
+  private String backgroundImageFilename;
+  
+  private Image backgroundImage;
 
   /** Creates new form BackgroundImagePanel */
   public BackgroundImagePanel()
@@ -33,20 +38,20 @@ public class BackgroundImagePanel extends javax.swing.JPanel
   public void paint(Graphics g)
   {
     super.paint(g);
-    if (getBackgroundImage() != null)
+    if (backgroundImage != null)
     {
       if (isScale())
       {
-        g.drawImage(getBackgroundImage(), 0, 0, getWidth(), getHeight(), this);
+        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
       }
       else
       {
-        int width = getBackgroundImage().getWidth(this);
-        int height = getBackgroundImage().getHeight(this);
+        int width = backgroundImage.getWidth(this);
+        int height = backgroundImage.getHeight(this);
         int xStart = (int) (((double) (getWidth() - width)) / 2.0);
         int yStart = (int) (((double) (getHeight() - height)) / 2.0);
 
-        g.drawImage(getBackgroundImage(), xStart, yStart, width, height, this);
+        g.drawImage(backgroundImage, xStart, yStart, width, height, this);
       }
       paintChildren(g);
     }
@@ -62,15 +67,21 @@ public class BackgroundImagePanel extends javax.swing.JPanel
     this.scale = scale;
   }
 
-  public Image getBackgroundImage()
-  {
-    return backgroundImage;
+  public String getBackgroundImageFilename() {
+    return backgroundImageFilename;
   }
 
-  public void setBackgroundImage(Image backgroundImage)
-  {
-    this.backgroundImage = backgroundImage;
-    this.repaint();
+  public void setBackgroundImageFilename(String backgroundImageFilename) {
+    this.backgroundImageFilename = backgroundImageFilename;
+    try 
+    {
+      backgroundImage = javax.imageio.ImageIO.read(getClass().getResource(
+          backgroundImageFilename));
+    }
+    catch (java.io.IOException ex) 
+    {
+      log.error("can not load background image", ex);
+    }
   }
 
   /** This method is called from within the constructor to

@@ -767,9 +767,9 @@
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
                     <Container class="com.dreikraft.swing.BackgroundImagePanel" name="dataViewsPanel">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="java.awt.image.BufferedImage bgImg = null;&#xa;try &#xa;{&#xa;  bgImg = javax.imageio.ImageIO.read(getClass().getResource(&quot;/resources/images/background_dark&quot;&#xa; + &quot;.png&quot;));&#xa;}&#xa;catch (java.io.IOException ex) &#xa;{&#xa;  log.error(&quot;can not load background image&quot;, ex);&#xa;}&#xa;dataViewsPanel.setBackgroundImage(bgImg);"/>
-                      </AuxValues>
+                      <Properties>
+                        <Property name="backgroundImageFilename" type="java.lang.String" value="/resources/images/background_dark.png" noResource="true"/>
+                      </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                     </Container>

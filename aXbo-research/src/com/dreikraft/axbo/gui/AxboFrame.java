@@ -734,290 +734,280 @@ public class AxboFrame extends JFrame
 
     dataScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    java.awt.image.BufferedImage bgImg = null;
-    try
-    {
-      bgImg = javax.imageio.ImageIO.read(getClass().getResource("/resources/images/background_dark"
-        + ".png"));
-  }
-  catch (java.io.IOException ex)
-  {
-    log.error("can not load background image", ex);
-  }
-  dataViewsPanel.setBackgroundImage(bgImg);
-  dataViewsPanel.setLayout(new java.awt.GridBagLayout());
-  dataScrollPane.setViewportView(dataViewsPanel);
+    dataViewsPanel.setBackgroundImageFilename("/resources/images/background_dark.png"); // NOI18N
+    dataViewsPanel.setLayout(new java.awt.GridBagLayout());
+    dataScrollPane.setViewportView(dataViewsPanel);
 
-  dataContainerPanel.add(dataScrollPane, java.awt.BorderLayout.CENTER);
+    dataContainerPanel.add(dataScrollPane, java.awt.BorderLayout.CENTER);
 
-  infoPanel.setLayout(new java.awt.BorderLayout());
+    infoPanel.setLayout(new java.awt.BorderLayout());
 
-  summaryPanel.setVisible(false);
-  summaryPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-  summaryPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+    summaryPanel.setVisible(false);
+    summaryPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+    summaryPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
-  lblSleepDuration.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDuration.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-  lblSleepDuration.setText(bundle.getString("lblSleepDuration")); // NOI18N
-  summaryPanel.add(lblSleepDuration);
+    lblSleepDuration.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDuration.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    lblSleepDuration.setText(bundle.getString("lblSleepDuration")); // NOI18N
+    summaryPanel.add(lblSleepDuration);
 
-  lblSleepDurationMin.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationMin.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-  lblSleepDurationMin.setText(bundle.getString("lblSleepDurationMin")); // NOI18N
-  summaryPanel.add(lblSleepDurationMin);
+    lblSleepDurationMin.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationMin.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    lblSleepDurationMin.setText(bundle.getString("lblSleepDurationMin")); // NOI18N
+    summaryPanel.add(lblSleepDurationMin);
 
-  lblSleepDurationMinValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationMinValue.setText("--:--:--");
-  summaryPanel.add(lblSleepDurationMinValue);
+    lblSleepDurationMinValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationMinValue.setText("--:--:--");
+    summaryPanel.add(lblSleepDurationMinValue);
 
-  lblSleepDurationMax.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationMax.setText(bundle.getString("lblSleepDurationMax")); // NOI18N
-  summaryPanel.add(lblSleepDurationMax);
+    lblSleepDurationMax.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationMax.setText(bundle.getString("lblSleepDurationMax")); // NOI18N
+    summaryPanel.add(lblSleepDurationMax);
 
-  lblSleepDurationMaxValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationMaxValue.setText("--:--:--");
-  summaryPanel.add(lblSleepDurationMaxValue);
+    lblSleepDurationMaxValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationMaxValue.setText("--:--:--");
+    summaryPanel.add(lblSleepDurationMaxValue);
 
-  lblSleepDurationAvg.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationAvg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-  lblSleepDurationAvg.setText(bundle.getString("lblSleepDurationAvg")); // NOI18N
-  summaryPanel.add(lblSleepDurationAvg);
+    lblSleepDurationAvg.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationAvg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    lblSleepDurationAvg.setText(bundle.getString("lblSleepDurationAvg")); // NOI18N
+    summaryPanel.add(lblSleepDurationAvg);
 
-  lblSleepDurationAvgValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationAvgValue.setText("--:--:--");
-  summaryPanel.add(lblSleepDurationAvgValue);
+    lblSleepDurationAvgValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationAvgValue.setText("--:--:--");
+    summaryPanel.add(lblSleepDurationAvgValue);
 
-  lblTimeSavings.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblTimeSavings.setText(bundle.getString("lblTimeSaving")); // NOI18N
-  summaryPanel.add(lblTimeSavings);
+    lblTimeSavings.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblTimeSavings.setText(bundle.getString("lblTimeSaving")); // NOI18N
+    summaryPanel.add(lblTimeSavings);
 
-  lblTimeSavingsValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblTimeSavingsValue.setText("--:--");
-  summaryPanel.add(lblTimeSavingsValue);
+    lblTimeSavingsValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblTimeSavingsValue.setText("--:--");
+    summaryPanel.add(lblTimeSavingsValue);
 
-  lblCountSelected.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblCountSelected.setText(bundle.getString("lblCountSelected")); // NOI18N
-  summaryPanel.add(lblCountSelected);
+    lblCountSelected.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblCountSelected.setText(bundle.getString("lblCountSelected")); // NOI18N
+    summaryPanel.add(lblCountSelected);
 
-  lblCountSelecetedVal.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblCountSelecetedVal.setText("--");
-  summaryPanel.add(lblCountSelecetedVal);
+    lblCountSelecetedVal.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblCountSelecetedVal.setText("--");
+    summaryPanel.add(lblCountSelecetedVal);
 
-  infoPanel.add(summaryPanel, java.awt.BorderLayout.NORTH);
+    infoPanel.add(summaryPanel, java.awt.BorderLayout.NORTH);
 
-  legendPanel.setVisible(false);
-  legendPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-  legendPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+    legendPanel.setVisible(false);
+    legendPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+    legendPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
-  lblLegendMovementColor.setBackground(DataFrame.BAR_COLOR);
-  lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendMovementColor.setText("  ");
-  lblLegendMovementColor.setOpaque(true);
-  legendPanel.add(lblLegendMovementColor);
+    lblLegendMovementColor.setBackground(DataFrame.BAR_COLOR);
+    lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendMovementColor.setText("  ");
+    lblLegendMovementColor.setOpaque(true);
+    legendPanel.add(lblLegendMovementColor);
 
-  lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendMovement.setText(bundle.getString("lblLegendMovements")); // NOI18N
-  legendPanel.add(lblLegendMovement);
+    lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendMovement.setText(bundle.getString("lblLegendMovements")); // NOI18N
+    legendPanel.add(lblLegendMovement);
 
-  lblLegendKeyColor.setBackground(DataFrame.KEY_PAINT);
-  lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendKeyColor.setText("  ");
-  lblLegendKeyColor.setOpaque(true);
-  legendPanel.add(lblLegendKeyColor);
+    lblLegendKeyColor.setBackground(DataFrame.KEY_PAINT);
+    lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendKeyColor.setText("  ");
+    lblLegendKeyColor.setOpaque(true);
+    legendPanel.add(lblLegendKeyColor);
 
-  lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendKey.setText(bundle.getString("lblLegendKeys")); // NOI18N
-  legendPanel.add(lblLegendKey);
+    lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendKey.setText(bundle.getString("lblLegendKeys")); // NOI18N
+    legendPanel.add(lblLegendKey);
 
-  lblLegendSleepStartColor.setBackground(DataFrame.SLEEP_MARKER_PAINT);
-  lblLegendSleepStartColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendSleepStartColor.setText("  ");
-  lblLegendSleepStartColor.setOpaque(true);
-  legendPanel.add(lblLegendSleepStartColor);
+    lblLegendSleepStartColor.setBackground(DataFrame.SLEEP_MARKER_PAINT);
+    lblLegendSleepStartColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendSleepStartColor.setText("  ");
+    lblLegendSleepStartColor.setOpaque(true);
+    legendPanel.add(lblLegendSleepStartColor);
 
-  lblLegendSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendSleepStart.setText(bundle.getString("lblLegendSleepStart")); // NOI18N
-  legendPanel.add(lblLegendSleepStart);
+    lblLegendSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendSleepStart.setText(bundle.getString("lblLegendSleepStart")); // NOI18N
+    legendPanel.add(lblLegendSleepStart);
 
-  lblLegendWakeTimeColor.setBackground(DataFrame.WAKE_PAINT);
-  lblLegendWakeTimeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendWakeTimeColor.setText("  ");
-  lblLegendWakeTimeColor.setOpaque(true);
-  legendPanel.add(lblLegendWakeTimeColor);
+    lblLegendWakeTimeColor.setBackground(DataFrame.WAKE_PAINT);
+    lblLegendWakeTimeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendWakeTimeColor.setText("  ");
+    lblLegendWakeTimeColor.setOpaque(true);
+    legendPanel.add(lblLegendWakeTimeColor);
 
-  lblLegendWakeTime.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendWakeTime.setText(bundle.getString("lblLegendWakeupTime")); // NOI18N
-  legendPanel.add(lblLegendWakeTime);
+    lblLegendWakeTime.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendWakeTime.setText(bundle.getString("lblLegendWakeupTime")); // NOI18N
+    legendPanel.add(lblLegendWakeTime);
 
-  lblLegendSnoozeColor.setBackground(DataFrame.SNOOZE_PAINT);
-  lblLegendSnoozeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendSnoozeColor.setText("  ");
-  lblLegendSnoozeColor.setOpaque(true);
-  legendPanel.add(lblLegendSnoozeColor);
+    lblLegendSnoozeColor.setBackground(DataFrame.SNOOZE_PAINT);
+    lblLegendSnoozeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendSnoozeColor.setText("  ");
+    lblLegendSnoozeColor.setOpaque(true);
+    legendPanel.add(lblLegendSnoozeColor);
 
-  lblLegendSnooze.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendSnooze.setText(bundle.getString("lblLegendSnooze")); // NOI18N
-  legendPanel.add(lblLegendSnooze);
+    lblLegendSnooze.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendSnooze.setText(bundle.getString("lblLegendSnooze")); // NOI18N
+    legendPanel.add(lblLegendSnooze);
 
-  lblLegendWakeIntervalColor.setBackground(DataFrame.WAKE_INTERVALL_PAINT);
-  lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendWakeIntervalColor.setText("  ");
-  lblLegendWakeIntervalColor.setOpaque(true);
-  legendPanel.add(lblLegendWakeIntervalColor);
+    lblLegendWakeIntervalColor.setBackground(DataFrame.WAKE_INTERVALL_PAINT);
+    lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendWakeIntervalColor.setText("  ");
+    lblLegendWakeIntervalColor.setOpaque(true);
+    legendPanel.add(lblLegendWakeIntervalColor);
 
-  lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendWakeInterval.setText(bundle.getString("lblLegendWakeInterval")); // NOI18N
-  legendPanel.add(lblLegendWakeInterval);
+    lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendWakeInterval.setText(bundle.getString("lblLegendWakeInterval")); // NOI18N
+    legendPanel.add(lblLegendWakeInterval);
 
-  infoPanel.add(legendPanel, java.awt.BorderLayout.SOUTH);
+    infoPanel.add(legendPanel, java.awt.BorderLayout.SOUTH);
 
-  dataContainerPanel.add(infoPanel, java.awt.BorderLayout.SOUTH);
+    dataContainerPanel.add(infoPanel, java.awt.BorderLayout.SOUTH);
 
-  dataPanel.add(dataContainerPanel, java.awt.BorderLayout.CENTER);
+    dataPanel.add(dataContainerPanel, java.awt.BorderLayout.CENTER);
 
-  mainPanel.add(dataPanel, "data");
+    mainPanel.add(dataPanel, "data");
 
-  getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
+    getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
 
-  statusTextPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 3, 1, 1));
-  statusTextPanel.setLayout(new java.awt.BorderLayout(5, 5));
+    statusTextPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 3, 1, 1));
+    statusTextPanel.setLayout(new java.awt.BorderLayout(5, 5));
 
-  statusTextLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/disconnect.png"))); // NOI18N
-  statusTextPanel.add(statusTextLabel, java.awt.BorderLayout.CENTER);
+    statusTextLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/disconnect.png"))); // NOI18N
+    statusTextPanel.add(statusTextLabel, java.awt.BorderLayout.CENTER);
 
-  statusProgressBar.setFocusable(false);
-  statusProgressBar.setRequestFocusEnabled(false);
-  statusProgressBar.setString("\n");
-  statusProgressBar.putClientProperty("JProgressBar.style", "circular");
-  statusTextPanel.add(statusProgressBar, java.awt.BorderLayout.EAST);
+    statusProgressBar.setFocusable(false);
+    statusProgressBar.setRequestFocusEnabled(false);
+    statusProgressBar.setString("\n");
+    statusProgressBar.putClientProperty("JProgressBar.style", "circular");
+    statusTextPanel.add(statusProgressBar, java.awt.BorderLayout.EAST);
 
-  getContentPane().add(statusTextPanel, java.awt.BorderLayout.SOUTH);
+    getContentPane().add(statusTextPanel, java.awt.BorderLayout.SOUTH);
 
-  fileMenu.setText(bundle.getString("menu.file")); // NOI18N
+    fileMenu.setText(bundle.getString("menu.file")); // NOI18N
 
-  viewMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart_bar.png"))); // NOI18N
-  viewMenuItem.setText(bundle.getString("menu.file.view")); // NOI18N
-  viewMenuItem.setDoubleBuffered(true);
-  viewMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      viewMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(viewMenuItem);
+    viewMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart_bar.png"))); // NOI18N
+    viewMenuItem.setText(bundle.getString("menu.file.view")); // NOI18N
+    viewMenuItem.setDoubleBuffered(true);
+    viewMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        viewMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(viewMenuItem);
 
-  deleteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
-  deleteMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
-  deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      deleteMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(deleteMenuItem);
+    deleteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
+    deleteMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
+    deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        deleteMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(deleteMenuItem);
 
-  deleteSoungPkgMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
-  deleteSoungPkgMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
-  deleteSoungPkgMenuItem.setVisible(false);
-  deleteSoungPkgMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      deleteSoungPkgMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(deleteSoungPkgMenuItem);
+    deleteSoungPkgMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
+    deleteSoungPkgMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
+    deleteSoungPkgMenuItem.setVisible(false);
+    deleteSoungPkgMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        deleteSoungPkgMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(deleteSoungPkgMenuItem);
 
-  miImportSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/sound_add.png"))); // NOI18N
-  miImportSound.setText(bundle.getString("btnSoundPkgImport.text")); // NOI18N
-  miImportSound.setVisible(false);
-  miImportSound.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      miImportSoundActionPerformed(evt);
-    }
-  });
-  fileMenu.add(miImportSound);
+    miImportSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/sound_add.png"))); // NOI18N
+    miImportSound.setText(bundle.getString("btnSoundPkgImport.text")); // NOI18N
+    miImportSound.setVisible(false);
+    miImportSound.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        miImportSoundActionPerformed(evt);
+      }
+    });
+    fileMenu.add(miImportSound);
 
-  if (Axbo.MAC_OS_X)
-  jSeparator1.setVisible(false);
-  fileMenu.add(jSeparator1);
+    if (Axbo.MAC_OS_X)
+    jSeparator1.setVisible(false);
+    fileMenu.add(jSeparator1);
 
-  if (Axbo.MAC_OS_X)
-  prefsMenuItem.setVisible(false);
-  prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/detailsViewIcon.png"))); // NOI18N
-  prefsMenuItem.setText(bundle.getString("menu.file.prefs")); // NOI18N
-  prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      prefsMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(prefsMenuItem);
+    if (Axbo.MAC_OS_X)
+    prefsMenuItem.setVisible(false);
+    prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/detailsViewIcon.png"))); // NOI18N
+    prefsMenuItem.setText(bundle.getString("menu.file.prefs")); // NOI18N
+    prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        prefsMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(prefsMenuItem);
 
-  if (Axbo.MAC_OS_X)
-  jSeparator3.setVisible(false);
-  fileMenu.add(jSeparator3);
+    if (Axbo.MAC_OS_X)
+    jSeparator3.setVisible(false);
+    fileMenu.add(jSeparator3);
 
-  if (Axbo.MAC_OS_X)
-  exitMenuItem.setVisible(false);
-  exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/cross.png"))); // NOI18N
-  exitMenuItem.setText(bundle.getString("menu.file.exit")); // NOI18N
-  exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      exitMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(exitMenuItem);
+    if (Axbo.MAC_OS_X)
+    exitMenuItem.setVisible(false);
+    exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/cross.png"))); // NOI18N
+    exitMenuItem.setText(bundle.getString("menu.file.exit")); // NOI18N
+    exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        exitMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(exitMenuItem);
 
-  menuBar.add(fileMenu);
+    menuBar.add(fileMenu);
 
-  deviceMenu.setText(bundle.getString("menu.device")); // NOI18N
+    deviceMenu.setText(bundle.getString("menu.device")); // NOI18N
 
-  readStoredDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/redo.png"))); // NOI18N
-  readStoredDataMenuItem.setText(bundle.getString("menu.device.readStoredData")); // NOI18N
-  readStoredDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      readStoredDataMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(readStoredDataMenuItem);
+    readStoredDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/redo.png"))); // NOI18N
+    readStoredDataMenuItem.setText(bundle.getString("menu.device.readStoredData")); // NOI18N
+    readStoredDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        readStoredDataMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(readStoredDataMenuItem);
 
-  clearDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
-  clearDataMenuItem.setText(bundle.getString("menu.device.clearData")); // NOI18N
-  clearDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      clearDataMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(clearDataMenuItem);
+    clearDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
+    clearDataMenuItem.setText(bundle.getString("menu.device.clearData")); // NOI18N
+    clearDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        clearDataMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(clearDataMenuItem);
 
-  setClockDateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/time.png"))); // NOI18N
-  setClockDateMenuItem.setText(bundle.getString("menu.device.setDate")); // NOI18N
-  setClockDateMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      setClockDateMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(setClockDateMenuItem);
+    setClockDateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/time.png"))); // NOI18N
+    setClockDateMenuItem.setText(bundle.getString("menu.device.setDate")); // NOI18N
+    setClockDateMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        setClockDateMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(setClockDateMenuItem);
 
-  readStatusMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/information.png"))); // NOI18N
-  readStatusMenuItem.setText(bundle.getString("menu.device.readStatus")); // NOI18N
-  readStatusMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      readStatusMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(readStatusMenuItem);
+    readStatusMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/information.png"))); // NOI18N
+    readStatusMenuItem.setText(bundle.getString("menu.device.readStatus")); // NOI18N
+    readStatusMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        readStatusMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(readStatusMenuItem);
 
-  resetClockMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/undo.png"))); // NOI18N
-  resetClockMenuItem.setText(bundle.getString("menu.device.resetClock")); // NOI18N
-  resetClockMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      resetClockMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(resetClockMenuItem);
+    resetClockMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/undo.png"))); // NOI18N
+    resetClockMenuItem.setText(bundle.getString("menu.device.resetClock")); // NOI18N
+    resetClockMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        resetClockMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(resetClockMenuItem);
 
-  menuBar.add(deviceMenu);
+    menuBar.add(deviceMenu);
 
-  setJMenuBar(menuBar);
+    setJMenuBar(menuBar);
 
-  pack();
+    pack();
   }// </editor-fold>//GEN-END:initComponents
   private void resetClockMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_resetClockMenuItemActionPerformed
   {//GEN-HEADEREND:event_resetClockMenuItemActionPerformed
