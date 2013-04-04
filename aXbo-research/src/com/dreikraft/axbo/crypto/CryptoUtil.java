@@ -4,6 +4,7 @@
  */
 package com.dreikraft.axbo.crypto;
 
+import com.dreikraft.axbo.crypto.CryptoUtil.KeyType;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

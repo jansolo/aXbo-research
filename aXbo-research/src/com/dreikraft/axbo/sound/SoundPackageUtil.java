@@ -5,6 +5,7 @@
 package com.dreikraft.axbo.sound;
 
 import com.dreikraft.axbo.beanutils.EnumConverter;
+import com.dreikraft.axbo.crypto.CryptoException;
 import com.dreikraft.axbo.crypto.CryptoUtil;
 import com.dreikraft.axbo.util.ByteUtil;
 import com.dreikraft.axbo.util.FileUtil;
@@ -43,13 +44,12 @@ import org.dom4j.io.XMLWriter;
 
 /**
  * Utilities for saving, restoring and verifying a Soundpackage file.
- *
  * @author jan_solo
  * @author $Author: illetsch $
  * @version $Revision
  */
-public class SoundPackageUtil {
-
+public class SoundPackageUtil
+{
   /**
    * the commons logger category
    */
@@ -79,6 +79,8 @@ public class SoundPackageUtil {
   private static final String PACKAGE_INFO = "package-info.xml";
   private static final String PUBLIC_KEY_HASH =
       "E9 A1 51 5A A1 FA 27 AE DA C7 B0 00 9B 86 E9 85";
+  private static final String PRIVATE_KEY_FILE =
+      "/resources/sounds.priv.rsa";
   private static final String PUBLIC_KEY_FILE =
       "/resources/sounds.pub.rsa";
   private static final String LICENSE_KEY_ENTRY = "license.key";
@@ -86,8 +88,8 @@ public class SoundPackageUtil {
   /**
    * Enumeration with all node types of the package-info.xml.
    */
-  public static enum soundPackageNodes {
-
+  public static enum soundPackageNodes
+  {
     axboSounds, packageName, creator, creationDate, security, serialNumber,
     enforced, sounds, sound, displayName, axboFile, path, type
   };
@@ -95,85 +97,89 @@ public class SoundPackageUtil {
   /**
    * Enumeration with all possible attributes of the package-info.xml.
    */
-  public static enum soundPackageAttributes {
-
+  public static enum soundPackageAttributes
+  {
     id
   };
+  
 
-  static {
+  static
+  {
     ConvertUtils.register(new EnumConverter(), SoundType.class);
     ConvertUtils.register(dateConverter, Date.class);
   }
 
   /**
    * Reads meta information from package-info.xml (as stream)
-   *
    * @param packageInfoXmlStream the package-info.xml FileInputStream
    * @return the sound package info read from the stream
    * @throws com.dreikraft.infactory.sound.SoundPackageException encapsulates
    * all low level (IO) exceptions
    */
   public static SoundPackage readPackageInfo(InputStream packageInfoXmlStream)
-      throws SoundPackageException {
+      throws SoundPackageException
+  {
     Digester digester = new Digester();
     digester.setValidating(false);
     digester.setRules(new ExtendedBaseRules());
 
     digester.addObjectCreate(soundPackageNodes.axboSounds.toString(),
         SoundPackage.class);
-    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.packageName, "name");
-    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.creator, "creator");
-    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.creationDate, "creationDate");
-    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.security + SL + soundPackageNodes.serialNumber,
+    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.packageName, "name");
+    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.creator, "creator");
+    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.creationDate, "creationDate");
+    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.security + SL + soundPackageNodes.serialNumber,
         "serialNumber");
-    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.security + SL + soundPackageNodes.enforced,
+    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.security + SL + soundPackageNodes.enforced,
         "securityEnforced");
 
-    digester.addObjectCreate(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds, ArrayList.class);
-    digester.addSetNext(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds, "setSounds");
+    digester.addObjectCreate(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds, ArrayList.class);
+    digester.addSetNext(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds, "setSounds");
 
-    digester.addObjectCreate(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds + SL + soundPackageNodes.sound, Sound.class);
-    digester.addSetNext(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds + SL + soundPackageNodes.sound, "add");
-    digester.addSetProperties(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds + SL + soundPackageNodes.sound, "id", "id");
-    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL
-        + soundPackageNodes.displayName, "name");
+    digester.addObjectCreate(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds + SL + soundPackageNodes.sound, Sound.class);
+    digester.addSetNext(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds + SL + soundPackageNodes.sound, "add");
+    digester.addSetProperties(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds + SL + soundPackageNodes.sound, "id", "id");
+    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL +
+        soundPackageNodes.displayName, "name");
 
-    digester.addObjectCreate(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL
-        + soundPackageNodes.axboFile, SoundFile.class);
-    digester.addSetNext(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL
-        + soundPackageNodes.axboFile, "setAxboFile");
-    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL
-        + soundPackageNodes.axboFile + SL + soundPackageNodes.path);
-    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL
-        + soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL
-        + soundPackageNodes.axboFile + SL + soundPackageNodes.type);
+    digester.addObjectCreate(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL +
+        soundPackageNodes.axboFile, SoundFile.class);
+    digester.addSetNext(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL +
+        soundPackageNodes.axboFile, "setAxboFile");
+    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL +
+        soundPackageNodes.axboFile + SL + soundPackageNodes.path);
+    digester.addBeanPropertySetter(soundPackageNodes.axboSounds + SL +
+        soundPackageNodes.sounds + SL + soundPackageNodes.sound + SL +
+        soundPackageNodes.axboFile + SL + soundPackageNodes.type);
 
-    try {
+    try
+    {
       SoundPackage soundPackage = (SoundPackage) digester.parse(
           packageInfoXmlStream);
       return soundPackage;
-    } catch (Exception ex) {
+    }
+    catch (Exception ex)
+    {
       throw new SoundPackageException(ex);
     }
   }
 
   /**
    * retrieves an entry from the package file (ZIP file)
-   *
    * @param packageFile the sound package file
    * @param entryName the name of the entry in the ZIP file
    * @throws com.dreikraft.infactory.sound.SoundPackageException encapsulates
@@ -181,14 +187,17 @@ public class SoundPackageUtil {
    * @return the entry data as stream
    */
   public static InputStream getPackageEntryStream(File packageFile,
-      String entryName) throws SoundPackageException {
-    if (packageFile == null) {
+      String entryName) throws SoundPackageException
+  {
+    if (packageFile == null)
+    {
       throw new SoundPackageException(new IllegalArgumentException(
           "missing package file"));
     }
 
     InputStream keyIn = null;
-    try {
+    try
+    {
       ZipFile packageZip = new ZipFile(packageFile);
 
       // get key from package
@@ -198,16 +207,21 @@ public class SoundPackageUtil {
 
       // read entry
       ZipEntry entry = packageZip.getEntry(entryName);
-      return new ZipClosingInputStream(packageZip,
-          CryptoUtil.decryptInput(packageZip.getInputStream(entry), key));
-    } catch (Exception ex) {
+      return new ZipClosingInputStream(packageZip, 
+              CryptoUtil.decryptInput(packageZip.getInputStream(entry), key));
+    }
+    catch (Exception ex)
+    {
       throw new SoundPackageException(ex);
-    } finally {
-      try {
-        if (keyIn != null) {
-          keyIn.close();
-        }
-      } catch (IOException ex) {
+    }
+    finally 
+    {
+      try
+      {
+        keyIn.close();
+      }
+      catch (IOException ex)
+      {
         log.error(ex.getMessage(), ex);
       }
     }
@@ -215,44 +229,50 @@ public class SoundPackageUtil {
 
   /**
    * Extracts the packageFile and writes its content in temporary directory
-   *
    * @param packageFile the packageFile (zip format)
    * @param tempDir the tempDir directory
    */
   public static void extractPackage(File packageFile, File tempDir)
-      throws SoundPackageException {
-    if (packageFile == null) {
+      throws SoundPackageException
+  {
+    if (packageFile == null)
+    {
       throw new SoundPackageException(new IllegalArgumentException(
           "missing package file"));
     }
 
-    try {
+    try
+    {
       ZipFile packageZip = new ZipFile(packageFile);
       Enumeration<?> entries = packageZip.entries();
-      while (entries.hasMoreElements()) {
+      while (entries.hasMoreElements())
+      {
         ZipEntry entry = (ZipEntry) entries.nextElement();
         String entryName = entry.getName();
-        if (log.isDebugEnabled()) {
-          log.debug("ZipEntry name: " + entryName);
-        }
-        if (entry.isDirectory()) {
+        if (log.isDebugEnabled())       log.debug("ZipEntry name: " + entryName);
+        if (entry.isDirectory())
+        {
           File dir = new File(tempDir, entryName);
           dir.mkdirs();
-        } else {
+        }
+        else
+        {
           FileUtil.createFileFromInputStream(getPackageEntryStream(packageFile,
               entryName),
               tempDir + File.separator + entryName);
         }
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex)
+    {
       throw new SoundPackageException(ex);
     }
   }
 
   /**
    * saves a sound package with all meta information and audio files to a ZIP
-   * file and creates the security tokens.
-   *
+   * file
+   * and creates the security tokens.
    * @param packageFile the zip file, where the soundpackage should be stored
    * @param soundPackage the sound package info
    * @throws com.dreikraft.infactory.sound.SoundPackageException encapsulates
@@ -260,24 +280,34 @@ public class SoundPackageUtil {
    */
   public static void exportSoundPackage(final File packageFile,
       final SoundPackage soundPackage)
-      throws SoundPackageException {
-    if (packageFile == null) {
+      throws SoundPackageException
+  {
+    if (packageFile == null)
+    {
       throw new SoundPackageException(new IllegalArgumentException(
           "null package file"));
     }
 
-    if (packageFile.exists()) {
+    if (packageFile.exists())
+    {
       packageFile.delete();
     }
 
 
     ZipOutputStream out = null;
-    try {
+    try
+    {
       out = new ZipOutputStream(new FileOutputStream(packageFile));
       out.setLevel(9);
 
+      // write encryption key
+      Key key = CryptoUtil.generateAESKey();
+      ByteArrayInputStream keyIn = new ByteArrayInputStream(
+          CryptoUtil.wrapKey(key, PRIVATE_KEY_FILE));
+      writeZipEntry(LICENSE_KEY_ENTRY, out, keyIn);
+
       // write package info
-      writePackageInfoZipEntry(soundPackage, out);
+      writePackageInfoZipEntry(soundPackage, out, key);
 
       // create path entries
       ZipEntry soundDir = new ZipEntry(SOUNDS_PATH_PREFIX + SL);
@@ -286,31 +316,38 @@ public class SoundPackageUtil {
       out.closeEntry();
 
       // write files
-      for (Sound sound : soundPackage.getSounds()) {
+      for (Sound sound : soundPackage.getSounds())
+      {
         File axboFile = new File(sound.getAxboFile().getPath());
         InputStream in = new BufferedInputStream(new FileInputStream(axboFile));
-        writeZipEntry(SOUNDS_PATH_PREFIX + SL + axboFile.getName(),
-            out, in);
+        writeZipEntryEncrypted(SOUNDS_PATH_PREFIX + SL + axboFile.getName(),
+            out, in, key);
         in.close();
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex)
+    {
       throw new SoundPackageException(ex);
-    } finally {
-      try {
-        if (out != null) {
-          out.flush();
-          out.close();
-        }
-      } catch (IOException ex) {
+    }
+    finally
+    {
+      try
+      {
+        out.flush();
+        out.close();
+      }
+      catch (IOException ex)
+      {
         log.error("failed to close ZipOutputStream", ex);
       }
     }
   }
 
   private static void writePackageInfoZipEntry(final SoundPackage soundPackage,
-      final ZipOutputStream out) throws
+      final ZipOutputStream out, final Key key) throws
       UnsupportedEncodingException,
-      IOException {
+      IOException, CryptoException
+  {
     // write xml to temporary byte array, because of stripping problems, when
     // directly writing to encrypted stream
     ByteArrayOutputStream bOut = new ByteArrayOutputStream();
@@ -323,21 +360,49 @@ public class SoundPackageUtil {
 
     // write temporary byte array to encrypet zip entry
     ByteArrayInputStream bIn = new ByteArrayInputStream(bOut.toByteArray());
-    writeZipEntry(PACKAGE_INFO, out, bIn);
+    writeZipEntryEncrypted(PACKAGE_INFO, out, bIn, key);
   }
 
   private static void writeZipEntry(final String entryName,
       final ZipOutputStream out, final InputStream in)
-      throws IOException {
-    try {
+      throws IOException, CryptoException
+  {
+    try
+    {
       ZipEntry fileEntry = new ZipEntry(entryName);
       out.putNextEntry(fileEntry);
       final byte[] buf = new byte[BUF_SIZE];
-      int avail;
-      while ((avail = in.read(buf)) != -1) {
+      int avail = 0;
+      while ((avail = in.read(buf)) != -1)
+      {
         out.write(buf, 0, avail);
       }
-    } finally {
+    }
+    finally
+    {
+      out.flush();
+      out.closeEntry();
+    }
+  }
+
+  private static void writeZipEntryEncrypted(final String entryName,
+      final ZipOutputStream out, final InputStream in, final Key key)
+      throws IOException, CryptoException
+  {
+    try
+    {
+      ZipEntry fileEntry = new ZipEntry(entryName);
+      out.putNextEntry(fileEntry);
+      InputStream encIn = CryptoUtil.encryptInput(in, key);
+      final byte[] buf = new byte[BUF_SIZE];
+      int avail = 0;
+      while ((avail = encIn.read(buf)) != -1)
+      {
+        out.write(buf, 0, avail);
+      }
+    }
+    finally
+    {
       out.flush();
       out.closeEntry();
     }
@@ -345,11 +410,11 @@ public class SoundPackageUtil {
 
   /**
    * creates a package-info.xml from the SoundPackage Bean
-   *
    * @param soundPackage a SoundPackage Bean containing all the meta information
    * @return a dom4j document
    */
-  public static Document createPackageInfoXml(final SoundPackage soundPackage) {
+  public static Document createPackageInfoXml(final SoundPackage soundPackage)
+  {
 
     Document document = DocumentHelper.createDocument();
     document.setXMLEncoding(ENCODING);
@@ -374,7 +439,8 @@ public class SoundPackageUtil {
     Element soundsNode =
         rootNode.addElement(soundPackageNodes.sounds.toString());
     int id = 1;
-    for (Sound sound : soundPackage.getSounds()) {
+    for (Sound sound : soundPackage.getSounds())
+    {
       Element soundNode =
           soundsNode.addElement(soundPackageNodes.sound.toString());
       soundNode.addAttribute(soundPackageAttributes.id.toString(),
@@ -397,21 +463,25 @@ public class SoundPackageUtil {
   /**
    * verifies the security token of the SoundPackage. Verifies that the
    * SoundPackage has not been altered
-   *
    * @param packageFile the SoundPackage ZIP file
    * @return true if the sound package has not been altered. False if somebody
    * changed the contents of the sound package.
    */
-  public static boolean verifyPackage(File packageFile) {
-    try {
+  public static boolean verifyPackage(File packageFile)
+  {
+    try
+    {
       // check, whether the public key file has not been changed
       byte[] pubKeyBytes = CryptoUtil.readKey(PUBLIC_KEY_FILE);
       if (!PUBLIC_KEY_HASH.equals(
-          ByteUtil.dumpByteArray(CryptoUtil.calcMD5(pubKeyBytes)).trim())) {
+          ByteUtil.dumpByteArray(CryptoUtil.calcMD5(pubKeyBytes)).trim()))
+      {
         return false;
       }
       return true;
-    } catch (Exception ex) {
+    }
+    catch (Exception ex)
+    {
       log.error(ex.getMessage(), ex);
       return false;
     }
@@ -424,9 +494,11 @@ public class SoundPackageUtil {
    * @param soundPackage
    * @return
    */
-  public static long calculateSoundFilesSize(SoundPackage soundPackage) {
+  public static long calculateSoundFilesSize(SoundPackage soundPackage)
+  {
     int size = 0;
-    for (Sound sound : soundPackage.getSounds()) {
+    for (Sound sound : soundPackage.getSounds())
+    {
       File f = new File(sound.getAxboFile().getPath());
       size += (f.length() - WAV_PREAMBEL_LEN);
     }
@@ -435,42 +507,53 @@ public class SoundPackageUtil {
 
   /**
    * Checks if for every {@link Sound} object a name and axbo file was set.
-   * Return
-   * <CODE>null</CODE> if all names and files were provided otherwise a
-   * {@link String} with the bundle key for the error message is returned.
+   * Return <CODE>null</CODE> if all names and files were provided otherwise
+   * a {@link String} with the bundle key for the error message is returned.
    *
    * @param sounds <CODE>List</CODE> with {@link Sound} objects
-   * @return <CODE>null</CODE> if all names and files are set otherwise return
-   * {@link String} with resource bundle key for the according error message.
+   * @return <CODE>null</CODE> if all names and files are set otherwise return {@link String}
+   * with resource bundle key for the according error message.
    */
   public static void validateSoundPackage(SoundPackage soundPackage) throws
-      SoundPackageException {
+      SoundPackageException
+  {
     // check if soundpackage name was typed in
-    if (StringUtil.isEmpty(soundPackage.getName())) {
+    if (StringUtil.isEmpty(soundPackage.getName()))
+    {
       throw new MissingSoundPackageNameException();
     }
     // check if serial number is empty
-    if (StringUtil.isEmpty(soundPackage.getSerialNumber())) {
+    if (StringUtil.isEmpty(soundPackage.getSerialNumber()))
+    {
       throw new MissingSerialNumberException();
     }
     // check if every sound is complete
     List<Sound> sounds = soundPackage.getSounds();
-    for (Sound sound : sounds) {
-      if (StringUtil.isEmpty(sound.getName())) {
+    for (Sound sound : sounds)
+    {
+      if (StringUtil.isEmpty(sound.getName()))
+      {
         throw new MissingSoundNameException();
       }
-      if (sound.getAxboFile() == null) {
+      if (sound.getAxboFile() == null)
+      {
         throw new MissingSoundFileException();
       }
     }
   }
 
-  public static File validateSoundPackageFilename(File f) {
+  public static File validateSoundPackageFilename(File f)
+  {
     String filename = f.getName();
-    if (!filename.endsWith(SOUND_DATA_FILE_EXT)) {
+    if (!filename.endsWith(SOUND_DATA_FILE_EXT))
+    {
       return new File(f.getPath() + SOUND_DATA_FILE_EXT);
-    } else {
+    }
+    else
+    {
       return f;
     }
   }
 }
+
+

@@ -80,8 +80,29 @@
           </manifest>
       </j2seproject:jar>
       <copy todir="${dist.dir}" >
+        <!--fileset dir="${resource.dir}/license" includes="*.txt"/-->
         <fileset dir="${resource.dir}/native" includes="*.dll,*.jnilib,*.so"/>
       </copy>
+      <!--
+      <delete dir="${install.dir}" />
+      <mkdir dir="${install.dir}/lib" />
+      <copy file="${dist.jar}" tofile="${dist.dir}/${install.name}"/>
+      <copy file="${dist.jar}" tofile="${install.dir}/${install.name}"/>
+      <copy todir="${install.dir}/lib" >
+        <fileset dir="${dist.dir}/../lib" includes="*.jar" />
+      </copy>
+      <copy todir="${install.dir}" >
+        <fileset dir="${src.infactory.dir}" includes="*.dll,*.jnilib,*.so"/>
+      </copy>
+      <jar basedir="${src.infactory.dir}" destFile="${install.dir}/lib/RXTXnative.jar" includes="*.dll,*.jnilib,*.so"/>
+      -->
+    </target>
+    
+    <target name="installer" depends="-post-init">
+      <taskdef name="install4j"
+         classname="com.install4j.Install4JTask"
+         classpath="${install4j.home}/bin/ant.jar"/>
+      <install4j projectfile="${install4j.file}"/>
     </target>
     
 </project>

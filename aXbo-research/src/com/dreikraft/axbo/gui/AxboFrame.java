@@ -19,11 +19,16 @@ import com.dreikraft.axbo.events.DataSearch;
 import com.dreikraft.axbo.events.DiagramClose;
 import com.dreikraft.axbo.events.DiagramPrint;
 import com.dreikraft.axbo.events.SleepDataCompare;
+import com.dreikraft.axbo.events.ViewSelect;
 import com.dreikraft.axbo.events.SleepDataDelete;
 import com.dreikraft.axbo.events.SleepDataImport;
 import com.dreikraft.axbo.events.SleepDataOpen;
+import com.dreikraft.axbo.events.UpdateCheck;
 import com.dreikraft.axbo.model.MetaDataTableModel;
+import com.dreikraft.axbo.model.SoundPackagesTableModel;
+import com.dreikraft.axbo.sound.SoundPackage;
 import com.dreikraft.axbo.util.BundleUtil;
+import com.dreikraft.swing.IconCellRenderer;
 import com.dreikraft.swing.SplashScreen;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -145,6 +150,13 @@ public class AxboFrame extends JFrame
     metaDataTable.getColumnModel().getColumn(2).setPreferredWidth(70);
   }
 
+  public void refreshSoundsTable(final List<SoundPackage> soundPackages)
+  {
+    soundPackagesTable.setModel(new SoundPackagesTableModel(soundPackages));
+    soundPackagesTable.getColumnModel().getColumn(0).setCellRenderer(
+        new IconCellRenderer(Axbo.SOUND_PACKAGE_ICON));
+  }
+
   public void showMessage(final String msg, final boolean isErrorMsg)
   {
     JOptionPane.showMessageDialog(this, msg, isErrorMsg ? BundleUtil.getMessage(
@@ -161,6 +173,11 @@ public class AxboFrame extends JFrame
   public MetaDataTableModel getMetaDataTableModel()
   {
     return (MetaDataTableModel) metaDataTable.getModel();
+  }
+
+  public SoundPackagesTableModel getSoundPackagesTableModel()
+  {
+    return (SoundPackagesTableModel) soundPackagesTable.getModel();
   }
 
   public void showDeviceEnabled()
@@ -348,6 +365,8 @@ public class AxboFrame extends JFrame
     toolbarPanel = new javax.swing.JPanel();
     navToolbarPanel = new javax.swing.JPanel();
     jLabel1 = new javax.swing.JLabel();
+    dataButton = new javax.swing.JButton();
+    soundsButton = new javax.swing.JButton();
     spacerPanel = new javax.swing.JPanel();
     mainToolbar = new javax.swing.JPanel();
     dataToolbarPanel = new javax.swing.JPanel();
@@ -399,6 +418,11 @@ public class AxboFrame extends JFrame
     lblLegendSnooze = new javax.swing.JLabel();
     lblLegendWakeIntervalColor = new javax.swing.JLabel();
     lblLegendWakeInterval = new javax.swing.JLabel();
+    soundPanel = new javax.swing.JPanel();
+    soundPackageListPanel = new javax.swing.JPanel();
+    soundsTableScrollPane = new javax.swing.JScrollPane();
+    soundPackagesTable = new javax.swing.JTable();
+    soundDetailPanel = new javax.swing.JPanel();
     statusTextPanel = new javax.swing.JPanel();
     statusTextLabel = new javax.swing.JLabel();
     statusProgressBar = new javax.swing.JProgressBar();
@@ -418,6 +442,9 @@ public class AxboFrame extends JFrame
     setClockDateMenuItem = new javax.swing.JMenuItem();
     readStatusMenuItem = new javax.swing.JMenuItem();
     resetClockMenuItem = new javax.swing.JMenuItem();
+    helpMenu = new javax.swing.JMenu();
+    checkUpdateMenuItem = new javax.swing.JMenuItem();
+    aboutMenuItem = new javax.swing.JMenuItem();
 
     viewPopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart_bar.png"))); // NOI18N
     java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/default"); // NOI18N
@@ -477,11 +504,57 @@ public class AxboFrame extends JFrame
     jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/aXbo-logo-software-small.png"))); // NOI18N
     navToolbarPanel.add(jLabel1, new java.awt.GridBagConstraints());
 
+    dataButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/16x16px_researchicon.png"))); // NOI18N
+    dataButton.setText(bundle.getString("tabLabel.sleepData")); // NOI18N
+    dataButton.setToolTipText(bundle.getString("tabLabel.sleepData.tooltip")); // NOI18N
+    dataButton.setBorderPainted(false);
+    dataButton.setFocusable(false);
+    dataButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    dataButton.setIconTextGap(2);
+    dataButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    dataButton.setMultiClickThreshhold(1000L);
+    dataButton.setRequestFocusEnabled(false);
+    dataButton.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    dataButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    dataButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        dataButtonActionPerformed(evt);
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+    gridBagConstraints.insets = new java.awt.Insets(0, 40, 0, 0);
+    navToolbarPanel.add(dataButton, gridBagConstraints);
+
+    soundsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/music.png"))); // NOI18N
+    soundsButton.setText(bundle.getString("tabLabel.sounds")); // NOI18N
+    soundsButton.setToolTipText(bundle.getString("tabLabel.sounds.tooltip")); // NOI18N
+    soundsButton.setBorderPainted(false);
+    soundsButton.setEnabled(false);
+    soundsButton.setFocusable(false);
+    soundsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+    soundsButton.setIconTextGap(2);
+    soundsButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    soundsButton.setMultiClickThreshhold(1000L);
+    soundsButton.setRequestFocusEnabled(false);
+    soundsButton.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    soundsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+    soundsButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        soundsButtonActionPerformed(evt);
+      }
+    });
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+    navToolbarPanel.add(soundsButton, gridBagConstraints);
+
     org.jdesktop.layout.GroupLayout spacerPanelLayout = new org.jdesktop.layout.GroupLayout(spacerPanel);
     spacerPanel.setLayout(spacerPanelLayout);
     spacerPanelLayout.setHorizontalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 260, Short.MAX_VALUE)
+      .add(0, 132, Short.MAX_VALUE)
     );
     spacerPanelLayout.setVerticalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -756,50 +829,50 @@ public class AxboFrame extends JFrame
   summaryPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
   summaryPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
-  lblSleepDuration.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblSleepDuration.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblSleepDuration.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
   lblSleepDuration.setText(bundle.getString("lblSleepDuration")); // NOI18N
   summaryPanel.add(lblSleepDuration);
 
-  lblSleepDurationMin.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblSleepDurationMin.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblSleepDurationMin.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
   lblSleepDurationMin.setText(bundle.getString("lblSleepDurationMin")); // NOI18N
   summaryPanel.add(lblSleepDurationMin);
 
-  lblSleepDurationMinValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblSleepDurationMinValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblSleepDurationMinValue.setText("--:--:--");
   summaryPanel.add(lblSleepDurationMinValue);
 
-  lblSleepDurationMax.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblSleepDurationMax.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblSleepDurationMax.setText(bundle.getString("lblSleepDurationMax")); // NOI18N
   summaryPanel.add(lblSleepDurationMax);
 
-  lblSleepDurationMaxValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblSleepDurationMaxValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblSleepDurationMaxValue.setText("--:--:--");
   summaryPanel.add(lblSleepDurationMaxValue);
 
-  lblSleepDurationAvg.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblSleepDurationAvg.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblSleepDurationAvg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
   lblSleepDurationAvg.setText(bundle.getString("lblSleepDurationAvg")); // NOI18N
   summaryPanel.add(lblSleepDurationAvg);
 
-  lblSleepDurationAvgValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblSleepDurationAvgValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblSleepDurationAvgValue.setText("--:--:--");
   summaryPanel.add(lblSleepDurationAvgValue);
 
-  lblTimeSavings.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblTimeSavings.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblTimeSavings.setText(bundle.getString("lblTimeSaving")); // NOI18N
   summaryPanel.add(lblTimeSavings);
 
-  lblTimeSavingsValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblTimeSavingsValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblTimeSavingsValue.setText("--:--");
   summaryPanel.add(lblTimeSavingsValue);
 
-  lblCountSelected.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblCountSelected.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblCountSelected.setText(bundle.getString("lblCountSelected")); // NOI18N
   summaryPanel.add(lblCountSelected);
 
-  lblCountSelecetedVal.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblCountSelecetedVal.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblCountSelecetedVal.setText("--");
   summaryPanel.add(lblCountSelecetedVal);
 
@@ -810,42 +883,42 @@ public class AxboFrame extends JFrame
   legendPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
   lblLegendMovementColor.setBackground(DataFrame.BAR_COLOR);
-  lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendMovementColor.setText("  ");
   lblLegendMovementColor.setOpaque(true);
   legendPanel.add(lblLegendMovementColor);
 
-  lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendMovement.setText(bundle.getString("lblLegendMovements")); // NOI18N
   legendPanel.add(lblLegendMovement);
 
   lblLegendKeyColor.setBackground(DataFrame.KEY_PAINT);
-  lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendKeyColor.setText("  ");
   lblLegendKeyColor.setOpaque(true);
   legendPanel.add(lblLegendKeyColor);
 
-  lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendKey.setText(bundle.getString("lblLegendKeys")); // NOI18N
   legendPanel.add(lblLegendKey);
 
   lblLegendSleepStartColor.setBackground(DataFrame.SLEEP_MARKER_PAINT);
-  lblLegendSleepStartColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendSleepStartColor.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendSleepStartColor.setText("  ");
   lblLegendSleepStartColor.setOpaque(true);
   legendPanel.add(lblLegendSleepStartColor);
 
-  lblLegendSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendSleepStart.setText(bundle.getString("lblLegendSleepStart")); // NOI18N
   legendPanel.add(lblLegendSleepStart);
 
   lblLegendWakeTimeColor.setBackground(DataFrame.WAKE_PAINT);
-  lblLegendWakeTimeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendWakeTimeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendWakeTimeColor.setText("  ");
   lblLegendWakeTimeColor.setOpaque(true);
   legendPanel.add(lblLegendWakeTimeColor);
 
-  lblLegendWakeTime.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendWakeTime.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendWakeTime.setText(bundle.getString("lblLegendWakeupTime")); // NOI18N
   legendPanel.add(lblLegendWakeTime);
 
@@ -860,12 +933,12 @@ public class AxboFrame extends JFrame
   legendPanel.add(lblLegendSnooze);
 
   lblLegendWakeIntervalColor.setBackground(DataFrame.WAKE_INTERVALL_PAINT);
-  lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendWakeIntervalColor.setText("  ");
   lblLegendWakeIntervalColor.setOpaque(true);
   legendPanel.add(lblLegendWakeIntervalColor);
 
-  lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+  lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 9));
   lblLegendWakeInterval.setText(bundle.getString("lblLegendWakeInterval")); // NOI18N
   legendPanel.add(lblLegendWakeInterval);
 
@@ -876,6 +949,45 @@ public class AxboFrame extends JFrame
   dataPanel.add(dataContainerPanel, java.awt.BorderLayout.CENTER);
 
   mainPanel.add(dataPanel, "data");
+
+  soundPanel.setLayout(new java.awt.BorderLayout());
+
+  soundPackageListPanel.setPreferredSize(new java.awt.Dimension(350, 404));
+  soundPackageListPanel.setLayout(new java.awt.BorderLayout());
+
+  soundsTableScrollPane.setAutoscrolls(true);
+  soundsTableScrollPane.setMaximumSize(new java.awt.Dimension(100, 32767));
+
+  soundPackagesTable.setModel(new SoundPackagesTableModel());
+  soundPackagesTable.setComponentPopupMenu(soundsPopupMenu);
+  soundPackagesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  soundPackagesTable.getColumnModel().getColumn(0).setCellRenderer(
+    new IconCellRenderer(Axbo.SOUND_PACKAGE_ICON));
+  soundPackagesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+    public void mouseClicked(java.awt.event.MouseEvent evt) {
+      soundPackagesTableMouseClicked(evt);
+    }
+  });
+  soundsTableScrollPane.setViewportView(soundPackagesTable);
+
+  soundPackageListPanel.add(soundsTableScrollPane, java.awt.BorderLayout.CENTER);
+
+  soundPanel.add(soundPackageListPanel, java.awt.BorderLayout.WEST);
+
+  org.jdesktop.layout.GroupLayout soundDetailPanelLayout = new org.jdesktop.layout.GroupLayout(soundDetailPanel);
+  soundDetailPanel.setLayout(soundDetailPanelLayout);
+  soundDetailPanelLayout.setHorizontalGroup(
+    soundDetailPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+    .add(0, 772, Short.MAX_VALUE)
+  );
+  soundDetailPanelLayout.setVerticalGroup(
+    soundDetailPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+    .add(0, 355, Short.MAX_VALUE)
+  );
+
+  soundPanel.add(soundDetailPanel, java.awt.BorderLayout.CENTER);
+
+  mainPanel.add(soundPanel, "sound");
 
   getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
 
@@ -1015,6 +1127,30 @@ public class AxboFrame extends JFrame
 
   menuBar.add(deviceMenu);
 
+  helpMenu.setText(bundle.getString("menu.help")); // NOI18N
+  if (Axbo.MAC_OS_X)
+  helpMenu.setVisible(true);
+
+  checkUpdateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/arrow_refresh.png"))); // NOI18N
+  checkUpdateMenuItem.setText(bundle.getString("menu.help.checkUpdate")); // NOI18N
+  checkUpdateMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      checkUpdateMenuItemActionPerformed(evt);
+    }
+  });
+  helpMenu.add(checkUpdateMenuItem);
+
+  aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/information.png"))); // NOI18N
+  aboutMenuItem.setText(bundle.getString("menu.help.about")); // NOI18N
+  aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      aboutMenuItemActionPerformed(evt);
+    }
+  });
+  helpMenu.add(aboutMenuItem);
+
+  menuBar.add(helpMenu);
+
   setJMenuBar(menuBar);
 
   pack();
@@ -1100,6 +1236,11 @@ public class AxboFrame extends JFrame
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new AxboTimeSet(
         this));
   }//GEN-LAST:event_setClockDateMenuItemActionPerformed
+
+  private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_aboutMenuItemActionPerformed
+  {//GEN-HEADEREND:event_aboutMenuItemActionPerformed
+    showSplashScreen();
+  }//GEN-LAST:event_aboutMenuItemActionPerformed
 
   private void readStoredDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_readStoredDataMenuItemActionPerformed
   {//GEN-HEADEREND:event_readStoredDataMenuItemActionPerformed
@@ -1218,6 +1359,11 @@ public class AxboFrame extends JFrame
 //      ctrl.importSoundPackage();
     }//GEN-LAST:event_miImportSoundActionPerformed
 
+private void checkUpdateMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkUpdateMenuItemActionPerformed
+  ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+      new UpdateCheck(this));
+}//GEN-LAST:event_checkUpdateMenuItemActionPerformed
+
 private void deleteSoungPkgMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSoungPkgMenuItemActionPerformed
 //  if (soundPackagesTable.getSelectedRowCount() > 0)
 //  {
@@ -1265,6 +1411,18 @@ private void openSoundPkgPopupMenuItemActionPerformed(java.awt.event.ActionEvent
 //
 }//GEN-LAST:event_openSoundPkgPopupMenuItemActionPerformed
 
+private void soundsButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_soundsButtonActionPerformed
+{//GEN-HEADEREND:event_soundsButtonActionPerformed
+  ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ViewSelect(this,
+      SOUND_CARD_NAME));
+}//GEN-LAST:event_soundsButtonActionPerformed
+
+private void dataButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_dataButtonActionPerformed
+{//GEN-HEADEREND:event_dataButtonActionPerformed
+  ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ViewSelect(this,
+      DATA_CARD_NAME));
+}//GEN-LAST:event_dataButtonActionPerformed
+
 private void btnCompareActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnCompareActionPerformed
 {//GEN-HEADEREND:event_btnCompareActionPerformed
   ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataCompare(
@@ -1304,11 +1462,14 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   }
 }//GEN-LAST:event_btnPrintActionPerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JMenuItem aboutMenuItem;
   private javax.swing.JButton btnCloseAll;
   private javax.swing.JButton btnCompare;
   private javax.swing.JButton btnPrint;
   private javax.swing.JButton btnSoundPkgImport;
+  private javax.swing.JMenuItem checkUpdateMenuItem;
   private javax.swing.JMenuItem clearDataMenuItem;
+  private javax.swing.JButton dataButton;
   private javax.swing.JPanel dataContainerPanel;
   private javax.swing.JPanel dataListPanel;
   private javax.swing.JPanel dataPanel;
@@ -1322,6 +1483,7 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JMenu deviceMenu;
   private javax.swing.JMenuItem exitMenuItem;
   private javax.swing.JMenu fileMenu;
+  private javax.swing.JMenu helpMenu;
   private javax.swing.JPanel infoPanel;
   private javax.swing.JLabel jLabel1;
   private javax.swing.JSeparator jSeparator1;
@@ -1372,8 +1534,14 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JPanel searchTermsPanel;
   private javax.swing.JMenuItem setClockDateMenuItem;
   private javax.swing.JPopupMenu sleepDataPopupMenu;
+  private javax.swing.JPanel soundDetailPanel;
+  private javax.swing.JPanel soundPackageListPanel;
+  private javax.swing.JTable soundPackagesTable;
+  private javax.swing.JPanel soundPanel;
   private javax.swing.JPanel soundToolbarPanel;
+  private javax.swing.JButton soundsButton;
   private javax.swing.JPopupMenu soundsPopupMenu;
+  private javax.swing.JScrollPane soundsTableScrollPane;
   private javax.swing.JPanel spacerPanel;
   private javax.swing.JProgressBar statusProgressBar;
   private javax.swing.JLabel statusTextLabel;

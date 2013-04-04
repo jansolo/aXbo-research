@@ -591,6 +591,143 @@ public final class AxboFrameController implements ApplicationEventEnabled
     log.info(evt);
   }
 
+//  public void deleteSoundPackage(final SoundPackage sndPkg)
+//  {
+//    if (soundPkgCtrl != null)
+//    {
+//      soundPkgCtrl.close();
+//    }
+//    sndPkg.getPackageFile().delete();
+//    frame.getSoundPackagesTableModel().removeSoundPackage(sndPkg);
+//  }
+//  public void filterTable()
+//  {
+//  }
+//  public void importSoundPackage()
+//  {
+//    final FilenameFilter axsFilter = new FilenameFilter()
+//    {
+//
+//      @Override
+//      public boolean accept(File dir, String name)
+//      {
+//        return name.toLowerCase().endsWith(
+//            Axbo.SOUND_DATA_FILE_EXT.toLowerCase());
+//      }
+//    };
+//
+//    // frame show file chooser to open a project directory
+//    final File[] selectedFiles =
+//        frame.showSoundFileChooser(System.getProperty("user.home"));
+//
+//    if (selectedFiles != null && selectedFiles.length > 0)
+//    {
+//      File[] files = selectedFiles;
+//      if (selectedFiles[0].isDirectory())
+//      {
+//        if (log.isDebugEnabled())
+//        {
+//          log.debug("open sound package directory " + selectedFiles[0]);
+//        }
+//        files = selectedFiles[0].listFiles(axsFilter);
+//        if (log.isDebugEnabled())
+//        {
+//          log.debug(files.length + " axbo sound packages found");
+//        }
+//      }
+//
+//      // copy files to sounds directory
+//      for (File f : files)
+//      {
+//        try
+//        {
+//          File out =
+//              new File(Axbo.SOUND_PACKAGES_DIR, f.getName());
+//          FileUtil.copyFile(f, out);
+//        }
+//        catch (IOException ex)
+//        {
+//          frame.showMessage(BundleUtil.getErrorMessage(
+//              "error.importSoundPackage", f.getName()),
+//              BundleUtil.getMessage("errorMessageBox.title"), true);
+//        }
+//      }
+//      frame.showStatusMessage(BundleUtil.getMessage(
+//          "statusLabel.importSoundPackages", String.valueOf(files.length)));
+//    }
+//    frame.refreshSoundsTable(loadSoundpackages());
+//  }
+//  private List<SoundPackage> loadSoundpackages()
+//  {
+//    final File soundPackagesDir = new File(Axbo.SOUND_PACKAGES_DIR);
+//    final File[] soundPackageFiles = soundPackagesDir.listFiles(
+//        new Axbo.AXSFilenameFilter());
+//    final List<SoundPackage> soundPackages = new ArrayList<SoundPackage>();
+//    for (final File f : soundPackageFiles)
+//    {
+//      InputStream in = null;
+//      try
+//      {
+//        in = SoundPackageUtil.getPackageEntryStream(f,
+//            SoundPackage.PACKAGE_INFO_FILENAME);
+//        final SoundPackage soundPkg = SoundPackageUtil.readPackageInfo(in);
+//        frame.showStatusMessage(BundleUtil.getMessage(
+//            "statusLabel.loadingSoundPackage", soundPkg.getName()));
+//        soundPkg.setPackageFile(f);
+//        soundPackages.add(soundPkg);
+//      }
+//      catch (SoundPackageException ex)
+//      {
+//        log.error("failed to load sound package ", ex);
+//      }
+//      finally
+//      {
+//        try
+//        {
+//          in.close();
+//        }
+//        catch (IOException ex)
+//        {
+//          log.error(ex.getMessage(), ex);
+//        }
+//      }
+//    }
+//    return soundPackages;
+//  }
+//  public void openSoundPkg(int selectedRow)
+//  {
+//    if (soundPkgCtrl == null)
+//    {
+//      soundPkgCtrl = new SoundPackageFrameController(this);
+//    }
+//
+//    SoundPackage pkg = frame.getSoundPackagesTableModel().
+//        getSoundPackageAt(selectedRow);
+//    soundPkgCtrl.openSoundPkg(pkg);
+//    frame.showStatusMessage(BundleUtil.getMessage(
+//        "statusLabel.openSoundPackage", pkg.getName()));
+//  }
+//  public void newSleepData()
+//  {
+//    // create an empty sleep data object
+//    SleepData record = new SleepData();
+//    record.setId(SensorID.P1.toString());
+//    record.setDeviceType(Axbo.getDeviceType());
+//    record.addMovement(new MovementData(new Date(), MovementData.EMPTY,
+//        MovementData.EMPTY, MovementData.EMPTY));
+//
+//    // initialize the internal frame
+//    DataFrameController internalFrameController = new DataFrameController();
+//    internalFrameController.init(record, this);
+//    frame.showStatusMessage(BundleUtil.getMessage("statusLabel.newData"));
+//
+//    // show the internal frame in the desktop pane
+//    openNewInternalFrame(internalFrameController.getView());
+//
+//    // bring internal frame to front
+//    internalFrameController.bringViewToFront();
+//  }
+//
   private void registerForMacOSXEvents()
   {
     if (Axbo.MAC_OS_X)
@@ -599,6 +736,8 @@ public final class AxboFrameController implements ApplicationEventEnabled
       {
         OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("exit",
             (Class[]) null));
+        OSXAdapter.setAboutHandler(frame, frame.getClass().
+            getDeclaredMethod("showSplashScreen", (Class[]) null));
         OSXAdapter.setPreferencesHandler(this, getClass().
             getDeclaredMethod("showPrefs", (Class[]) null));
       }
