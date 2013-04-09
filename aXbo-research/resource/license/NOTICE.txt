@@ -1,5 +1,5 @@
 aXbo research
-Copyright (c) 2008 3kraft Ges.b.R 
+Copyright (c) 2013 3kraft IT GmbH & CoKG 
 jan.illetschko@3kraft.com
 
 This product includes free software licensed under various open source licenses.
@@ -7,14 +7,19 @@ All required licenses are included with the product.
  
 
 This product includes software developed by The Apache Software Foundation 
-(http://www.apache.org/):
+(http://commons.apache.org) under the Apache License 2.0 
+(http://www.apache.org/licenses/LICENSE-2.0):
 
-commons-beanutils.jar
-commons-collections-3.1.jar
-commons-configuration-1.2.jar
-commons-digester-1.8.jar
-commons-lang-2.1.jar
-commons-logging-1.1.jar
+commons-beanutils
+commons-collections
+commons-logging
+commons-digester
+commons-io
+
+
+This product includes software licensed under Apache License2.0
+(http://www.apache.org/licenses/LICENSE-2.0):
+streamflyer (http://code.google.com/p/streamflyer/)
 
 
 This product includes work from Mark James, licensed under Creative Commons 
@@ -26,16 +31,17 @@ SILK ICONS (http://www.famfamfam.com/lab/icons/silk/)
 This product includes software licensed under LGPL 2.1 
 (http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt):
 
-jcommon-1.0.9.jar (http://www.jfree.org/jfreechart/)
-jfreechart-1.0.5.jar (http://www.jfree.org/jcommon/index.php)
+jcommon (http://www.jfree.org/jfreechart/)
+jfreechart (http://www.jfree.org/jcommon/index.php)
+SwingX (http://swingx.java.net)
 
 
 This product includes software licensed under RXTX License v2.1 
 (http://users.frii.com/jarvi/rxtx/license.html):
 
-RXTXcomm.jar (http://www.rxtx.org/)
+RXTXcomm (http://www.rxtx.org/)
 
 
 This product includes following free libraries:
 
-dom4j-1.6.1.jar (http://www.dom4j.org)
+dom4j (http://www.dom4j.org)

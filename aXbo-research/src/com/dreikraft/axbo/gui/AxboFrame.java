@@ -265,7 +265,7 @@ public class AxboFrame extends JFrame
     {
       this.splashScreen = new SplashScreen();
       this.splashScreen.setImageURL(this.getClass().getResource(
-          "/resources/images/SplashScreen-11_07.gif"));
+          "/resources/images/Splash_screen_research_aXbo_Limited.png"));
       this.splashScreen.setVisible(true);
       if (!this.isVisible())
       {

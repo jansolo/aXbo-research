@@ -237,9 +237,7 @@ public final class Axbo implements ApplicationEventEnabled
 
     // create view and model
     axboFrameController = new AxboFrameController();
-    //internalFrameListController = new DataFramesController();
     prefCtrl = new PreferencesController();
-    //soundPkgCtrl = new SoundPackageFrameController();
 
     // set the device type to aXbo (currently the only supported)
     DeviceContext.setDeviceType(DeviceType.AXBO);
