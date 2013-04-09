@@ -43,14 +43,16 @@ public class PreferencesDialog extends javax.swing.JDialog
 
   public void initComPortCB(final List<String> items, final String sel)
   {
-    final ComboBoxModel<String> model = new DefaultComboBoxModel<String>((String[])items.toArray());
+    final ComboBoxModel<String> model = new DefaultComboBoxModel<String>(
+        items.toArray(new String[0]));
     this.comPortCB.setModel(model);
     this.comPortCB.setSelectedItem(sel);
   }
 
   public void initLanguageCB(final List<String> items, String sel)
   {
-    final ComboBoxModel<String> model = new DefaultComboBoxModel<String>((String[])items.toArray());
+    final ComboBoxModel<String> model = new DefaultComboBoxModel<String>(
+        items.toArray(new String[0]));
     this.languageCB.setModel(model);
     this.languageCB.setSelectedItem(sel);
   }
