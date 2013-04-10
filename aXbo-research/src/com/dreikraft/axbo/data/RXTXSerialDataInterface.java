@@ -239,6 +239,9 @@ public enum RXTXSerialDataInterface implements DataInterface
   {
     try
     {
+      // wait for 1 msec. On fast computers the serial interface may not be
+      // fast enough to process the next command immediatly
+      Thread.sleep(1);
       synchronized (dataMonitor)
       {
         dataMonitor.setDataReceived(true);

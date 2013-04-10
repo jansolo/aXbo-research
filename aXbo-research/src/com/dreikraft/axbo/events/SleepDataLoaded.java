@@ -5,8 +5,6 @@
 package com.dreikraft.axbo.events;
 
 import com.dreikraft.events.ApplicationEvent;
-import com.dreikraft.axbo.data.SleepData;
-import java.util.List;
 
 /**
  * SleepDataLoadedEvent

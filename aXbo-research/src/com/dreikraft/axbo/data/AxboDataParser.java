@@ -38,21 +38,15 @@ public enum AxboDataParser implements ProtocolHandler
   public static final int TOGGLE_BYTE_OUTPUT_ON = 0x81;
   public static final int ACK = 0x06;
   public static final int NAK = 0x15;
-  public static final int BUF_SIZE = 30;
+  public static final int BUF_SIZE = 100;
 
-  ;
   private AxboDataContext ctx = new AxboDataContext();
 
   @Override
   public void parse(final byte[] data)
   {
     if (log.isDebugEnabled())
-    {
-      if (log.isDebugEnabled())
-      {
-        log.debug(ByteUtil.dumpByteArray(data));
-      }
-    }
+      log.debug(ByteUtil.dumpByteArray(data));
 
     for (final byte dataItem : data)
     {

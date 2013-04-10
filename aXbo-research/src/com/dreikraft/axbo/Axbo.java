@@ -65,15 +65,6 @@ public final class Axbo implements ApplicationEventEnabled
       "/resources/images/32x32px_researchicon.png";
   public static final String INTERNAL_ICON_IMAGE_DEFAULT =
       "/resources/images/32x32px_researchicon.png";
-  public static final String SOUND_PACKAGE_ICON = "/resources/images/music.png";
-  public static final String SOUND_PLAYING_ICON = "/resources/images/sound.png";
-  public static final String SPLASH_IMAGE_DEFAULT =
-      "/resources/images/SplashScreen-11_07.gif";
-  public static final long SPLASH_INTERVALL_DEFAULT = 3000;
-  // aXbo mobile constants
-  public static final int STEP_INTERVALL_DEFAULT = 50;
-  public static final long SENSIVITY_THRESHOLD_DEFAULT = 35000;
-  public static final boolean GRAVITY_FILTER_ENABLED_DEFAULT = true;
   // sleep data constants
   public static final int MAX_MOVEMENTS_DEFAULT = 100;
   public static final long CLEANER_INTERVAL_DEFAULT = 3 * 60 * 60 * 1000;

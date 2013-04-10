@@ -1,7 +1,3 @@
-/*
- * © 2008 3kraft
- * $Id: AxboFrame.java,v 1.54 2010-12-17 10:11:40 illetsch Exp $
- */
 package com.dreikraft.axbo.gui;
 
 import com.dreikraft.events.ApplicationEventDispatcher;
@@ -23,10 +19,10 @@ import com.dreikraft.axbo.events.SleepDataDelete;
 import com.dreikraft.axbo.events.SleepDataImport;
 import com.dreikraft.axbo.events.SleepDataOpen;
 import com.dreikraft.axbo.events.UpdateCheck;
+import com.dreikraft.axbo.events.SoundPackageUpload;
 import com.dreikraft.axbo.model.MetaDataTableModel;
 import com.dreikraft.axbo.util.BundleUtil;
 import com.dreikraft.swing.SplashScreen;
-import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -49,16 +45,13 @@ import javax.swing.filechooser.FileFilter;
 import org.apache.commons.logging.*;
 
 /**
- * $Id: AxboFrame.java,v 1.54 2010-12-17 10:11:40 illetsch Exp $
+ * AxboFrame
  * 
- * @author 3kraft - $Author: illetsch $
- * @version $Revision: 1.54 $
+ * @author jan.illetschko@3kraft.com
  */
 public class AxboFrame extends JFrame
 {
 
-  private static final String DATA_CARD_NAME = "data";
-  private static final String SOUND_CARD_NAME = "sound";
   private static Log log = LogFactory.getLog(AxboFrame.class);
   private SplashScreen splashScreen;
 
@@ -67,12 +60,6 @@ public class AxboFrame extends JFrame
     initComponents();
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     modifyColumnWidths();
-  }
-
-  public void setSelectView(String view)
-  {
-    ((CardLayout) mainPanel.getLayout()).show(mainPanel, view);
-    ((CardLayout) mainToolbar.getLayout()).show(mainToolbar, view);
   }
 
   public void jumpToDataView(final DataFrame dataView)
@@ -191,59 +178,6 @@ public class AxboFrame extends JFrame
     statusTextLabel.setText(text);
   }
 
-  public File[] showSoundFileChooser(String dir)
-  {
-    File[] selectedFiles = null;
-
-    final FileFilter filter = new FileFilter()
-    {
-
-      @Override
-      public boolean accept(File f)
-      {
-        if (f.getName().toLowerCase().indexOf(Axbo.SOUND_DATA_FILE_EXT.
-            toLowerCase()) > 0 || f.isDirectory())
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-
-      @Override
-      public String getDescription()
-      {
-        return "Axbo Sound Package Files";
-      }
-    };
-
-    // open file chooser for directory with sleep data files
-    JFileChooser chooser = new JFileChooser(dir);
-    chooser.setFileFilter(filter);
-    chooser.setMultiSelectionEnabled(true);
-    chooser.setAcceptAllFileFilterUsed(false);
-    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-
-    // repaint the main window before event processing finishes
-    //this.contentPanel.paintImmediately(
-    //    new Rectangle(this.contentPanel.getSize()));
-
-    int returnVal = chooser.showOpenDialog(this);
-
-    // process selected directory
-    if (returnVal == JFileChooser.APPROVE_OPTION)
-    {
-      selectedFiles = chooser.getSelectedFiles();
-    }
-
-//    this.contentPanel.paintImmediately(
-//        new Rectangle(this.contentPanel.getSize()));
-
-    return selectedFiles;
-  }
-
   public void setStatusProgressBarLength(int len)
   {
     statusProgressBar.setMaximum(len);
@@ -343,9 +277,6 @@ public class AxboFrame extends JFrame
     sleepDataPopupMenu = new javax.swing.JPopupMenu();
     viewPopupMenuItem = new javax.swing.JMenuItem();
     deletePopupMenuItem = new javax.swing.JMenuItem();
-    soundsPopupMenu = new javax.swing.JPopupMenu();
-    openSoundPkgPopupMenuItem = new javax.swing.JMenuItem();
-    deleteSoungPkgPopupMenuItem = new javax.swing.JMenuItem();
     toolbarPanel = new javax.swing.JPanel();
     navToolbarPanel = new javax.swing.JPanel();
     jLabel1 = new javax.swing.JLabel();
@@ -405,8 +336,7 @@ public class AxboFrame extends JFrame
     fileMenu = new javax.swing.JMenu();
     viewMenuItem = new javax.swing.JMenuItem();
     deleteMenuItem = new javax.swing.JMenuItem();
-    deleteSoungPkgMenuItem = new javax.swing.JMenuItem();
-    miImportSound = new javax.swing.JMenuItem();
+    uploadSoundPackageMenuItem = new javax.swing.JMenuItem();
     jSeparator1 = new javax.swing.JSeparator();
     prefsMenuItem = new javax.swing.JMenuItem();
     jSeparator3 = new javax.swing.JSeparator();
@@ -441,24 +371,6 @@ public class AxboFrame extends JFrame
       }
     });
     sleepDataPopupMenu.add(deletePopupMenuItem);
-
-    openSoundPkgPopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/folder_go.png"))); // NOI18N
-    openSoundPkgPopupMenuItem.setText(bundle.getString("menu.file.open")); // NOI18N
-    openSoundPkgPopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        openSoundPkgPopupMenuItemActionPerformed(evt);
-      }
-    });
-    soundsPopupMenu.add(openSoundPkgPopupMenuItem);
-
-    deleteSoungPkgPopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
-    deleteSoungPkgPopupMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
-    deleteSoungPkgPopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        deleteSoungPkgPopupMenuItemActionPerformed(evt);
-      }
-    });
-    soundsPopupMenu.add(deleteSoungPkgPopupMenuItem);
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle(bundle.getString("mdiframe.title")); // NOI18N
@@ -602,8 +514,8 @@ public class AxboFrame extends JFrame
     tableScrollPane.setAutoscrolls(true);
     tableScrollPane.setFocusable(false);
 
-    metaDataTable.setModel(new MetaDataTableModel());
     metaDataTable.setAutoCreateRowSorter(true);
+    metaDataTable.setModel(new MetaDataTableModel());
     metaDataTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
     metaDataTable.setComponentPopupMenu(sleepDataPopupMenu);
     metaDataTable.setFocusable(false);
@@ -859,8 +771,11 @@ public class AxboFrame extends JFrame
     statusTextPanel.add(statusTextLabel, java.awt.BorderLayout.CENTER);
 
     statusProgressBar.setFocusable(false);
+    statusProgressBar.setMaximumSize(new java.awt.Dimension(200, 20));
+    statusProgressBar.setMinimumSize(new java.awt.Dimension(20, 20));
+    statusProgressBar.setPreferredSize(new java.awt.Dimension(200, 20));
     statusProgressBar.setRequestFocusEnabled(false);
-    statusProgressBar.setString("\n");
+    statusProgressBar.setString("");
     statusProgressBar.putClientProperty("JProgressBar.style", "circular");
     statusTextPanel.add(statusProgressBar, java.awt.BorderLayout.EAST);
 
@@ -887,25 +802,14 @@ public class AxboFrame extends JFrame
     });
     fileMenu.add(deleteMenuItem);
 
-    deleteSoungPkgMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
-    deleteSoungPkgMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
-    deleteSoungPkgMenuItem.setVisible(false);
-    deleteSoungPkgMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    uploadSoundPackageMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/sound_add.png"))); // NOI18N
+    uploadSoundPackageMenuItem.setText(bundle.getString("btnSoundPkgImport.text")); // NOI18N
+    uploadSoundPackageMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        deleteSoungPkgMenuItemActionPerformed(evt);
+        uploadSoundPackageMenuItemActionPerformed(evt);
       }
     });
-    fileMenu.add(deleteSoungPkgMenuItem);
-
-    miImportSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/sound_add.png"))); // NOI18N
-    miImportSound.setText(bundle.getString("btnSoundPkgImport.text")); // NOI18N
-    miImportSound.setVisible(false);
-    miImportSound.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        miImportSoundActionPerformed(evt);
-      }
-    });
-    fileMenu.add(miImportSound);
+    fileMenu.add(uploadSoundPackageMenuItem);
 
     if (Axbo.MAC_OS_X)
     jSeparator1.setVisible(false);
@@ -1196,76 +1100,54 @@ public class AxboFrame extends JFrame
       viewMenuItemActionPerformed(evt);
     }//GEN-LAST:event_viewPopupMenuItemActionPerformed
 
-    private void soundPackagesTableMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_soundPackagesTableMouseClicked
-    {//GEN-HEADEREND:event_soundPackagesTableMouseClicked
-//      if (evt.getButton() == MouseEvent.BUTTON3)
-//      {
-//        int row = soundPackagesTable.rowAtPoint(evt.getPoint());
-//        soundPackagesTable.getSelectionModel().addSelectionInterval(row, row);
-//      }
-//
-//      if (evt.getClickCount() == 2)
-//      {
-//        ctrl.openSoundPkg(soundPackagesTable.getSelectedRow());
-//      }
-    }//GEN-LAST:event_soundPackagesTableMouseClicked
-
-    private void miImportSoundActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_miImportSoundActionPerformed
-    {//GEN-HEADEREND:event_miImportSoundActionPerformed
-//      ctrl.importSoundPackage();
-    }//GEN-LAST:event_miImportSoundActionPerformed
-
 private void checkUpdateMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkUpdateMenuItemActionPerformed
   ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
       new UpdateCheck(this));
 }//GEN-LAST:event_checkUpdateMenuItemActionPerformed
 
-private void deleteSoungPkgMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSoungPkgMenuItemActionPerformed
-//  if (soundPackagesTable.getSelectedRowCount() > 0)
-//  {
-//    int response = showOptionMessage(BundleUtil.getMessage(
-//        "notification.message.delete"), BundleUtil.getMessage(
-//        "infoMessageBox.title"));
-//    if (response == JOptionPane.OK_OPTION)
-//    {
-//      int selectedRows[] = soundPackagesTable.getSelectedRows();
-//      ArrayList<SoundPackage> tmpSndPkgs =
-//          new ArrayList<SoundPackage>(Array.getLength(selectedRows));
-//      for (int i : selectedRows)
-//      {
-//        tmpSndPkgs.add(((SoundPackagesTableModel) soundPackagesTable.getModel()).
-//            getSoundPackageAt(i));
-//      }
-//      for (SoundPackage sndPkg : tmpSndPkgs)
-//      {
-//        ctrl.deleteSoundPackage(sndPkg);
-//      }
-//    }
-//  }
-//  else
-//  {
-//    showMessage(BundleUtil.getErrorMessage("MetaDataTableModel.nothingSelected"),
-//        BundleUtil.getMessage("errorMessageBox.title"), true);
-//  }
-}//GEN-LAST:event_deleteSoungPkgMenuItemActionPerformed
+    private void uploadSoundPackageMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_uploadSoundPackageMenuItemActionPerformed
+    {//GEN-HEADEREND:event_uploadSoundPackageMenuItemActionPerformed
 
-private void deleteSoungPkgPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSoungPkgPopupMenuItemActionPerformed
-  deleteSoungPkgMenuItemActionPerformed(evt);
-}//GEN-LAST:event_deleteSoungPkgPopupMenuItemActionPerformed
+    final FileFilter filter = new FileFilter()
+    {
 
-private void openSoundPkgPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openSoundPkgPopupMenuItemActionPerformed
-//  if (soundPackagesTable.getSelectedRowCount() > 0)
-//  {
-//    ctrl.openSoundPkg(soundPackagesTable.getSelectedRows()[0]);
-//  }
-//  else
-//  {
-//    showMessage(BundleUtil.getErrorMessage("MetaDataTableModel.nothingSelected"),
-//        BundleUtil.getMessage("errorMessageBox.title"), true);
-//  }
-//
-//
-}//GEN-LAST:event_openSoundPkgPopupMenuItemActionPerformed
+      @Override
+      public boolean accept(File f)
+      {
+        if (f.getName().toLowerCase().indexOf(Axbo.SOUND_DATA_FILE_EXT.
+            toLowerCase()) > 0 || f.isDirectory())
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+      @Override
+      public String getDescription()
+      {
+        return "Axbo Sound Package Files";
+      }
+    };
+
+    // open file chooser for directory with sleep data files
+    JFileChooser chooser = new JFileChooser(Axbo.SOUND_PACKAGES_DIR);
+    chooser.setFileFilter(filter);
+    chooser.setMultiSelectionEnabled(false);
+    chooser.setAcceptAllFileFilterUsed(false);
+    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    int returnVal = chooser.showOpenDialog(this);
+
+    // process selected directory
+    if (returnVal == JFileChooser.APPROVE_OPTION)
+    {
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new SoundPackageUpload(this, chooser.getSelectedFile()));
+    }
+        
+    }//GEN-LAST:event_uploadSoundPackageMenuItemActionPerformed
 
 private void btnCompareActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnCompareActionPerformed
 {//GEN-HEADEREND:event_btnCompareActionPerformed
@@ -1320,8 +1202,6 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private com.dreikraft.swing.BackgroundImagePanel dataViewsPanel;
   private javax.swing.JMenuItem deleteMenuItem;
   private javax.swing.JMenuItem deletePopupMenuItem;
-  private javax.swing.JMenuItem deleteSoungPkgMenuItem;
-  private javax.swing.JMenuItem deleteSoungPkgPopupMenuItem;
   private javax.swing.JMenu deviceMenu;
   private javax.swing.JMenuItem exitMenuItem;
   private javax.swing.JMenu fileMenu;
@@ -1358,10 +1238,8 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JPanel mainPanel;
   private javax.swing.JPanel mainToolbar;
   private javax.swing.JMenuBar menuBar;
-  javax.swing.JTable metaDataTable;
-  private javax.swing.JMenuItem miImportSound;
+  private javax.swing.JTable metaDataTable;
   private javax.swing.JPanel navToolbarPanel;
-  private javax.swing.JMenuItem openSoundPkgPopupMenuItem;
   private javax.swing.JMenuItem prefsMenuItem;
   private javax.swing.JMenuItem readStatusMenuItem;
   private javax.swing.JMenuItem readStoredDataMenuItem;
@@ -1376,7 +1254,6 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JPanel searchTermsPanel;
   private javax.swing.JMenuItem setClockDateMenuItem;
   private javax.swing.JPopupMenu sleepDataPopupMenu;
-  private javax.swing.JPopupMenu soundsPopupMenu;
   private javax.swing.JPanel spacerPanel;
   private javax.swing.JProgressBar statusProgressBar;
   private javax.swing.JLabel statusTextLabel;
@@ -1384,6 +1261,7 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JPanel summaryPanel;
   private javax.swing.JScrollPane tableScrollPane;
   private javax.swing.JPanel toolbarPanel;
+  private javax.swing.JMenuItem uploadSoundPackageMenuItem;
   private javax.swing.JMenuItem viewMenuItem;
   private javax.swing.JMenuItem viewPopupMenuItem;
   // End of variables declaration//GEN-END:variables
