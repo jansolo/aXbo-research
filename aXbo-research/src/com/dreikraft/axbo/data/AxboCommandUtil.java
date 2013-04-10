@@ -4,21 +4,12 @@
  */
 package com.dreikraft.axbo.data;
 
-import com.dreikraft.axbo.model.UploadDialogModel;
 import com.dreikraft.axbo.sound.Sound;
 import com.dreikraft.axbo.sound.SoundPackage;
-import com.dreikraft.axbo.sound.SoundPackageException;
-import com.dreikraft.axbo.sound.SoundPackageUtil;
-import com.dreikraft.axbo.util.BundleUtil;
 import com.dreikraft.axbo.util.ByteUtil;
 import com.dreikraft.axbo.util.StringUtil;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.Calendar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,13 +20,13 @@ import org.apache.commons.logging.LogFactory;
  * @author 3kraft - $Author: illetsch $
  * @version $Revision: 1.18 $
  */
-public class AxboCommandUtil
+ public class AxboCommandUtil
 {
 
   public static final Log log = LogFactory.getLog(AxboCommandUtil.class);
-  private static final int BUF_SIZE = 1024;
-  private static final int FRAME_SIZE = 66;
-  private static final int PAGE_SIZE = 66 * 4;
+  public static final int BUF_SIZE = 1024;
+  public static final int FRAME_SIZE = 66;
+  public static final int PAGE_SIZE = 66 * 4;
 
   public static void sleep(int milliSecs)
   {
@@ -165,14 +156,6 @@ public class AxboCommandUtil
     return cmd;
   }
 
-  public static void runDummyCmd(final String portName) throws DataInterfaceException
-  {
-    getDataInterface().writeData(portName, AxboCommandUtil.getDummyCmd(
-        false), 1);
-    getDataInterface().writeData(portName, AxboCommandUtil.getDummyCmd(
-        true), 1);
-  }
-
   public static byte[] getCheckCmd()
   {
     log.info("reading status");
@@ -191,16 +174,6 @@ public class AxboCommandUtil
     syncInterface(portName);
     getDataInterface().writeData(portName,
         AxboCommandUtil.getCheckCmd(), 1);
-  }
-
-  public static void runMobileStart(final String portName) throws DataInterfaceException
-  {
-    sleep(3000);
-    byte[] startCmd =
-    {
-      (byte) '1'
-    };
-    getDataInterface().writeData(portName, startCmd, 1);
   }
 
   public static byte[] getTestCmd(final byte commandId)
@@ -367,124 +340,7 @@ public class AxboCommandUtil
     getDataInterface().writeData(portName, AxboCommandUtil.getBufferRead(start), 1);
   }
 
-  public static void runWriteSoundPackage(final String portName, final SoundPackage soundPackage,
-      final UploadDialogModel uploadModel)
-      throws DataInterfaceException
-  {
-    // synchronize state between axbo and PC
-    syncInterface(portName);
-
-    uploadModel.reset();
-    uploadModel.setOverallMsg(soundPackage.getName());
-
-    clearHeader(portName);
-
-    int startPage = 1;
-    int overallProgress = 0;
-    for (Sound sound : soundPackage.getSounds())
-    {
-      InputStream soundIn = null;
-      ByteArrayOutputStream byteOut = null;
-      ByteArrayOutputStream headerOut = null;
-      try
-      {
-        uploadModel.setOverallValue(overallProgress);
-        // open soundfile
-        soundIn =
-            new BufferedInputStream(SoundPackageUtil.getPackageEntryStream(
-            soundPackage.getPackageFile(),
-            SoundPackageUtil.SOUNDS_PATH_PREFIX + SoundPackageUtil.SL + sound.
-            getAxboFile().getPath()), BUF_SIZE);
-
-        // write sound file to byte array
-        byteOut = new ByteArrayOutputStream();
-        headerOut = new ByteArrayOutputStream();
-        int pos = 0;
-        int b = 0;
-        int dataLen = Integer.MAX_VALUE;
-        boolean isData = false;
-        // skip tail
-        while (((b = soundIn.read()) != -1) && pos < dataLen)
-        {
-          // only write data
-          if (isData)
-          {
-            byteOut.write(b);
-            pos++;
-          }
-          else if (containsDataKeyword(headerOut))
-          {
-            // get sound data length
-            dataLen = b + soundIn.read() * 256 + soundIn.read() * 256 * 256 + soundIn.
-                read() * 256 * 256 * 256;
-            isData = true;
-          }
-          else
-          {
-            // skip header
-            headerOut.write(b);
-          }
-        }
-        byteOut.flush();
-
-        // fill the last page with 0xFF
-        int pageCount = pos / PAGE_SIZE;
-        final int rest = pos - (pageCount * PAGE_SIZE);
-        if (rest > 0)
-        {
-          byte[] fillBytes = new byte[PAGE_SIZE - rest];
-          Arrays.fill(fillBytes, (byte) 0xFF);
-          byteOut.write(fillBytes);
-          pageCount++;
-        }
-
-        // write sound data
-        byte[] soundData = byteOut.toByteArray();
-        sound.setData(soundData);
-        sound.setStartPage(startPage);
-        sound.setPageCount(pageCount);
-        uploadModel.setDetailMsg(sound.getName());
-        uploadModel.setDetailSize(pageCount - 1);
-        uploadModel.setDetailValue(0);
-        writeSoundData(portName, sound, uploadModel);
-
-        // new startFrame
-        startPage += pageCount;
-        overallProgress++;
-      }
-      catch (IOException ex)
-      {
-        throw new DataInterfaceException(ex.getMessage(), ex);
-      }
-      catch (SoundPackageException ex)
-      {
-        throw new DataInterfaceException(ex.getMessage(), ex);
-      }
-      finally
-      {
-        try
-        {
-          soundIn.close();
-        }
-        catch (IOException ex)
-        {
-          log.warn(ex.getMessage(), ex);
-        }
-      }
-    }
-
-    // write the sounds header table into the first axbo memory page
-    writeHeader(portName, soundPackage, uploadModel);
-  }
-
-  private static boolean containsDataKeyword(ByteArrayOutputStream headerOut)
-      throws UnsupportedEncodingException, IOException
-  {
-    headerOut.flush();
-    return headerOut.toString("US-ASCII").indexOf("data") > -1;
-  }
-
-  private static void syncInterface(final String portName)
+  public static void syncInterface(final String portName)
   {
     try
     {
@@ -504,7 +360,7 @@ public class AxboCommandUtil
     }
   }
 
-  private static void clearHeader(final String portName)
+  public static void clearHeader(final String portName)
       throws DataInterfaceException
   {
     int bufferPos = 0;
@@ -549,12 +405,11 @@ public class AxboCommandUtil
     writeBufferToPage(portName, 0);
   }
 
-  private static void writeHeader(final String portName, final SoundPackage soundPackage,
-      final UploadDialogModel uploadModel)
+  public static void writeHeader(final String portName, 
+      final SoundPackage soundPackage)
       throws DataInterfaceException
   {
-    uploadModel.setDetailMsg(BundleUtil.getMessage(
-        "uploadDialog.msg.writeHeader"));
+
     int bufferPos = 16;
     boolean toggleBit = false;
     for (final Sound sound : soundPackage.getSounds())
@@ -602,35 +457,10 @@ public class AxboCommandUtil
 
     // write buffer to first page
     writeBufferToPage(portName, 0);
-    uploadModel.setOverallValue(11);
   }
 
-  private static void writeSoundData(final String portName, final Sound sound,
-      final UploadDialogModel uploadModel)
-      throws DataInterfaceException
-  {
-    // calculate frame count (use half sized frames, bacause of extra info bytes)
-    boolean bufferToggle = true;
-    for (int page = 0; page < sound.getPageCount(); page++)
-    {
-      uploadModel.setDetailValue(page);
-      if (log.isDebugEnabled())
-      {
-        log.debug("writing sound: " + sound.getName() + ", page: " + (sound.
-            getStartPage() + page));
-      }
-      // write complete page into buffer
-      writePage(portName, sound.getData(), page, bufferToggle);
-      // write buffer to flash page
-      writeBufferToPage(portName, sound.getStartPage() + page);
-
-      // switch buffer
-      bufferToggle = !bufferToggle;
-    }
-  }
-
-  private static void writePage(final String portName, final byte[] soundData, final int page,
-      final boolean bufferToggle) throws DataInterfaceException
+  public static void writePage(final String portName, final byte[] soundData,
+      final int page) throws DataInterfaceException
   {
     //final byte highByte = bufferToggle ? (byte)0x00 : (byte)0x80;
     final byte highByte = (byte) 0x00;
@@ -668,7 +498,7 @@ public class AxboCommandUtil
     }
   }
 
-  private static void writeBufferToPage(String portName, int page)
+  public static void writeBufferToPage(String portName, int page)
       throws DataInterfaceException
   {
     byte pageHighByte = ByteUtil.highByte(page);
@@ -698,6 +528,7 @@ public class AxboCommandUtil
   {
     ByteArrayInputStream in = new ByteArrayInputStream(data);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
+    @SuppressWarnings("UnusedAssignment")
     int b = 0;
     int pos = 0;
     while ((b = in.read()) != -1)

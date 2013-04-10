@@ -58,7 +58,6 @@ public final class Axbo implements ApplicationEventEnabled
   public static final String INTERNAL_ICON_IMAGE_DEFAULT =
       "/resources/images/32x32px_researchicon.png";
   public static final String SOUND_PACKAGE_ICON = "/resources/images/music.png";
-  public static final String SOUND_PLAYING_ICON = "/resources/images/sound.png";
   // sleep data constants
   public static final int MAX_MOVEMENTS_DEFAULT = 100;
   public static final long CLEANER_INTERVAL_DEFAULT = 3 * 60 * 60 * 1000;

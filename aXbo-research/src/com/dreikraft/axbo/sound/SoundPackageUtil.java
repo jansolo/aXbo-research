@@ -76,7 +76,7 @@ public class SoundPackageUtil {
   public static final DateLocaleConverter dateConverter =
       new DateLocaleConverter(Locale.getDefault(), pattern);
   public static final int WAV_PREAMBEL_LEN = 0x3A;
-  private static final String PACKAGE_INFO = "package-info.xml";
+  public static final String PACKAGE_INFO = "package-info.xml";
   private static final String PUBLIC_KEY_HASH =
       "E9 A1 51 5A A1 FA 27 AE DA C7 B0 00 9B 86 E9 85";
   private static final String PUBLIC_KEY_FILE =
