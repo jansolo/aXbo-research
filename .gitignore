@@ -2,8 +2,5 @@
 build-backup.xml
 build
 dist
-infactory
-install4j/install4j_output
 nbproject/private
-.cvsignore
 aXbo-research/install4j/install4j_output

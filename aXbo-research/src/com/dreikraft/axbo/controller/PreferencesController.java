@@ -13,7 +13,7 @@ import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.axbo.data.SensorID;
 import com.dreikraft.axbo.events.PrefsClose;
 import com.dreikraft.axbo.events.PrefsOpen;
-import com.dreikraft.axbo.gui.GuiUtils;
+import com.dreikraft.axbo.util.GuiUtils;
 import com.dreikraft.axbo.gui.PreferencesDialog;
 import com.dreikraft.axbo.util.BundleUtil;
 import java.util.ArrayList;
