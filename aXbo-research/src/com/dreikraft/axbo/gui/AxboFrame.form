@@ -11,7 +11,7 @@
         <MenuItem class="javax.swing.JMenuItem" name="viewPopupMenuItem">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/images/chart_bar.png"/>
+              <Image iconType="3" name="/resources/images/chart-bar-16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="resources/default.properties" key="menu.file.view" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -25,7 +25,7 @@
         <MenuItem class="javax.swing.JMenuItem" name="deletePopupMenuItem">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/images/bin.png"/>
+              <Image iconType="3" name="/resources/images/bin-16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="resources/default.properties" key="menu.file.delete" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -50,7 +50,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="viewMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/chart_bar.png"/>
+                  <Image iconType="3" name="/resources/images/chart-bar-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.file.view" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -64,7 +64,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="deleteMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/bin.png"/>
+                  <Image iconType="3" name="/resources/images/bin-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.file.delete" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -77,7 +77,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="uploadSoundPackageMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/sound_add.png"/>
+                  <Image iconType="3" name="/resources/images/music-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="btnSoundPkgImport.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -95,7 +95,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="prefsMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/detailsViewIcon.png"/>
+                  <Image iconType="3" name="/resources/images/wrench-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.file.prefs" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -116,7 +116,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/cross.png"/>
+                  <Image iconType="3" name="/resources/images/button-power-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.file.exit" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -141,7 +141,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="readStoredDataMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/redo.png"/>
+                  <Image iconType="3" name="/resources/images/inbox-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.readStoredData" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -154,7 +154,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="clearDataMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/bin.png"/>
+                  <Image iconType="3" name="/resources/images/bin-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.clearData" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -167,7 +167,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="setClockDateMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/time.png"/>
+                  <Image iconType="3" name="/resources/images/clock-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.setDate" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -180,7 +180,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="readStatusMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/information.png"/>
+                  <Image iconType="3" name="/resources/images/information-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.readStatus" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -193,7 +193,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="resetClockMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/undo.png"/>
+                  <Image iconType="3" name="/resources/images/button-synchronize-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.resetClock" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -292,7 +292,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="46" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="47" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -320,7 +320,7 @@
                 <Component class="javax.swing.JButton" name="loadDataButton">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/resources/images/redo.png"/>
+                      <Image iconType="3" name="/resources/images/inbox-32.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="resources/default.properties" key="menu.device.readStoredData" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -355,7 +355,7 @@
                 <Component class="javax.swing.JButton" name="btnCompare">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/resources/images/shape_align_left.png"/>
+                      <Image iconType="3" name="/resources/images/ruler-32.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="resources/default.properties" key="compareMenuItem.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -384,7 +384,7 @@
                 <Component class="javax.swing.JButton" name="btnPrint">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/resources/images/printer.png"/>
+                      <Image iconType="3" name="/resources/images/printer-32.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="resources/default.properties" key="menu.file.print" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -413,7 +413,7 @@
                 <Component class="javax.swing.JButton" name="btnCloseAll">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/resources/images/application_form_delete.png"/>
+                      <Image iconType="3" name="/resources/images/button-cross-32.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="resources/default.properties" key="menu.file.closeAll" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -639,7 +639,7 @@
                     <Component class="javax.swing.JButton" name="searchButton">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/resources/images/glass.png"/>
+                          <Image iconType="3" name="/resources/images/search-16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="resources/default.properties" key="button.search.tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -1011,7 +1011,7 @@
         <Component class="javax.swing.JLabel" name="statusTextLabel">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/images/disconnect.png"/>
+              <Image iconType="3" name="/resources/images/link-broken-16.png"/>
             </Property>
           </Properties>
           <Constraints>

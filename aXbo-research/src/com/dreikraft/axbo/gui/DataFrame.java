@@ -554,7 +554,7 @@ public class DataFrame extends JPanel implements Printable
     pnlClose = new javax.swing.JPanel();
     btnClose = new javax.swing.JButton();
 
-    pmniCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/page_white_copy.png"))); // NOI18N
+    pmniCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/clipboard-16.png"))); // NOI18N
     java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/default"); // NOI18N
     pmniCopy.setText(bundle.getString("chart.popup.copy")); // NOI18N
     pmniCopy.addActionListener(new java.awt.event.ActionListener() {
@@ -564,7 +564,7 @@ public class DataFrame extends JPanel implements Printable
     });
     chartPanelPopupMenu.add(pmniCopy);
 
-    pmniPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/printer.png"))); // NOI18N
+    pmniPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/printer-16.png"))); // NOI18N
     pmniPrint.setText(bundle.getString("chart.popup.print")); // NOI18N
     pmniPrint.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -573,7 +573,7 @@ public class DataFrame extends JPanel implements Printable
     });
     chartPanelPopupMenu.add(pmniPrint);
 
-    pmniSaveAsPNG.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/save.png"))); // NOI18N
+    pmniSaveAsPNG.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/desktop-16.png"))); // NOI18N
     pmniSaveAsPNG.setText(bundle.getString("chart.popup.save")); // NOI18N
     pmniSaveAsPNG.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -598,38 +598,38 @@ public class DataFrame extends JPanel implements Printable
     lblDuration.setText(bundle.getString("label.sleepDuration")); // NOI18N
     pnlStats.add(lblDuration);
 
-    lblDurationValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblDurationValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblDurationValue.setForeground(new java.awt.Color(100, 100, 100));
     lblDurationValue.setText("--:--:--");
     pnlStats.add(lblDurationValue);
 
-    lblSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblSleepStart.setForeground(new java.awt.Color(100, 100, 100));
     lblSleepStart.setText(bundle.getString("label.sleepStart")); // NOI18N
     pnlStats.add(lblSleepStart);
 
-    lblSleepStartValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblSleepStartValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblSleepStartValue.setForeground(new java.awt.Color(100, 100, 100));
     lblSleepStartValue.setText("--:--");
     pnlStats.add(lblSleepStartValue);
 
-    lblLatency.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblLatency.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblLatency.setForeground(new java.awt.Color(100, 100, 100));
     lblLatency.setText(bundle.getString("dataFrame.label.latency")); // NOI18N
     lblLatency.setToolTipText("");
     pnlStats.add(lblLatency);
 
-    lblLatencyValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblLatencyValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblLatencyValue.setForeground(new java.awt.Color(100, 100, 100));
     lblLatencyValue.setText("--:--");
     pnlStats.add(lblLatencyValue);
 
-    lblWakeupTime.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblWakeupTime.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblWakeupTime.setForeground(new java.awt.Color(100, 100, 100));
     lblWakeupTime.setText(bundle.getString("label.wakeupTime")); // NOI18N
     pnlStats.add(lblWakeupTime);
 
-    lblWakeupTimeValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblWakeupTimeValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblWakeupTimeValue.setForeground(new java.awt.Color(100, 100, 100));
     lblWakeupTimeValue.setText("--:--");
     pnlStats.add(lblWakeupTimeValue);
@@ -639,7 +639,7 @@ public class DataFrame extends JPanel implements Printable
     lblLatest.setText(bundle.getString("label.latest")); // NOI18N
     pnlStats.add(lblLatest);
 
-    lblLatestValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblLatestValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblLatestValue.setForeground(new java.awt.Color(100, 100, 100));
     lblLatestValue.setText("--:--");
     pnlStats.add(lblLatestValue);
@@ -649,27 +649,27 @@ public class DataFrame extends JPanel implements Printable
     lblTimeSaving.setText(bundle.getString("label.timeSaving")); // NOI18N
     pnlStats.add(lblTimeSaving);
 
-    lblTimeSavingValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblTimeSavingValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblTimeSavingValue.setForeground(new java.awt.Color(100, 100, 100));
     lblTimeSavingValue.setText("--:--");
     pnlStats.add(lblTimeSavingValue);
 
-    lblMovementsCount.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblMovementsCount.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblMovementsCount.setForeground(new java.awt.Color(100, 100, 100));
     lblMovementsCount.setText(bundle.getString("dataFrame.label.movementsCount")); // NOI18N
     pnlStats.add(lblMovementsCount);
 
-    lblMovementsCountValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblMovementsCountValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblMovementsCountValue.setForeground(new java.awt.Color(100, 100, 100));
     lblMovementsCountValue.setText("-");
     pnlStats.add(lblMovementsCountValue);
 
-    lblMovementsAverage.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblMovementsAverage.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblMovementsAverage.setForeground(new java.awt.Color(100, 100, 100));
     lblMovementsAverage.setText(bundle.getString("dataFrame.label.movementsAverage")); // NOI18N
     pnlStats.add(lblMovementsAverage);
 
-    lblMovementsAverageValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblMovementsAverageValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblMovementsAverageValue.setForeground(new java.awt.Color(100, 100, 100));
     lblMovementsAverageValue.setText("-");
     pnlStats.add(lblMovementsAverageValue);
@@ -678,23 +678,23 @@ public class DataFrame extends JPanel implements Printable
 
     pnlComment.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 2, 0));
 
-    lblComment.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblComment.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblComment.setForeground(new java.awt.Color(100, 100, 100));
     lblComment.setText(bundle.getString("dataframe.label.comment")); // NOI18N
     pnlComment.add(lblComment);
 
-    lblCommentValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblCommentValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblCommentValue.setForeground(new java.awt.Color(100, 100, 100));
     pnlComment.add(lblCommentValue);
 
     lblIdValue.setVisible(false);
-    lblIdValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblIdValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblIdValue.setForeground(new java.awt.Color(100, 100, 100));
     lblIdValue.setText(bundle.getString("label.id")); // NOI18N
     pnlComment.add(lblIdValue);
 
     lblNameValue.setVisible(false);
-    lblNameValue.setFont(new java.awt.Font("Lucida Grande", 0, 9));
+    lblNameValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
     lblNameValue.setForeground(new java.awt.Color(100, 100, 100));
     lblNameValue.setText(bundle.getString("label.name")); // NOI18N
     pnlComment.add(lblNameValue);
@@ -705,8 +705,7 @@ public class DataFrame extends JPanel implements Printable
 
     pnlClose.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
-    btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/cross.png"))); // NOI18N
-    btnClose.setBorder(null);
+    btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-cross-16.png"))); // NOI18N
     btnClose.setBorderPainted(false);
     btnClose.setFocusable(false);
     btnClose.setIconTextGap(2);

@@ -1,47 +1,36 @@
 aXbo research
-Copyright (c) 2013 3kraft IT GmbH & CoKG 
 jan.illetschko@3kraft.com
 
 This product includes free software licensed under various open source licenses.
 All required licenses are included with the product.
  
-
 This product includes software developed by The Apache Software Foundation 
 (http://commons.apache.org) under the Apache License 2.0 
 (http://www.apache.org/licenses/LICENSE-2.0):
-
 commons-beanutils
 commons-collections
 commons-logging
 commons-digester
 commons-io
 
-
 This product includes software licensed under Apache License2.0
 (http://www.apache.org/licenses/LICENSE-2.0):
 streamflyer (http://code.google.com/p/streamflyer/)
 
-
-This product includes work from Mark James, licensed under Creative Commons 
-Attribution 2.5 License (http://creativecommons.org/licenses/by/2.5/):
-
-SILK ICONS (http://www.famfamfam.com/lab/icons/silk/)
-
+This product includes "Super Mono Icons" from Double-J Design 
+(http://www.doublejdesign.co.uk), 
+licensed under Creative Common 3.0 Attribution 
+(http://creativecommons.org/licenses/by/2.5/)
 
 This product includes software licensed under LGPL 2.1 
 (http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt):
-
 jcommon (http://www.jfree.org/jfreechart/)
 jfreechart (http://www.jfree.org/jcommon/index.php)
 SwingX (http://swingx.java.net)
 
-
 This product includes software licensed under RXTX License v2.1 
 (http://users.frii.com/jarvi/rxtx/license.html):
-
 RXTXcomm (http://www.rxtx.org/)
 
-
 This product includes following free libraries:
-
 dom4j (http://www.dom4j.org)

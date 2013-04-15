@@ -153,7 +153,7 @@ public class AxboFrame extends JFrame
   public void showDeviceEnabled()
   {
     this.statusTextLabel.setIcon(new javax.swing.ImageIcon(
-        getClass().getResource("/resources/images/connect.png")));
+        getClass().getResource("/resources/images/link-16.png")));
     this.statusTextLabel.setToolTipText(BundleUtil.getMessage(
         "toolTip.deviceEnabled"));
   }
@@ -161,7 +161,7 @@ public class AxboFrame extends JFrame
   public void showDeviceDisabled()
   {
     this.statusTextLabel.setIcon(new javax.swing.ImageIcon(
-        getClass().getResource("/resources/images/disconnect.png")));
+        getClass().getResource("/resources/images/link-broken-16.png")));
     this.statusTextLabel.setToolTipText(BundleUtil.getMessage(
         "toolTip.deviceDisabled"));
   }
@@ -347,7 +347,7 @@ public class AxboFrame extends JFrame
     readStatusMenuItem = new javax.swing.JMenuItem();
     resetClockMenuItem = new javax.swing.JMenuItem();
 
-    viewPopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart_bar.png"))); // NOI18N
+    viewPopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart-bar-16.png"))); // NOI18N
     java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/default"); // NOI18N
     viewPopupMenuItem.setText(bundle.getString("menu.file.view")); // NOI18N
     viewPopupMenuItem.setDoubleBuffered(true);
@@ -358,7 +358,7 @@ public class AxboFrame extends JFrame
     });
     sleepDataPopupMenu.add(viewPopupMenuItem);
 
-    deletePopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
+    deletePopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin-16.png"))); // NOI18N
     deletePopupMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
     deletePopupMenuItem.setDoubleBuffered(true);
     deletePopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -395,7 +395,7 @@ public class AxboFrame extends JFrame
     );
     spacerPanelLayout.setVerticalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 46, Short.MAX_VALUE)
+      .add(0, 47, Short.MAX_VALUE)
     );
 
     gridBagConstraints = new java.awt.GridBagConstraints();
@@ -410,7 +410,7 @@ public class AxboFrame extends JFrame
 
     dataToolbarPanel.setLayout(new java.awt.GridBagLayout());
 
-    loadDataButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/redo.png"))); // NOI18N
+    loadDataButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/inbox-32.png"))); // NOI18N
     loadDataButton.setText(bundle.getString("menu.device.readStoredData")); // NOI18N
     loadDataButton.setToolTipText(bundle.getString("button.loadData.tooltip")); // NOI18N
     loadDataButton.setBorderPainted(false);
@@ -433,7 +433,7 @@ public class AxboFrame extends JFrame
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(loadDataButton, gridBagConstraints);
 
-    btnCompare.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/shape_align_left.png"))); // NOI18N
+    btnCompare.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/ruler-32.png"))); // NOI18N
     btnCompare.setText(bundle.getString("compareMenuItem.text")); // NOI18N
     btnCompare.setBorderPainted(false);
     btnCompare.setFocusable(false);
@@ -453,7 +453,7 @@ public class AxboFrame extends JFrame
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnCompare, gridBagConstraints);
 
-    btnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/printer.png"))); // NOI18N
+    btnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/printer-32.png"))); // NOI18N
     btnPrint.setText(bundle.getString("menu.file.print")); // NOI18N
     btnPrint.setBorderPainted(false);
     btnPrint.setFocusable(false);
@@ -473,7 +473,7 @@ public class AxboFrame extends JFrame
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnPrint, gridBagConstraints);
 
-    btnCloseAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/application_form_delete.png"))); // NOI18N
+    btnCloseAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-cross-32.png"))); // NOI18N
     btnCloseAll.setText(bundle.getString("menu.file.closeAll")); // NOI18N
     btnCloseAll.setBorderPainted(false);
     btnCloseAll.setFocusable(false);
@@ -596,7 +596,7 @@ public class AxboFrame extends JFrame
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     searchTermsPanel.add(searchDateToTextField, gridBagConstraints);
 
-    searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/glass.png"))); // NOI18N
+    searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/search-16.png"))); // NOI18N
     searchButton.setToolTipText(bundle.getString("button.search.tooltip")); // NOI18N
     searchButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
     searchButton.putClientProperty("JButton.buttonType", "textured");
@@ -763,7 +763,7 @@ public class AxboFrame extends JFrame
     statusTextPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 3, 1, 1));
     statusTextPanel.setLayout(new java.awt.BorderLayout(5, 5));
 
-    statusTextLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/disconnect.png"))); // NOI18N
+    statusTextLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/link-broken-16.png"))); // NOI18N
     statusTextPanel.add(statusTextLabel, java.awt.BorderLayout.CENTER);
 
     statusProgressBar.setFocusable(false);
@@ -779,7 +779,7 @@ public class AxboFrame extends JFrame
 
     fileMenu.setText(bundle.getString("menu.file")); // NOI18N
 
-    viewMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart_bar.png"))); // NOI18N
+    viewMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart-bar-16.png"))); // NOI18N
     viewMenuItem.setText(bundle.getString("menu.file.view")); // NOI18N
     viewMenuItem.setDoubleBuffered(true);
     viewMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -789,7 +789,7 @@ public class AxboFrame extends JFrame
     });
     fileMenu.add(viewMenuItem);
 
-    deleteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
+    deleteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin-16.png"))); // NOI18N
     deleteMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
     deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -798,7 +798,7 @@ public class AxboFrame extends JFrame
     });
     fileMenu.add(deleteMenuItem);
 
-    uploadSoundPackageMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/sound_add.png"))); // NOI18N
+    uploadSoundPackageMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/music-16.png"))); // NOI18N
     uploadSoundPackageMenuItem.setText(bundle.getString("btnSoundPkgImport.text")); // NOI18N
     uploadSoundPackageMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -813,7 +813,7 @@ public class AxboFrame extends JFrame
 
     if (Axbo.MAC_OS_X)
     prefsMenuItem.setVisible(false);
-    prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/detailsViewIcon.png"))); // NOI18N
+    prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/wrench-16.png"))); // NOI18N
     prefsMenuItem.setText(bundle.getString("menu.file.prefs")); // NOI18N
     prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -828,7 +828,7 @@ public class AxboFrame extends JFrame
 
     if (Axbo.MAC_OS_X)
     exitMenuItem.setVisible(false);
-    exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/cross.png"))); // NOI18N
+    exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-power-16.png"))); // NOI18N
     exitMenuItem.setText(bundle.getString("menu.file.exit")); // NOI18N
     exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -841,7 +841,7 @@ public class AxboFrame extends JFrame
 
     deviceMenu.setText(bundle.getString("menu.device")); // NOI18N
 
-    readStoredDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/redo.png"))); // NOI18N
+    readStoredDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/inbox-16.png"))); // NOI18N
     readStoredDataMenuItem.setText(bundle.getString("menu.device.readStoredData")); // NOI18N
     readStoredDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -850,7 +850,7 @@ public class AxboFrame extends JFrame
     });
     deviceMenu.add(readStoredDataMenuItem);
 
-    clearDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
+    clearDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin-16.png"))); // NOI18N
     clearDataMenuItem.setText(bundle.getString("menu.device.clearData")); // NOI18N
     clearDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -859,7 +859,7 @@ public class AxboFrame extends JFrame
     });
     deviceMenu.add(clearDataMenuItem);
 
-    setClockDateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/time.png"))); // NOI18N
+    setClockDateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/clock-16.png"))); // NOI18N
     setClockDateMenuItem.setText(bundle.getString("menu.device.setDate")); // NOI18N
     setClockDateMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -868,7 +868,7 @@ public class AxboFrame extends JFrame
     });
     deviceMenu.add(setClockDateMenuItem);
 
-    readStatusMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/information.png"))); // NOI18N
+    readStatusMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/information-16.png"))); // NOI18N
     readStatusMenuItem.setText(bundle.getString("menu.device.readStatus")); // NOI18N
     readStatusMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -877,7 +877,7 @@ public class AxboFrame extends JFrame
     });
     deviceMenu.add(readStatusMenuItem);
 
-    resetClockMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/undo.png"))); // NOI18N
+    resetClockMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-synchronize-16.png"))); // NOI18N
     resetClockMenuItem.setText(bundle.getString("menu.device.resetClock")); // NOI18N
     resetClockMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
