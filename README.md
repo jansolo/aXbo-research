@@ -7,10 +7,12 @@ Sources
 -------
 
 Clone the sources from:
-git pull https://github.com/jansolo/aXbo-research.git
+
+    git pull https://github.com/jansolo/aXbo-research.git
 
 The master branch will be updated only very infrequently synchronized with the releases of the commercial variant. All development is done on the development branch. You need to change to the development branch, if you want to see the latest changes:
-git checkout --track origin/development
+
+    git checkout --track origin/development
 
 Build
 -----
