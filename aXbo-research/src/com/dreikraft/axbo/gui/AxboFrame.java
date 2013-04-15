@@ -576,7 +576,9 @@ public class AxboFrame extends JFrame
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.weightx = 1.0;
     searchTermsPanel.add(searchDateFromTextField, gridBagConstraints);
 
     searchDateToLabel.setLabelFor(searchDateToTextField);
@@ -589,11 +591,14 @@ public class AxboFrame extends JFrame
     gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
     searchTermsPanel.add(searchDateToLabel, gridBagConstraints);
 
+    searchDateToTextField.setMaximumSize(new java.awt.Dimension(300, 28));
     searchDateToTextField.setMinimumSize(new java.awt.Dimension(120, 28));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.weightx = 1.0;
     searchTermsPanel.add(searchDateToTextField, gridBagConstraints);
 
     searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/search-16.png"))); // NOI18N
