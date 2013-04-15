@@ -389,13 +389,15 @@ public class AxboFrame extends JFrame
     navToolbarPanel.setLayout(new java.awt.GridBagLayout());
 
     jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/aXbo-logo-software-small.png"))); // NOI18N
-    navToolbarPanel.add(jLabel1, new java.awt.GridBagConstraints());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+    navToolbarPanel.add(jLabel1, gridBagConstraints);
 
     org.jdesktop.layout.GroupLayout spacerPanelLayout = new org.jdesktop.layout.GroupLayout(spacerPanel);
     spacerPanel.setLayout(spacerPanelLayout);
     spacerPanelLayout.setHorizontalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 260, Short.MAX_VALUE)
+      .add(0, 257, Short.MAX_VALUE)
     );
     spacerPanelLayout.setVerticalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -508,6 +510,7 @@ public class AxboFrame extends JFrame
 
     dataPanel.setLayout(new java.awt.BorderLayout(4, 0));
 
+    dataListPanel.setMinimumSize(new java.awt.Dimension(350, 84));
     dataListPanel.setPreferredSize(new java.awt.Dimension(350, 10));
     dataListPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -575,11 +578,19 @@ public class AxboFrame extends JFrame
     gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
     searchTermsPanel.add(searchDateFromLabel, gridBagConstraints);
 
+    searchDateFromTextField.setMaximumSize(new java.awt.Dimension(300, 28));
     searchDateFromTextField.setMinimumSize(new java.awt.Dimension(120, 28));
+    searchDateFromTextField.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        searchDateFromTextFieldActionPerformed(evt);
+      }
+    });
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.weightx = 1.0;
     searchTermsPanel.add(searchDateFromTextField, gridBagConstraints);
 
     searchDateToLabel.setLabelFor(searchDateToTextField);
@@ -592,11 +603,14 @@ public class AxboFrame extends JFrame
     gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
     searchTermsPanel.add(searchDateToLabel, gridBagConstraints);
 
+    searchDateToTextField.setMaximumSize(new java.awt.Dimension(300, 28));
     searchDateToTextField.setMinimumSize(new java.awt.Dimension(120, 28));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.weightx = 1.0;
     searchTermsPanel.add(searchDateToTextField, gridBagConstraints);
 
     searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/search-16.png"))); // NOI18N
@@ -629,7 +643,6 @@ public class AxboFrame extends JFrame
 
     dataScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    dataViewsPanel.setBackgroundImageFilename("/resources/images/background_dark.png"); // NOI18N
     dataViewsPanel.setLayout(new java.awt.GridBagLayout());
     dataScrollPane.setViewportView(dataViewsPanel);
 
@@ -892,31 +905,31 @@ public class AxboFrame extends JFrame
 
     menuBar.add(deviceMenu);
 
-  helpMenu.setText(bundle.getString("menu.help")); // NOI18N
-  if (Axbo.MAC_OS_X)
-  helpMenu.setVisible(true);
+    helpMenu.setText(bundle.getString("menu.help")); // NOI18N
+    if (Axbo.MAC_OS_X)
+    helpMenu.setVisible(true);
 
-  checkUpdateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/arrow_refresh.png"))); // NOI18N
-  checkUpdateMenuItem.setText(bundle.getString("menu.help.checkUpdate")); // NOI18N
-  checkUpdateMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      checkUpdateMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(checkUpdateMenuItem);
+    checkUpdateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/hard-drive-download-16.png"))); // NOI18N
+    checkUpdateMenuItem.setText(bundle.getString("menu.help.checkUpdate")); // NOI18N
+    checkUpdateMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        checkUpdateMenuItemActionPerformed(evt);
+      }
+    });
+    helpMenu.add(checkUpdateMenuItem);
 
-  aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/information.png"))); // NOI18N
-  aboutMenuItem.setText(bundle.getString("menu.help.about")); // NOI18N
-  aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      aboutMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(aboutMenuItem);
+    aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/question-16.png"))); // NOI18N
+    aboutMenuItem.setText(bundle.getString("menu.help.about")); // NOI18N
+    aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        aboutMenuItemActionPerformed(evt);
+      }
+    });
+    helpMenu.add(aboutMenuItem);
 
-  menuBar.add(helpMenu);
+    menuBar.add(helpMenu);
 
-  setJMenuBar(menuBar);
+    setJMenuBar(menuBar);
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
@@ -1187,6 +1200,11 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
     }
   }
 }//GEN-LAST:event_btnPrintActionPerformed
+
+  private void searchDateFromTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchDateFromTextFieldActionPerformed
+    // TODO add your handling code here:
+  }//GEN-LAST:event_searchDateFromTextFieldActionPerformed
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem aboutMenuItem;
   private javax.swing.JButton btnCloseAll;
