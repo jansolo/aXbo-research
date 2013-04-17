@@ -788,7 +788,7 @@ public class AxboFrame extends JFrame
     statusProgressBar.setMinimumSize(new java.awt.Dimension(20, 20));
     statusProgressBar.setPreferredSize(new java.awt.Dimension(200, 20));
     statusProgressBar.setRequestFocusEnabled(false);
-    statusProgressBar.setString("");
+    statusProgressBar.setStringPainted(true);
     statusProgressBar.putClientProperty("JProgressBar.style", "circular");
     statusTextPanel.add(statusProgressBar, java.awt.BorderLayout.EAST);
 
