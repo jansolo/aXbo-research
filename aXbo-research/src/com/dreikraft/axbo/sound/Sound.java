@@ -27,11 +27,11 @@ public class Sound implements Serializable
   {
   }
 
-  public Sound(Integer id, String name, SoundFile axboFile)
+  public Sound(final Integer id, final String name, final SoundFile axboFile)
   {
-    setId(id);
-    setName(name);
-    setAxboFile(axboFile);
+    this.id = id;
+    this.name = name;
+    this.axboFile = axboFile;
   }
   
   public String getName()
@@ -54,6 +54,7 @@ public class Sound implements Serializable
     this.axboFile = axboFile;
   }
 
+  @Override
   public String toString()
   {
     return ReflectUtil.toString(this);

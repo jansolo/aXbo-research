@@ -18,12 +18,11 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * $Id: SleepData.java,v 1.33 2010-12-16 23:13:53 illetsch Exp $
- * 
+ *
  * @author 3kraft - $Author: illetsch $
  * @version $Revision: 1.33 $
  */
-public class SleepData implements Serializable
-{
+public class SleepData implements Serializable {
 
   public static final Log log = LogFactory.getLog(SleepData.class);
   public static final long UNSET = -1;
@@ -32,8 +31,8 @@ public class SleepData implements Serializable
   public static final long SLEEP_TRIGGER_INTERVAL = 8 * 60 * 1000;
   public static final long SLEEP_START_DELAY = 4 * 60 * 1000;
   public static final long DEFAULT_SLEEP_DURATION = 8 * 60 * 60 * 1000;
-  public static final String SLEEP_DATA_FILE_EXT1 = ".axm";
-  public static final String SLEEP_DATA_FILE_EXT2 = ".spw";
+  public static final String SLEEP_DATA_FILE_EXT = ".axm";
+  public static final String SLEEP_DATA_FILE_EXT_PATTERN = "^.*(\\.axm|\\.spw)$";
   private String id;
   private String name;
   private Date wakeupTime;
@@ -49,17 +48,17 @@ public class SleepData implements Serializable
   private transient File dataFile;
   private transient int startHour = (int) UNSET;
 
-  /** Creates a new instance of SleepData */
-  public SleepData()
-  {
+  /**
+   * Creates a new instance of SleepData
+   */
+  public SleepData() {
     this.powerNap = false;
     movements = new ArrayList<MovementData>();
     this.propertyChangeSupport = new PropertyChangeSupport(this);
   }
 
   public SleepData(String id, String name, DeviceType deviceType,
-      String comment)
-  {
+      String comment) {
     this();
     this.id = id;
     this.name = name;
@@ -70,8 +69,7 @@ public class SleepData implements Serializable
   public SleepData(String id, String name, Date wakeupTime,
       Date wakeIntervalStart,
       List<MovementData> movements, DeviceType deviceType, String comment,
-      boolean powerNap)
-  {
+      boolean powerNap) {
     this.id = id;
     this.name = name;
     this.wakeupTime = wakeupTime;
@@ -83,79 +81,62 @@ public class SleepData implements Serializable
     propertyChangeSupport = new PropertyChangeSupport(this);
   }
 
-  public Date calculateStartTime()
-  {
+  public Date calculateStartTime() {
     Date startTime = null;
-    if (isPowerNap())
-    {
+    if (isPowerNap()) {
       startTime = getWakeIntervalStart();
     }
-    if (startTime == null && movements.size() > 0)
-    {
+    if (startTime == null && movements.size() > 0) {
       startTime = movements.get(0).getTimestamp();
     }
     return startTime;
   }
 
-  private int calculateStartHour()
-  {
+  private int calculateStartHour() {
     Calendar curStartCal = Calendar.getInstance();
     curStartCal.setTime(calculateStartTime());
     return curStartCal.get(Calendar.HOUR_OF_DAY);
   }
 
-  public Date calculateEndTime()
-  {
+  public Date calculateEndTime() {
     Date endTime = new Date(new Date().getTime()
         + DEFAULT_SLEEP_DURATION);
-    if (powerNap)
-    {
+    if (powerNap) {
       endTime = new Date(calculateStartTime().getTime() + WAKE_INTERVAL);
-    }
-    else if (movements.size() > 0)
-    {
+    } else if (movements.size() > 0) {
       endTime = movements.get(movements.size() - 1).getTimestamp();
     }
     if (getWakeIntervalStart() != null && getWakeIntervalStart().getTime()
-        + WAKE_INTERVAL > endTime.getTime())
-    {
+        + WAKE_INTERVAL > endTime.getTime()) {
       endTime = new Date(getWakeIntervalStart().getTime() + WAKE_INTERVAL);
     }
-    if (getWakeupTime() != null && getWakeupTime().getTime() > endTime.getTime())
-    {
+    if (getWakeupTime() != null && getWakeupTime().getTime() > endTime.getTime()) {
       endTime = getWakeupTime();
     }
     return endTime;
   }
 
-  public int calculateEndHour()
-  {
+  public int calculateEndHour() {
     int durationHours = 2 + (int) (calculateDuration() / (1000 * 60 * 60));
     return getStartHour() + durationHours;
   }
 
-  public Date calculateSleepStart()
-  {
-    if (sleepStart != null)
-    {
+  public Date calculateSleepStart() {
+    if (sleepStart != null) {
       return sleepStart;
     }
 
     sleepStart = calculateStartTime();
-    if (powerNap)
-    {
+    if (powerNap) {
       return sleepStart;
     }
 
-    if (movements.size() > 0)
-    {
+    if (movements.size() > 0) {
       MovementData prevMove = movements.get(0);
-      for (int i = 1; i < movements.size(); i++)
-      {
+      for (int i = 1; i < movements.size(); i++) {
         long delta = movements.get(i).getTimestamp().getTime() - prevMove.
             getTimestamp().getTime();
-        if (delta > SLEEP_TRIGGER_INTERVAL)
-        {
+        if (delta > SLEEP_TRIGGER_INTERVAL) {
           sleepStart = new Date(prevMove.getTimestamp().getTime()
               + SLEEP_START_DELAY);
           return sleepStart;
@@ -166,140 +147,113 @@ public class SleepData implements Serializable
     return sleepStart;
   }
 
-  public long calculateDuration()
-  {
-    if (calculateSleepStart() != null && wakeupTime != null)
-    {
+  public long calculateDuration() {
+    if (calculateSleepStart() != null && wakeupTime != null) {
       return wakeupTime.getTime() - sleepStart.getTime();
-    }
-    else
-    {
+    } else {
       return calculateEndTime().getTime() - calculateStartTime().getTime();
     }
   }
 
-  public long calculateLatency()
-  {
+  public long calculateLatency() {
     return calculateSleepStart().getTime() - calculateStartTime().getTime();
   }
 
-  public int calculateMovementCount()
-  {
+  public int calculateMovementCount() {
     int count = 0;
-    for (MovementData move : movements)
-    {
+    for (MovementData move : movements) {
       count += move.getMovementsX() + move.getMovementsY()
           + move.getMovementsZ();
     }
     return count;
   }
 
-  public double calculateMovementsPerHour()
-  {
+  public double calculateMovementsPerHour() {
     long duration = calculateDuration();
-    if (duration != UNSET && duration != 0)
-    {
+    if (duration != UNSET && duration != 0) {
       double durationInHours = (double) calculateDuration() / (60 * 60 * 1000);
       return (double) calculateMovementCount() / durationInHours;
     }
     return 0;
   }
 
-  public long calculateTimeSaving()
-  {
-    if (wakeIntervalStart == null || wakeupTime == null)
-    {
+  public long calculateTimeSaving() {
+    if (wakeIntervalStart == null || wakeupTime == null) {
       return UNSET;
     }
 
     long timesaving = wakeIntervalStart.getTime() + WAKE_INTERVAL - wakeupTime.
         getTime();
 
-    if (timesaving < 0)
-    {
+    if (timesaving < 0) {
       return UNSET;
     }
     return timesaving;
   }
 
   @Override
-  public String toString()
-  {
+  public String toString() {
     String s = "";
-    try
-    {
+    try {
       s = "{" + this.getClass() + ", " + this.getId() + ", " + this.getName()
           + ", " + this.calculateStartTime() + ", " + this.getWakeupTime()
           + ", " + this.getWakeIntervalStart() + ", " + this.calculateEndTime()
-          + ", " + this.getDeviceType() + ", " + this.getComment() + ", " + this.
-          isPowerNap() + ", " + this.getWakeType() + ", " + this.
+          + ", " + this.getDeviceType() + ", " + this.getComment() + ", " + this
+          .isPowerNap() + ", " + this.getWakeType() + ", " + this.
           getFirmwareVersion() + "}";
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       log.error(ex);
     }
     return s;
   }
 
-  public String getId()
-  {
+  public String getId() {
     return id;
   }
 
-  public void setId(String id)
-  {
+  public void setId(String id) {
     this.id = id;
   }
 
-  public String getName()
-  {
+  public String getName() {
     return name;
   }
 
-  public void setName(String name)
-  {
+  public void setName(String name) {
     this.name = name;
   }
 
-  public Date getWakeupTime()
-  {
+  public Date getWakeupTime() {
     return wakeupTime;
   }
 
-  public void setWakeupTime(Date wakeupTime)
-  {
+  public void setWakeupTime(Date wakeupTime) {
     this.wakeupTime = wakeupTime;
   }
 
-  public List<MovementData> getMovements()
-  {
+  public List<MovementData> getMovements() {
     return movements;
   }
 
-  public void setMovements(List<MovementData> movements)
-  {
+  public void setMovements(List<MovementData> movements) {
     List<MovementData> oldMovements = movements;
     this.movements = movements;
     propertyChangeSupport.firePropertyChange("movements", oldMovements,
         movements);
   }
 
-  public MovementData getMovement(int index)
-  {
+  public MovementData getMovement(int index) {
     return movements.get(index);
   }
 
-  public void setMovements(int index, MovementData movement)
-  {
+  public void setMovements(int index, MovementData movement) {
     MovementData oldMovement = movements.get(index);
     movements.set(index, movement);
     propertyChangeSupport.fireIndexedPropertyChange("movements", index,
         oldMovement, movement);
   }
 
-  public int addMovement(MovementData movement)
-  {
+  public int addMovement(MovementData movement) {
     int index = movements.size();
     movements.add(movement);
     propertyChangeSupport.fireIndexedPropertyChange("movements", index,
@@ -307,143 +261,116 @@ public class SleepData implements Serializable
     return index;
   }
 
-  public DeviceType getDeviceType()
-  {
+  public DeviceType getDeviceType() {
     return deviceType;
   }
 
-  public void setDeviceType(DeviceType deviceType)
-  {
+  public void setDeviceType(DeviceType deviceType) {
     this.deviceType = deviceType;
   }
 
-  public void setDataFile(File dataFile)
-  {
+  public void setDataFile(File dataFile) {
     this.dataFile = dataFile;
   }
 
-  public File getDataFile()
-  {
+  public File getDataFile() {
     return dataFile;
   }
 
-  public void addPropertyChangeListener(PropertyChangeListener listener)
-  {
+  public void addPropertyChangeListener(PropertyChangeListener listener) {
     propertyChangeSupport.addPropertyChangeListener(listener);
   }
 
-  public void removePropertyChangeListener(PropertyChangeListener listener)
-  {
+  public void removePropertyChangeListener(PropertyChangeListener listener) {
     propertyChangeSupport.removePropertyChangeListener(listener);
   }
 
-  public Date getWakeIntervalStart()
-  {
+  public Date getWakeIntervalStart() {
     return wakeIntervalStart;
   }
 
-  public void setWakeIntervalStart(Date wakeIntervalStart)
-  {
+  public void setWakeIntervalStart(Date wakeIntervalStart) {
     this.wakeIntervalStart = wakeIntervalStart;
   }
 
-  public String getComment()
-  {
+  public String getComment() {
     return comment == null ? "" : comment;
   }
 
-  public void setComment(String comment)
-  {
+  public void setComment(String comment) {
     this.comment = comment;
   }
 
-  public boolean isPowerNap()
-  {
+  public boolean isPowerNap() {
     return powerNap;
   }
 
-  public void setPowerNap(boolean powerNap)
-  {
+  public void setPowerNap(boolean powerNap) {
     this.powerNap = powerNap;
   }
 
-  public WakeType getWakeType()
-  {
+  public WakeType getWakeType() {
     return wakeType;
   }
 
-  public void setWakeType(WakeType wakeType)
-  {
+  public void setWakeType(WakeType wakeType) {
     this.wakeType = wakeType;
   }
 
-  public int getStartHour()
-  {
-    if (startHour == (int) UNSET)
-    {
+  public int getStartHour() {
+    if (startHour == (int) UNSET) {
       startHour = calculateStartHour();
     }
     return startHour;
   }
 
-  public void setStartHour(int startHour)
-  {
+  public void setStartHour(int startHour) {
     this.startHour = startHour;
   }
 
-  public String getFirmwareVersion()
-  {
+  public String getFirmwareVersion() {
     return firmwareVersion;
   }
 
-  public void setFirmwareVersion(String firmwareVersion)
-  {
+  public void setFirmwareVersion(String firmwareVersion) {
     this.firmwareVersion = firmwareVersion;
   }
 
-  public String getSleepDataFilename()
-  {
+  public String getSleepDataFilename() {
     return getName().replaceAll(" ", "_") + "_" + new SimpleDateFormat(
         "yyyy_MM_dd_HH_mm").format(new Date(
-        calculateStartTime().getTime())) + SLEEP_DATA_FILE_EXT1;
+        calculateStartTime().getTime())) + SLEEP_DATA_FILE_EXT;
   }
 
   @Override
-  public boolean equals(Object obj)
-  {
-    if (obj == null)
-    {
+  public boolean equals(Object obj) {
+    if (obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass())
-    {
+    if (getClass() != obj.getClass()) {
       return false;
     }
     final SleepData other = (SleepData) obj;
     final Date thisSleepStart = calculateStartTime();
     final Date otherSleepStart = other.calculateStartTime();
-    if (!thisSleepStart.equals(otherSleepStart))
-    {
+    if (!thisSleepStart.equals(otherSleepStart)) {
       return false;
     }
     final long thisDuration = calculateDuration();
     final long otherDuration = other.calculateDuration();
-    if (thisDuration != otherDuration)
-    {
+    if (thisDuration != otherDuration) {
       return false;
     }
     final int thisMovementCount = calculateMovementCount();
     final int otherMovementCount = other.calculateMovementCount();
-    if (thisMovementCount != otherMovementCount)
-    {
+    if (thisMovementCount != otherMovementCount) {
       return false;
     }
     return true;
   }
 
   @Override
-  public int hashCode()
-  {
+  public int hashCode() {
     int hash = 7;
     hash = 83 * hash + calculateSleepStart().hashCode();
     hash = 83 * hash + (int) calculateDuration();

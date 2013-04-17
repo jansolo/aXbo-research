@@ -33,10 +33,12 @@ import org.apache.commons.logging.*;
 public class PreferencesController implements ApplicationEventEnabled
 {
 
-  public static Log log = LogFactory.getLog(PreferencesController.class);
+  public static final Log log = LogFactory.getLog(PreferencesController.class);
+  
   private PreferencesDialog view;
   private String[] langCodes;
 
+  @SuppressWarnings("LeakingThisInConstructor")
   public PreferencesController()
   {
     ApplicationEventDispatcher.getInstance().registerApplicationEventHandler(

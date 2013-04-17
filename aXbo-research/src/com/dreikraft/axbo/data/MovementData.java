@@ -89,6 +89,7 @@ public class MovementData implements Serializable, Comparable<MovementData>
     this.movementsZ = movementsZ;
   }
 
+  @Override
   public boolean equals(Object obj)
   {
     if (!(obj instanceof MovementData))
@@ -97,7 +98,15 @@ public class MovementData implements Serializable, Comparable<MovementData>
     }
     return false;
   }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 37 * hash + (this.timestamp != null ? this.timestamp.hashCode() : 0);
+    return hash;
+  }
   
+  @Override
   public int compareTo(MovementData o1)
   {
     if (this.getTimestamp() == null || o1.getTimestamp() == null)

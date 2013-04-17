@@ -61,16 +61,19 @@ public class SoundsTableModel extends AbstractTableModel
     return Column.values()[col].getLocalizedColumnHeading();
   }
 
+  @Override
   public int getRowCount()
   {
     return getSounds().size();
   }
 
+  @Override
   public int getColumnCount()
   {
     return Column.values().length;
   }
 
+  @Override
   public Object getValueAt(int row, int col)
   {
     Object val = null;

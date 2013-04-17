@@ -12,10 +12,12 @@ import com.dreikraft.events.ApplicationInitialize;
 import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.axbo.data.DeviceType;
 import com.dreikraft.axbo.data.SleepData;
+import com.dreikraft.axbo.sound.SoundPackage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Locale;
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 import javax.swing.UIManager;
 import org.apache.commons.logging.*;
 import org.jdesktop.swingx.JXHeader;
@@ -27,19 +29,18 @@ import org.jdesktop.swingx.plaf.basic.BasicMonthViewUI;
 
 /**
  * $Id: Axbo.java,v 1.39 2010-12-29 15:20:34 illetsch Exp $
- * 
+ *
  * @author 3kraft - $Author: illetsch $
  * @version $Revision: 1.39 $
  */
-public final class Axbo implements ApplicationEventEnabled
-{
+public final class Axbo implements ApplicationEventEnabled {
 
-  public static Log log = LogFactory.getLog(Axbo.class);
+  public static final Log log = LogFactory.getLog(Axbo.class);
   // === constants === 
   // Check that we are on Mac OS X.  This is crucial to loading and using the 
   // OSXAdapter class.
   public static final boolean MAC_OS_X = (System.getProperty("os.name").
-      toLowerCase().startsWith("mac os x"));
+      toLowerCase(Locale.ENGLISH).startsWith("mac os x"));
   // default dirs
   public static final String APPLICATION_DIR = "aXbo";
   public static final String PROJECT_DIR_DEFAULT =
@@ -87,36 +88,30 @@ public final class Axbo implements ApplicationEventEnabled
   // application singleton
   private static Axbo CONTROLLER = new Axbo();
 
-  public static void main(final String[] args)
-  {
+  public static void main(final String[] args) {
     Axbo controller = getApplicationController();
     controller.init();
- }
+  }
 
-  public static Axbo getApplicationController()
-  {
+  public static Axbo getApplicationController() {
     return Axbo.CONTROLLER;
   }
 
-  public static Preferences getApplicationPreferences()
-  {
+  public static Preferences getApplicationPreferences() {
     return Preferences.userNodeForPackage(Axbo.class);
   }
 
-  public static String getPortName()
-  {
+  public static String getPortName() {
     return getApplicationPreferences().get(DeviceContext.getDeviceType() + "."
         + Axbo.SERIAL_PORT_NAME_PREF, Axbo.SERIAL_PORT_NAME_DEFAULT);
   }
 
-  private Axbo()
-  {
+  private Axbo() {
     super();
   }
 
   @SuppressWarnings("ResultOfObjectAllocationIgnored")
-  public void init()
-  {
+  public void init() {
     // disable the security manager
     System.setSecurityManager(null);
 
@@ -124,45 +119,42 @@ public final class Axbo implements ApplicationEventEnabled
     Runtime.getRuntime().addShutdownHook(new AxboShutdownHook());
 
     // set desired locale
-    try
-    {
+    try {
       String langsPref = getApplicationPreferences().get(LANGUAGES_PREF,
           LANGUAGES_DEFAULT);
       String langPref = getApplicationPreferences().get(LANGUAGE_PREF, "unset");
-      if (!langPref.equals("unset"))
-      {
+      if (!langPref.equals("unset")) {
         Locale.setDefault(new Locale(langPref));
       }
-      if (langsPref.indexOf(Locale.getDefault().getLanguage()) == -1)
-      {
+      if (langsPref.indexOf(Locale.getDefault().getLanguage()) == -1) {
         Locale.setDefault(new Locale(LANGUAGE_DEFAULT));
       }
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       log.error(ex.getMessage(), ex);
     }
-    if (log.isDebugEnabled())
-    {
+    if (log.isDebugEnabled()) {
       log.debug("Current Locale: " + Locale.getDefault());
     }
 
     // OSX laf 
     System.setProperty("apple.laf.useScreenMenuBar", "true");
     System.setProperty("apple.awt.brushMetalLook", "true");
-    
+
     // fix missing laf ui classes for used jx components
     UIManager.put(JXMonthView.uiClassID, BasicMonthViewUI.class.getName());
     UIManager.put(JXHyperlink.uiClassID, BasicHyperlinkUI.class.getName());
     UIManager.put(JXHeader.uiClassID, BasicHeaderUI.class.getName());
-    
+
     // create the application and project dir
     File appDir = new File(Axbo.PROJECT_DIR_DEFAULT);
-    appDir.mkdirs();
+    if (!appDir.mkdirs()) 
+      log.warn("failed to create project dir: " + appDir.getAbsolutePath());
 
     // create sound package dir
     File soundDir = new File(Axbo.SOUND_PACKAGES_DIR);
-    soundDir.mkdirs();
+    if (!soundDir.mkdirs())
+      log.warn("failed to create sound dir: " + appDir.getAbsolutePath());
+      
 
     // create view and model
     new AxboFrameController();
@@ -172,57 +164,40 @@ public final class Axbo implements ApplicationEventEnabled
     DeviceContext.setDeviceType(DeviceType.AXBO);
 
     //initial
-    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ApplicationInitialize(
+    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+        new ApplicationInitialize(
         this));
   }
 
-  public static class SPWFilenameFilter implements FilenameFilter
-  {
+  public static class SPWFilenameFilter implements FilenameFilter {
 
     @Override
-    public boolean accept(File dir, String name)
-    {
-      if (name.toLowerCase().indexOf(
-          SleepData.SLEEP_DATA_FILE_EXT1.toLowerCase())
-          > 0 || name.toLowerCase().indexOf(SleepData.SLEEP_DATA_FILE_EXT2.
-          toLowerCase()) > 0)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+    public boolean accept(File dir, String name) {
+      return Pattern.compile(SleepData.SLEEP_DATA_FILE_EXT_PATTERN,
+          Pattern.CASE_INSENSITIVE).matcher(name).matches();
     }
   };
 
-  public static class AXSFilenameFilter implements FilenameFilter
-  {
+  public static class AXSFilenameFilter implements FilenameFilter {
 
     @Override
-    public boolean accept(File dir, String name)
-    {
-      return name.toLowerCase().endsWith(
-          Axbo.SOUND_DATA_FILE_EXT.toLowerCase());
+    public boolean accept(File dir, String name) {
+      return Pattern.compile(SoundPackage.FILE_PATTERN,
+          Pattern.CASE_INSENSITIVE).matcher(name).matches();
     }
   };
 }
 
-class AxboShutdownHook extends Thread
-{
+class AxboShutdownHook extends Thread {
 
   @Override
-  public void run()
-  {
+  public void run() {
     Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
-    try
-    {
+    try {
       System.out.println("cleaning up resources ...");
       prefs.flush();
       System.out.println("shutting down aXbo research");
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       ex.printStackTrace(System.err);
     }
   }

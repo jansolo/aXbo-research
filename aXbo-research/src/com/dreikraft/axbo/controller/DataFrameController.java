@@ -24,7 +24,6 @@ import com.dreikraft.axbo.gui.AxboFrame;
 import com.dreikraft.axbo.gui.DataFrame;
 import com.dreikraft.axbo.util.BundleUtil;
 import java.awt.print.PageFormat;
-import java.text.DateFormat;
 import org.apache.commons.logging.*;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -39,7 +38,7 @@ import org.jfree.data.xy.IntervalXYDataset;
 public class DataFrameController implements ApplicationEventEnabled
 {
 
-  public static Log log = LogFactory.getLog(DataFrameController.class);
+  public static final Log log = LogFactory.getLog(DataFrameController.class);
   private final DataFrame view;
   private final SleepData sleepData;
 

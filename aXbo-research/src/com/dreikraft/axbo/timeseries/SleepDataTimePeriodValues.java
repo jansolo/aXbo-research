@@ -25,6 +25,7 @@ public class SleepDataTimePeriodValues extends TimePeriodValues implements
   private int movementDirection;
   private int stepIntervall;
   
+  @SuppressWarnings("LeakingThisInConstructor")
   public SleepDataTimePeriodValues(String name, SleepData sleepData,
       int movementDirection, int stepIntervall)
   {
