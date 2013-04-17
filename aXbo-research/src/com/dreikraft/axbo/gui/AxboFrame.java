@@ -643,6 +643,7 @@ public class AxboFrame extends JFrame
 
     dataScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
+    dataViewsPanel.setBackgroundImageFilename("/resources/images/background_dark.png");
     dataViewsPanel.setLayout(new java.awt.GridBagLayout());
     dataScrollPane.setViewportView(dataViewsPanel);
 

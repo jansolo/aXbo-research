@@ -733,6 +733,9 @@
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
                     <Container class="com.dreikraft.swing.BackgroundImagePanel" name="dataViewsPanel">
+                      <Properties>
+                        <Property name="backgroundImageFilename" type="java.lang.String" value="/resources/images/background_dark.png"/>
+                      </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                     </Container>
