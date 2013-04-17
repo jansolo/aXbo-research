@@ -1036,7 +1036,7 @@
               <Dimension value="[200, 20]"/>
             </Property>
             <Property name="requestFocusEnabled" type="boolean" value="false"/>
-            <Property name="string" type="java.lang.String" value=""/>
+            <Property name="stringPainted" type="boolean" value="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="statusProgressBar.putClientProperty(&quot;JProgressBar.style&quot;, &quot;circular&quot;);"/>
