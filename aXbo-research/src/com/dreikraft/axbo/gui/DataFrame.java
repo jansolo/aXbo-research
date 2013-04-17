@@ -703,6 +703,7 @@ public class DataFrame extends JPanel implements Printable
 
     add(pnlInfo, java.awt.BorderLayout.SOUTH);
 
+    pnlClose.setPreferredSize(new java.awt.Dimension(16, 16));
     pnlClose.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
     btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-cross-16.png"))); // NOI18N
@@ -710,6 +711,7 @@ public class DataFrame extends JPanel implements Printable
     btnClose.setFocusable(false);
     btnClose.setIconTextGap(2);
     btnClose.setMultiClickThreshhold(1000L);
+    btnClose.setPreferredSize(new java.awt.Dimension(16, 16));
     btnClose.setRequestFocusEnabled(false);
     btnClose.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
