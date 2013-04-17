@@ -291,7 +291,7 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
     }
     catch (Exception ex)
     {
-      final String msg = BundleUtil.getMessage("sleepData.saveFailed",
+      final String msg = BundleUtil.getErrorMessage("sleepData.saveFailed",
           f.getName(), dir.getAbsolutePath());
       log.error(ex.getMessage(), ex);
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ApplicationMessageEvent(

@@ -1,7 +1,3 @@
-/*
- * $Id: AxboResetTask.java,v 1.1 2010-11-29 15:42:24 illetsch Exp $
- * © 3kraft GmbH & Co KG 2010
- */
 package com.dreikraft.axbo.task;
 
 import com.dreikraft.events.ApplicationEventDispatcher;
@@ -13,17 +9,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * AxboResetTask
+ * Resets aXbo and sets the current date/time.
  *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.1 $
+ * @author jan.illetschko@3kraft.com
  */
 public class AxboResetTask extends AxboTask<Boolean, Object>
 {
 
   private static final Log log = LogFactory.getLog(AxboResetTask.class);
-
+  
+  /**
+   * Reset aXbo in background task (SwingWorker).
+   * @return success
+   * @throws Exception if execution fails  
+   */
   @Override
   protected Boolean doInBackground() throws Exception
   {

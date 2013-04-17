@@ -43,38 +43,46 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
     this.soundPackageFile = soundPackageFile;
   }
 
+  /**
+   * Uploads a sound package from file to aXbo in background.
+   *
+   * @return the sound package
+   * @throws Exception if the upload fails.
+   */
   @Override
   protected SoundPackage doInBackground() throws Exception {
 
     log.info("performing task" + getClass().getSimpleName() + " ...");
+    // read sound package meta data
     final SoundPackage soundPackage = SoundPackageUtil.readPackageInfo(
         SoundPackageUtil.getPackageEntryStream(soundPackageFile,
         SoundPackageUtil.PACKAGE_INFO));
     soundPackage.setPackageFile(soundPackageFile);
-    
+
     // synchronize state between axbo and PC
     final String portName = Axbo.getPortName();
     AxboCommandUtil.syncInterface(Axbo.getPortName());
-    
-    // clear 
+
+    // clear the aXbo memory header
     AxboCommandUtil.clearHeader(portName);
 
+    // reset mem params
     int startPage = 1;
     int step = 0;
     final int stepCount = soundPackage.getSounds().size();
     final float stepRate = 100 / stepCount;
-    for (Sound sound : soundPackage.getSounds())
-    {
+    // for each sound
+    for (Sound sound : soundPackage.getSounds()) {
       InputStream soundIn = null;
-      @SuppressWarnings("UnusedAssignment")
-      ByteArrayOutputStream byteOut = null;
-      @SuppressWarnings("UnusedAssignment")
-      ByteArrayOutputStream headerOut = null;
-      try
-      {
-        if (log.isDebugEnabled())
+      ByteArrayOutputStream byteOut;
+      ByteArrayOutputStream headerOut;
+      try {
+        if (log.isDebugEnabled()) {
           log.debug("soundpackage upload progress: " + getProgress());
-        // open soundfile
+        }
+
+        // first remove wav header header and tail
+        // aXbo only uses the raw data of the ulaw encoded wav file
         soundIn =
             new BufferedInputStream(SoundPackageUtil.getPackageEntryStream(
             soundPackage.getPackageFile(),
@@ -85,28 +93,21 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
         byteOut = new ByteArrayOutputStream();
         headerOut = new ByteArrayOutputStream();
         int pos = 0;
-        @SuppressWarnings("UnusedAssignment")
-        int b = 0;
+        int b;
         int dataLen = Integer.MAX_VALUE;
         boolean isData = false;
         // skip tail
-        while (((b = soundIn.read()) != -1) && pos < dataLen)
-        {
+        while (((b = soundIn.read()) != -1) && pos < dataLen) {
           // only write data
-          if (isData)
-          {
+          if (isData) {
             byteOut.write(b);
             pos++;
-          }
-          else if (containsDataKeyword(headerOut))
-          {
+          } else if (containsDataKeyword(headerOut)) {
             // get sound data length
             dataLen = b + soundIn.read() * 256 + soundIn.read() * 256 * 256 + soundIn.
                 read() * 256 * 256 * 256;
             isData = true;
-          }
-          else
-          {
+          } else {
             // skip header
             headerOut.write(b);
           }
@@ -116,8 +117,7 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
         // fill the last page with 0xFF
         int pageCount = pos / AxboCommandUtil.PAGE_SIZE;
         final int rest = pos - (pageCount * AxboCommandUtil.PAGE_SIZE);
-        if (rest > 0)
-        {
+        if (rest > 0) {
           byte[] fillBytes = new byte[AxboCommandUtil.PAGE_SIZE - rest];
           Arrays.fill(fillBytes, (byte) 0xFF);
           byteOut.write(fillBytes);
@@ -135,25 +135,17 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
         // new startFrame
         startPage += pageCount;
         step++;
-        setProgress((int)(step * stepRate));
-      }
-      catch (IOException ex)
-      {
+        setProgress((int) (step * stepRate));
+      } catch (IOException ex) {
         throw new DataInterfaceException(ex.getMessage(), ex);
-      }
-      catch (SoundPackageException ex)
-      {
+      } catch (SoundPackageException ex) {
         throw new DataInterfaceException(ex.getMessage(), ex);
-      }
-      finally
-      {
-        try
-        {
-          if (soundIn != null) 
+      } finally {
+        try {
+          if (soundIn != null) {
             soundIn.close();
-        }
-        catch (IOException ex)
-        {
+          }
+        } catch (IOException ex) {
           log.warn(ex.getMessage(), ex);
         }
       }
@@ -168,26 +160,22 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
   }
 
   private boolean containsDataKeyword(ByteArrayOutputStream headerOut)
-      throws UnsupportedEncodingException, IOException
-  {
+      throws UnsupportedEncodingException, IOException {
     headerOut.flush();
     return headerOut.toString("US-ASCII").indexOf("data") > -1;
   }
 
   private void writeSoundData(final String portName, final Sound sound,
       final int step, final float stepRate)
-      throws DataInterfaceException
-  {
+      throws DataInterfaceException {
     // calculate frame count (use half sized frames, because of extra info bytes)
-    for (int page = 0; page < sound.getPageCount(); page++)
-    {
-      if (log.isDebugEnabled())
-      {
+    for (int page = 0; page < sound.getPageCount(); page++) {
+      if (log.isDebugEnabled()) {
         log.debug("writing sound: " + sound.getName() + ", page: " + (sound.
             getStartPage() + page));
       }
-      setProgress((int)(step * stepRate + 
-          stepRate * page / sound.getPageCount()));
+      setProgress((int) (step * stepRate
+          + stepRate * page / sound.getPageCount()));
       // write complete page into buffer
       AxboCommandUtil.writePage(portName, sound.getData(), page);
       // write buffer to flash page
@@ -195,9 +183,12 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
     }
   }
 
+  /**
+   * Wait for task to finish. Notifies the GUI.
+   */
   @Override
   protected void done() {
-    
+
     try {
       final SoundPackage soundPackage = get();
       log.info("task " + getClass().getSimpleName() + " performed successfully");
@@ -205,23 +196,22 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
 
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
           new SoundPackageUploadComplete(this, soundPackage));
-    }
-    catch (InterruptedException ex)
-    {
+    } catch (InterruptedException ex) {
       log.error("task " + getClass().getSimpleName() + " interrupted", ex);
       setResult(Result.INTERRUPTED);
-    }
-    catch (ExecutionException ex)
-    {
+    } catch (ExecutionException ex) {
       log.error("task " + getClass().getSimpleName() + " failed", ex.getCause());
       setResult(Result.FAILED);
-    }
-    finally
-    {
+    } finally {
       DeviceContext.getDeviceType().getDataInterface().stop();
     }
   }
 
+  /**
+   * Updates the current progress of the upload and notifies the GUI.
+   *
+   * @param sounds the currently processed sounds.
+   */
   @Override
   protected void process(final List<String> sounds) {
     for (final String sound : sounds) {
