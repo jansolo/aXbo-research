@@ -41,7 +41,7 @@ public class ByteUtil
 
   public static String dumpByteArray(byte[] data)
   {
-    StringBuffer s = new StringBuffer();
+    StringBuilder s = new StringBuilder();
     for (int i = 0; i < data.length; i++)
     {
       s.append(String.format("%02X", byteToInt(data[i]))).append(" ");
@@ -51,7 +51,7 @@ public class ByteUtil
 
   public static String dumpByteArray(int[] data)
   {
-    StringBuffer s = new StringBuffer();
+    StringBuilder s = new StringBuilder();
     for (int i = 0; i < data.length; i++)
     {
       s.append(String.format("%02X", data[i])).append(" ");

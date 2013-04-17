@@ -115,7 +115,7 @@ public class FileUtil
   {
     FileOutputStream fos = new FileOutputStream(fileName);
     byte[] buf = new byte[256];
-    int read = 0;
+    int read;
     while ((read = io.read(buf)) > 0)
     {
       fos.write(buf, 0, read);

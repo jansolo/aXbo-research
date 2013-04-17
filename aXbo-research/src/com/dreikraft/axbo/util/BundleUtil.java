@@ -6,7 +6,6 @@ package com.dreikraft.axbo.util;
 
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

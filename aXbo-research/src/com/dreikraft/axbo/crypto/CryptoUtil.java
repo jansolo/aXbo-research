@@ -145,7 +145,7 @@ public class CryptoUtil
 
       final ByteArrayOutputStream out = new ByteArrayOutputStream();
       final byte[] buf = new byte[BUF_SIZE];
-      int avail = 0;
+      int avail;
       while ((avail = in.read(buf)) != -1)
       {
         out.write(buf, 0, avail);
@@ -186,7 +186,7 @@ public class CryptoUtil
           CryptoUtil.class.getResourceAsStream(fileName), BUF_SIZE);
       keyOut = new ByteArrayOutputStream();
       final byte[] keyBuffer = new byte[BUF_SIZE];
-      int available = 0;
+      int available;
       while ((available = keyIn.read(keyBuffer)) != -1)
       {
         keyOut.write(keyBuffer, 0, available);
@@ -230,7 +230,7 @@ public class CryptoUtil
       InputStream cin = new CipherInputStream(in, aesCipher);
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       byte[] buf = new byte[BUF_SIZE];
-      int avail = 0;
+      int avail;
       while ((avail = cin.read(buf)) != -1)
       {
         out.write(buf, 0, avail);
@@ -266,7 +266,7 @@ public class CryptoUtil
       InputStream cin = new CipherInputStream(in, aesCipher);
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       byte[] buf = new byte[BUF_SIZE];
-      int avail = 0;
+      int avail;
       while ((avail = cin.read(buf)) != -1)
       {
         out.write(buf, 0, avail);
@@ -298,7 +298,7 @@ public class CryptoUtil
     {
       InputStream encIn = getCipherInputStream(key, in, algorithm, mode);
       byte[] buf = new byte[BUF_SIZE];
-      int avail = 0;
+      int avail;
       while ((avail = encIn.read(buf)) != -1)
       {
         out.write(buf, 0, avail);

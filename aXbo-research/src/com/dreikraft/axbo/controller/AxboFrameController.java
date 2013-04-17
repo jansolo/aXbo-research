@@ -73,14 +73,14 @@ import org.apache.commons.logging.Log;
  * @author jan.illetschko@3kraft.com
  */
 public final class AxboFrameController implements ApplicationEventEnabled {
-
+  
   public static final int MAX_OPEN_DIAGRAMS = 30;
-  public static Log log = LogFactory.getLog(AxboFrameController.class);
-  public static String MINUTE_CLASS = "org.jfree.data.time.Minute";
-  public static String SECOND_CLASS = "org.jfree.data.time.Second";
+  public static final Log log = LogFactory.getLog(AxboFrameController.class);
+  public static final String MINUTE_CLASS = "org.jfree.data.time.Minute";
+  public static final String SECOND_CLASS = "org.jfree.data.time.Second";
   private final AxboFrame frame;
   private boolean taskInProgress = false;
-
+  
   @SuppressWarnings("LeakingThisInConstructor")
   public AxboFrameController() {
     frame = new AxboFrame();
@@ -93,7 +93,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     ApplicationEventDispatcher.getInstance().registerApplicationEventHandler(
         ApplicationExit.class, this);
   }
-
+  
   public void handle(final ApplicationInitialize evt) {
     // register events
 
@@ -161,24 +161,25 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     frame.init();
 
     // enable view
-    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ApplicationInitialized(
+    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+        new ApplicationInitialized(
         this));
 
     // load stored data
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataLoad(
         this));
   }
-
+  
   public void handle(final ApplicationInitialized evt) {
     registerForMacOSXEvents();
     frame.setSize(1024, 768);
     frame.setVisible(true);
   }
-
+  
   public void handle(final ApplicationExit evt) {
     exit();
   }
-
+  
   public void handle(final ApplicationMessageEvent evt) {
     if (evt.isError()) {
       frame.showMessage(evt.getMessage(), true);
@@ -186,11 +187,11 @@ public final class AxboFrameController implements ApplicationEventEnabled {
       frame.showStatusMessage(evt.getMessage());
     }
   }
-
+  
   public void handle(final AxboDisconnect evt) {
     DeviceContext.getDeviceType().getDataInterface().stop();
   }
-
+  
   public void handle(final AxboFind evt) {
     if (taskInProgress) {
       return;
@@ -202,13 +203,13 @@ public final class AxboFrameController implements ApplicationEventEnabled {
         BundleUtil.getErrorMessage("globalError.axboNotFound"), false));
     task.execute();
   }
-
+  
   public void handle(final AxboFound evt) {
     if (evt.getPortName() != null && evt.getFollowUpTask() != null) {
       evt.getFollowUpTask().execute();
     }
   }
-
+  
   public void handle(final AxboReset evt) {
     final AxboResetTask task = new AxboResetTask();
     task.addPropertyChangeListener(new TaskProgressListener(frame,
@@ -219,7 +220,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     ApplicationEventDispatcher.getInstance().dispatchEvent(new AxboFind(this,
         task));
   }
-
+  
   public void handle(final AxboTest evt) {
     final AxboTestTask task = new AxboTestTask((byte) 0x08);
     task.addPropertyChangeListener(new TaskProgressListener(frame,
@@ -230,7 +231,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     ApplicationEventDispatcher.getInstance().dispatchEvent(new AxboFind(this,
         task));
   }
-
+  
   public void handle(final AxboTimeSet evt) {
     final AxboTimeSetTask task = new AxboTimeSetTask();
     task.addPropertyChangeListener(new TaskProgressListener(frame,
@@ -241,7 +242,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     ApplicationEventDispatcher.getInstance().dispatchEvent(new AxboFind(this,
         task));
   }
-
+  
   public void handle(final AxboClear evt) {
     final AxboClearTask task = new AxboClearTask();
     task.addPropertyChangeListener(new TaskProgressListener(frame,
@@ -252,7 +253,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     ApplicationEventDispatcher.getInstance().dispatchEvent(new AxboFind(this,
         task));
   }
-
+  
   public void handle(final AxboStatusGet evt) {
     final AxboStatusGetTask task = new AxboStatusGetTask();
     task.addPropertyChangeListener(new TaskProgressListener(frame,
@@ -263,7 +264,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     ApplicationEventDispatcher.getInstance().dispatchEvent(new AxboFind(this,
         task));
   }
-
+  
   public void handle(final AxboStatusGot evt) {
     DeviceContext.getDeviceType().getDataInterface().stop();
     frame.setStatusProgressBarIndeterminate(false);
@@ -294,10 +295,10 @@ public final class AxboFrameController implements ApplicationEventEnabled {
           true);
     }
   }
-
+  
   public void handle(final SleepDataLoad evt) {
     frame.showStatusMessage(BundleUtil.getMessage("statusLabel.loadProject"));
-
+    
     final File dir = new File(Axbo.PROJECT_DIR_DEFAULT);
     if (log.isDebugEnabled()) {
       log.debug("open project directory: " + dir.getAbsolutePath());
@@ -322,29 +323,33 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     });
     task.execute();
   }
-
+  
   public void handle(final SleepDataLoaded evt) {
-    frame.showStatusMessage(BundleUtil.getMessage("statusLabel.projectLoaded", evt.
+    frame.showStatusMessage(BundleUtil.getMessage("statusLabel.projectLoaded",
+        evt.
         getCount()));
     frame.setStatusProgressBarValue(0);
   }
-
+  
   public void handle(final SleepDataDelete evt) {
     final SleepData sleepData = evt.getSleepData();
-    sleepData.getDataFile().delete();
+    if (!sleepData.getDataFile().delete())
+      log.warn("failed to delete sleep data file: " + sleepData.getDataFile()
+          .getAbsolutePath());
     frame.getMetaDataTableModel().removeSleepData(sleepData);
-
+    
     final DataFrame dataView = getDataViewForSleepData(sleepData);
     if (dataView != null) {
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new DiagramClose(
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+          new DiagramClose(
           this, dataView));
     }
   }
-
+  
   public void handle(final SleepDataAdded evt) {
     frame.getMetaDataTableModel().addSleepData(evt.getSleepData());
   }
-
+  
   public void handle(final SleepDataImport evt) {
     final SleepDataImportTask task = new SleepDataImportTask(
         frame.getMetaDataTableModel().getData());
@@ -356,7 +361,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     ApplicationEventDispatcher.getInstance().dispatchEvent(new AxboFind(this,
         task));
   }
-
+  
   public void handle(final SleepDataImported evt) {
     final Integer newCount = evt.getNewSleepDataCount();
     if (newCount != -1) {
@@ -370,14 +375,14 @@ public final class AxboFrameController implements ApplicationEventEnabled {
       frame.showMessage(msg, true);
     }
   }
-
+  
   public void handle(final DiagramClosed evt) {
     ApplicationEventDispatcher.getInstance().deregisterApplicationEventHandler(
         DiagramClose.class, evt.getDataViewController());
     frame.updateDataViewsPanel();
     calculateSummary();
   }
-
+  
   public void handle(final SleepDataOpen evt) {
     final List<SleepData> selectedSleepDataList = evt.getSleepDataList();
     final List<SleepData> openSleepDataList = getOpenSleepDataList();
@@ -394,7 +399,8 @@ public final class AxboFrameController implements ApplicationEventEnabled {
         countNew++;
       }
       if (openSleepDataList.size() + countNew > MAX_OPEN_DIAGRAMS) {
-        ApplicationEventDispatcher.getInstance().dispatchEvent(new ApplicationMessageEvent(
+        ApplicationEventDispatcher.getInstance().dispatchEvent(
+            new ApplicationMessageEvent(
             this, BundleUtil.getErrorMessage("globalError.toManyOpenDiagrams"),
             true));
         break;
@@ -407,10 +413,10 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     // show summary for open sleep dates
     calculateSummary();
   }
-
+  
   private void calculateSummary() {
     final List<SleepData> openSleepDataList = getOpenSleepDataList();
-
+    
     long sumDuration = 0;
     long minDuration = 1000 * 60 * 60 * 24;
     long maxDuration = 0;
@@ -430,12 +436,13 @@ public final class AxboFrameController implements ApplicationEventEnabled {
         }
       }
     }
-
+    
     final long avgDuration = count > 0 ? sumDuration / count : 0;
-    frame.showSummary(sumDuration, avgDuration, minDuration, maxDuration, saving,
+    frame
+        .showSummary(sumDuration, avgDuration, minDuration, maxDuration, saving,
         count);
   }
-
+  
   private List<SleepData> getOpenSleepDataList() {
     final List<SleepData> openSleepDataList = new ArrayList<SleepData>();
     for (final DataFrame dataView : frame.getDataViews()) {
@@ -443,7 +450,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     }
     return openSleepDataList;
   }
-
+  
   private DataFrame getDataViewForSleepData(final SleepData sleepData) {
     for (final DataFrame dataView : frame.getDataViews()) {
       if (dataView.getSleepData().equals(sleepData)) {
@@ -452,14 +459,14 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     }
     return null;
   }
-
+  
   public void handle(final SleepDataCompare evt) {
     final List<SleepData> openSleepDataList = getOpenSleepDataList();
     if (openSleepDataList.size() > 1) {
       Collections.sort(openSleepDataList, new SleepDataComparator());
       int maxInterval = openSleepDataList.get(openSleepDataList.size() - 1).
           getStartHour() - openSleepDataList.get(0).getStartHour();
-
+      
       if (maxInterval > 12) {
         for (SleepData sleepData : openSleepDataList) {
           int offset = sleepData.getStartHour() < 12 ? 24 : 0;
@@ -479,35 +486,37 @@ public final class AxboFrameController implements ApplicationEventEnabled {
           maxEndHour = endHour;
         }
       }
-
+      
       for (final SleepData sleepData : openSleepDataList) {
         ApplicationEventDispatcher.getInstance().dispatchEvent(new DiagramZoom(
             this, minStartHour + ":01", (maxEndHour - minStartHour) * 60));
-
+        
         final String msgParam = new StringBuffer(sleepData.getName()).append(
-            " ").append(DateFormat.getDateInstance(DateFormat.SHORT).format(sleepData.
+            " ").append(DateFormat.getDateInstance(DateFormat.SHORT).format(
+            sleepData.
             calculateStartTime())).toString();
         final String msg = BundleUtil.getMessage("statusLabel.compareData",
             msgParam);
-        ApplicationEventDispatcher.getInstance().dispatchEvent(new ApplicationMessageEvent(
+        ApplicationEventDispatcher.getInstance().dispatchEvent(
+            new ApplicationMessageEvent(
             this, msg, false));
       }
     }
   }
-
+  
   public void handle(final SleepDataSave evt) {
     final SleepData sleepData = evt.getSleepData();
     try {
       final XMLEncoder encoder =
-          new XMLEncoder(new BufferedOutputStream(new FileOutputStream(sleepData.
-          getDataFile())));
+          new XMLEncoder(new BufferedOutputStream(new FileOutputStream(sleepData
+          .getDataFile())));
       encoder.writeObject(sleepData);
       encoder.close();
     } catch (FileNotFoundException ex) {
       log.error("failed to save file" + sleepData.getDataFile(), ex);
     }
   }
-
+  
   public void handle(final DataSearch evt) {
     // recalculate the table model
     frame.getMetaDataTableModel().filterData(evt.getName(), evt.getFrom(), evt.
@@ -542,7 +551,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
    * @param evt sound package completed event
    */
   public void handle(final SoundPackageUploadComplete evt) {
-
+    
     final SoundPackage soundPackage = evt.getSoundPackage();
     if (soundPackage != null) {
       // the upload was successful
@@ -566,7 +575,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     frame.showStatusMessage(BundleUtil.getMessage(
         "statusLabel.uploadProgress", evt.getSoundName()));
   }
-
+  
   private void registerForMacOSXEvents() {
     if (Axbo.MAC_OS_X) {
       try {
@@ -576,31 +585,31 @@ public final class AxboFrameController implements ApplicationEventEnabled {
             getDeclaredMethod("showSplashScreen", (Class[]) null));
         OSXAdapter.setPreferencesHandler(this, getClass().
             getDeclaredMethod("showPrefs", (Class[]) null));
-      } catch (Exception ex) {
+      } catch (NoSuchMethodException ex) {
         log.error(ex.getMessage(), ex);
       }
     }
   }
-
+  
   public void showPrefs() {
     ApplicationEventDispatcher.getInstance().dispatchEvent(new PrefsOpen(
         this, frame));
   }
-
+  
   public void exit() {
     DeviceContext.getDeviceType().getDataInterface().stop();
     System.exit(0);
   }
-
+  
   private class TaskProgressListener implements
       PropertyChangeListener {
-
+    
     private final AxboFrame view;
     private final String msg;
     private final String successMsg;
     private final String failedMsg;
     private final boolean indeterminate;
-
+    
     public TaskProgressListener(final AxboFrame view, final String msg,
         final String successMsg, final String failedMsg,
         final boolean indeterminate) {
@@ -610,7 +619,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
       this.failedMsg = failedMsg;
       this.indeterminate = indeterminate;
     }
-
+    
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
       if ("progress".equals(evt.getPropertyName())) {

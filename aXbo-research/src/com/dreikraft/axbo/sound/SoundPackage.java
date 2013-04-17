@@ -19,7 +19,9 @@ import java.util.List;
 public class SoundPackage implements Serializable
 {
   public static final String PACKAGE_INFO_FILENAME = "package-info.xml";
-
+  public static final String FILE_EXT = ".axs";
+  public static final String FILE_PATTERN = "^.*\\.axs$";
+  
   public static enum SERIAL_NUMBER
   {
     GLOBAL, NONE
@@ -44,10 +46,10 @@ public class SoundPackage implements Serializable
       boolean securityEnforced,
       List<Sound> sounds)
   {
-    setName(name);
-    setSerialNumber(serialNumber);
-    setSecurityEnforced(securityEnforced);
-    setSounds(sounds);
+    this.name = name;
+    this.serialNumber = serialNumber;
+    this.securityEnforced = securityEnforced;
+    this.sounds = sounds;
   }
 
   public String getName()

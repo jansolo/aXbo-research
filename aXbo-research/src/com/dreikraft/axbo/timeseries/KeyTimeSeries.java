@@ -25,6 +25,7 @@ public class KeyTimeSeries extends TimeSeries
   private final SleepData sleepData;
   private final int keyType;
 
+  @SuppressWarnings("LeakingThisInConstructor")
   public KeyTimeSeries(final String name, final SleepData sleepData,
       final Class<?> timePeriodClass, final int keyType)
   {

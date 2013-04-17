@@ -25,8 +25,8 @@ public class SoundFile implements Serializable
   
   public SoundFile(String filename, SoundType soundType) 
   {
-    setPath(filename);
-    setType(soundType);
+    this.path = filename;
+    this.type = soundType;
   }
 
   public String getPath()
@@ -49,6 +49,7 @@ public class SoundFile implements Serializable
     this.type = soundType;
   }
 
+  @Override
   public String toString() 
   {
     // return file name without path information
