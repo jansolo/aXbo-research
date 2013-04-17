@@ -27,6 +27,7 @@
       <mountPoint id="147" root="" location="licenses" mode="755" />
       <mountPoint id="149" root="" location="" mode="755" />
       <mountPoint id="502" root="501" location="aXbo" mode="755" />
+      <mountPoint id="606" root="501" location="aXbo/sounds" mode="755" />
     </mountPoints>
     <entries>
       <fileEntry mountPoint="18" file="../dist/librxtxSerial.so" overwrite="4" shared="false" mode="644" uninstallMode="0" />
@@ -57,8 +58,8 @@
       <fileEntry mountPoint="149" file="../resource/native/librxtxSerial.jnilib" overwrite="4" shared="false" mode="644" uninstallMode="0" />
       <fileEntry mountPoint="149" file="../resource/license/NOTICE.txt" overwrite="4" shared="false" mode="644" uninstallMode="0" />
       <fileEntry mountPoint="149" file="../dist/axbo.jar" overwrite="4" shared="false" mode="644" uninstallMode="0" />
-      <fileEntry mountPoint="502" file="./resources/sounds/aXbo_Feeling.axs" overwrite="4" shared="false" mode="644" uninstallMode="0" />
-      <fileEntry mountPoint="502" file="./resources/sounds/aXbo_Original.axs" overwrite="4" shared="false" mode="644" uninstallMode="0" />
+      <fileEntry mountPoint="606" file="./resources/sounds/aXbo_Feeling.axs" overwrite="4" shared="false" mode="644" uninstallMode="0" />
+      <fileEntry mountPoint="606" file="./resources/sounds/aXbo_Original.axs" overwrite="4" shared="false" mode="644" uninstallMode="0" />
     </entries>
     <components>
       <component name="application" id="73" displayDescription="true" selected="true" mandatory="true" downloadable="false">
@@ -1565,6 +1566,7 @@ if (wizardContext != null) {
         <entry location="lib/librxtxSerial.so" fileType="regular" />
         <entry location="lib/rxtxSerial.dll" fileType="regular" />
         <entry location="drivers" fileType="regular" />
+        <entry location=".i4j_external_501" fileType="regular" />
       </exclude>
       <variables>
         <variable name="sys.javaMaxVersion" value="1.5" />
