@@ -19,7 +19,7 @@ import javax.swing.DefaultComboBoxModel;
  */
 public class PreferencesDialog extends javax.swing.JDialog
 {
-  private PreferencesController ctrl;
+  private transient PreferencesController ctrl;
 
   public PreferencesDialog(java.awt.Frame parent, boolean modal,
       final PreferencesController ctrl)
@@ -100,7 +100,7 @@ public class PreferencesDialog extends javax.swing.JDialog
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
 
-    PreferencesPanel = new javax.swing.JPanel();
+    preferencesPanel = new javax.swing.JPanel();
     comPortLabel = new javax.swing.JLabel();
     languageLabel = new javax.swing.JLabel();
     languageCB = new javax.swing.JComboBox<String>();
@@ -121,8 +121,8 @@ public class PreferencesDialog extends javax.swing.JDialog
     setName("preferencesDialog"); // NOI18N
     setResizable(false);
 
-    PreferencesPanel.setFocusable(false);
-    PreferencesPanel.setMaximumSize(null);
+    preferencesPanel.setFocusable(false);
+    preferencesPanel.setMaximumSize(null);
 
     comPortLabel.setLabelFor(comPortCB);
     comPortLabel.setText(bundle.getString("preferences.label.comPort")); // NOI18N
@@ -158,28 +158,28 @@ public class PreferencesDialog extends javax.swing.JDialog
     restartLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
     restartLabel.setText(bundle.getString("preference.label.restart")); // NOI18N
 
-    org.jdesktop.layout.GroupLayout PreferencesPanelLayout = new org.jdesktop.layout.GroupLayout(PreferencesPanel);
-    PreferencesPanel.setLayout(PreferencesPanelLayout);
-    PreferencesPanelLayout.setHorizontalGroup(
-      PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(PreferencesPanelLayout.createSequentialGroup()
+    org.jdesktop.layout.GroupLayout preferencesPanelLayout = new org.jdesktop.layout.GroupLayout(preferencesPanel);
+    preferencesPanel.setLayout(preferencesPanelLayout);
+    preferencesPanelLayout.setHorizontalGroup(
+      preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+      .add(preferencesPanelLayout.createSequentialGroup()
         .addContainerGap()
-        .add(PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-          .add(org.jdesktop.layout.GroupLayout.TRAILING, PreferencesPanelLayout.createSequentialGroup()
+        .add(preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+          .add(org.jdesktop.layout.GroupLayout.TRAILING, preferencesPanelLayout.createSequentialGroup()
             .add(cancelButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
             .add(saveButton))
-          .add(PreferencesPanelLayout.createSequentialGroup()
+          .add(preferencesPanelLayout.createSequentialGroup()
             .add(13, 13, 13)
-            .add(PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+            .add(preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
               .add(sensor2NameLabel)
               .add(sensor1NameLabel)
-              .add(PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+              .add(preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(languageLabel)
                 .add(comPortLabel)))
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-            .add(PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-              .add(PreferencesPanelLayout.createSequentialGroup()
+            .add(preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+              .add(preferencesPanelLayout.createSequentialGroup()
                 .add(languageCB, 0, 216, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(restartLabel))
@@ -188,34 +188,34 @@ public class PreferencesDialog extends javax.swing.JDialog
               .add(org.jdesktop.layout.GroupLayout.LEADING, sensor2NameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))))
         .addContainerGap())
     );
-    PreferencesPanelLayout.setVerticalGroup(
-      PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(PreferencesPanelLayout.createSequentialGroup()
+    preferencesPanelLayout.setVerticalGroup(
+      preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+      .add(preferencesPanelLayout.createSequentialGroup()
         .addContainerGap()
-        .add(PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+        .add(preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
           .add(restartLabel)
           .add(languageCB, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
           .add(languageLabel))
         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-        .add(PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+        .add(preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
           .add(comPortCB, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
           .add(comPortLabel))
         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-        .add(PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+        .add(preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
           .add(sensor1NameLabel)
           .add(sensor1NameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-        .add(PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+        .add(preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
           .add(sensor2NameLabel)
           .add(sensor2NameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-        .add(PreferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+        .add(preferencesPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
           .add(saveButton)
           .add(cancelButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(28, Short.MAX_VALUE))
     );
 
-    getContentPane().add(PreferencesPanel, java.awt.BorderLayout.CENTER);
+    getContentPane().add(preferencesPanel, java.awt.BorderLayout.CENTER);
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
@@ -232,12 +232,12 @@ public class PreferencesDialog extends javax.swing.JDialog
         this, true));
   }//GEN-LAST:event_saveButtonActionPerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JPanel PreferencesPanel;
   private javax.swing.JButton cancelButton;
   private javax.swing.JComboBox<String> comPortCB;
   private javax.swing.JLabel comPortLabel;
   private javax.swing.JComboBox<String> languageCB;
   private javax.swing.JLabel languageLabel;
+  private javax.swing.JPanel preferencesPanel;
   private javax.swing.JLabel restartLabel;
   private javax.swing.JButton saveButton;
   private javax.swing.JLabel sensor1NameLabel;

@@ -1,30 +1,26 @@
-/*
- * $Id: AxboTest.java,v 1.1 2010-11-29 15:42:23 illetsch Exp $
- * © 3kraft GmbH & Co KG 2010
- */
 package com.dreikraft.axbo.events;
 
 import com.dreikraft.events.ApplicationEvent;
 
 /**
- * AxboConnect
+ * AxboTest
  *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.1 $
+ * @author jan.illetschko@3kraft.com
  */
-public final class AxboTest extends ApplicationEvent
-{
+public final class AxboTest extends ApplicationEvent {
+
+  /**
+   * SerialVersionUID.
+   */
+  public static final long serialVersionUID = 1L;
   private byte cmdType;
 
-  public AxboTest(final Object source, final byte cmdType)
-  {
+  public AxboTest(final Object source, final byte cmdType) {
     super(source);
     this.cmdType = cmdType;
   }
 
-  public byte getCmdType()
-  {
+  public byte getCmdType() {
     return cmdType;
   }
 }

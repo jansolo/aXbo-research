@@ -24,15 +24,13 @@ import org.apache.commons.logging.LogFactory;
  * @version $Revision: 1.1 $
  */
 public class AxboStatusGetTask extends AxboTask<AxboInfo, Object> implements
-    ApplicationEventEnabled
-{
+    ApplicationEventEnabled {
 
   private static final Log log = LogFactory.getLog(AxboStatusGetTask.class);
   private AxboInfo infoData;
 
   @Override
-  protected AxboInfo doInBackground() throws Exception
-  {
+  protected AxboInfo doInBackground() throws Exception {
     log.info("performing task" + getClass().getSimpleName() + " ...");
 
     ApplicationEventDispatcher.getInstance().registerApplicationEventHandler(
@@ -40,15 +38,13 @@ public class AxboStatusGetTask extends AxboTask<AxboInfo, Object> implements
 
     AxboCommandUtil.runReadStatus(Axbo.getPortName());
 
-    try
-    {
-      synchronized (this)
-      {
-        wait(DeviceContext.getDeviceType().getTimeout());
+    try {
+      synchronized (this) {
+        while (infoData == null) {
+          wait(DeviceContext.getDeviceType().getTimeout());
+        }
       }
-    }
-    catch (InterruptedException ex)
-    {
+    } catch (InterruptedException ex) {
       log.error(ex.getMessage());
     }
 
@@ -56,41 +52,32 @@ public class AxboStatusGetTask extends AxboTask<AxboInfo, Object> implements
   }
 
   @Override
-  protected void done()
-  {
-    try
-    {
+  protected void done() {
+    try {
       final AxboInfo axboData = get();
       log.info("task " + getClass().getSimpleName() + " performed successfully");
       setResult(Result.SUCCESS);
 
       ApplicationEventDispatcher.getInstance().
           dispatchGUIEvent(new AxboStatusGot(this, axboData));
-    }
-    catch (InterruptedException ex)
-    {
+    } catch (InterruptedException ex) {
       log.error("task " + getClass().getSimpleName() + " interrupted", ex);
       setResult(Result.INTERRUPTED);
-    }
-    catch (ExecutionException ex)
-    {
+    } catch (ExecutionException ex) {
       log.error("task " + getClass().getSimpleName() + " failed", ex.getCause());
       setResult(Result.FAILED);
-    }
-    finally
-    {
+    } finally {
       DeviceContext.getDeviceType().getDataInterface().stop();
-      ApplicationEventDispatcher.getInstance().deregisterApplicationEventHandler(
+      ApplicationEventDispatcher.getInstance()
+          .deregisterApplicationEventHandler(
           InfoEvent.class, this);
     }
   }
 
-  public void handle(final InfoEvent evt)
-  {
-    synchronized (this)
-    {
+  public void handle(final InfoEvent evt) {
+    synchronized (this) {
       this.infoData = evt.getData();
-      notify();
+      notifyAll();
     }
   }
 }

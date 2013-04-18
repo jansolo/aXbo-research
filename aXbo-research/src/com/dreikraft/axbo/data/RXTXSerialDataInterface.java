@@ -44,7 +44,7 @@ public enum RXTXSerialDataInterface implements DataInterface {
   /**
    * Serial interface data recipient thread monitor.
    */
-  private class DataMonitor {
+  static private class DataMonitor {
 
     private boolean dataReceived = false;
 
@@ -218,9 +218,10 @@ public enum RXTXSerialDataInterface implements DataInterface {
         // read data from serial port into a byte array buffer
         while ((newDataLength = serialPort.getInputStream().available()) > 0) {
           byte[] data = new byte[newDataLength];
-          serialPort.getInputStream().read(data, 0, newDataLength);
-          // send byte array to singleton parser for further processing
-          DeviceContext.getDeviceType().getProtocolHandler().parse(data);
+          if (serialPort.getInputStream().read(data, 0, newDataLength) > 0) {
+            // send byte array to singleton parser for further processing
+            DeviceContext.getDeviceType().getProtocolHandler().parse(data);
+          }
         }
       } catch (Exception ex) {
         log.error(ex.getMessage(), ex);

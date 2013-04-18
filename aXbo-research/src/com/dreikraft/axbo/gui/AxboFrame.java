@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -1128,8 +1129,8 @@ private void checkUpdateMenuItemActionPerformed(java.awt.event.ActionEvent evt) 
       @Override
       public boolean accept(File f)
       {
-        if (f.getName().toLowerCase().indexOf(Axbo.SOUND_DATA_FILE_EXT.
-            toLowerCase()) > 0 || f.isDirectory())
+        if (!(f.getName().toLowerCase(Locale.ENGLISH).indexOf(Axbo.SOUND_DATA_FILE_EXT.
+            toLowerCase()) < 0) || f.isDirectory())
         {
           return true;
         }

@@ -1,23 +1,21 @@
-/*
- * $Id: AxboClear.java,v 1.1 2010-11-29 15:42:23 illetsch Exp $
- * © 3kraft GmbH & Co KG 2010
- */
 package com.dreikraft.axbo.events;
 
 import com.dreikraft.events.ApplicationEvent;
 
 /**
- * AxboConnect
- *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.1 $
- */
-public final class AxboClear extends ApplicationEvent
-{
+ * AxboClear
 
-  public AxboClear(final Object source)
-  {
+ *
+ * @author jan.illetschko@3kraft.com
+ */
+public final class AxboClear extends ApplicationEvent {
+
+  /**
+   * SerialVersionUID.
+   */
+  public static final long serialVersionUID = 1L;
+
+  public AxboClear(final Object source) {
     super(source);
   }
 }

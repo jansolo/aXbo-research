@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 public class MetaDataTableModel extends AbstractTableModel {
   // global constants
 
-  public static Log log = LogFactory.getLog(MetaDataTableModel.class);
+  public static final Log log = LogFactory.getLog(MetaDataTableModel.class);
 
   // Column Headings
   enum Column {
@@ -93,6 +93,7 @@ public class MetaDataTableModel extends AbstractTableModel {
       case 3:
         val = filteredData.get(row).getComment();
         break;
+      default:
     }
     return val;
   }
@@ -141,6 +142,8 @@ public class MetaDataTableModel extends AbstractTableModel {
           filteredData.add(record);
         }
       }
+    } else {
+      filteredData = data;
     }
 
     // notify the TableSorter that the Tabel has changed

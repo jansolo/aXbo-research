@@ -1,31 +1,26 @@
-/*
- * $Id: PrefsClose.java,v 1.1 2010-11-29 15:42:23 illetsch Exp $
- * © 3kraft GmbH & Co KG 2010
- */
 package com.dreikraft.axbo.events;
 
 import com.dreikraft.events.ApplicationEvent;
 
 /**
- * AxboConnect
+ * PrefsClose
  *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.1 $
+ * @author jan.illetschko@3kraft.com
  */
-public final class PrefsClose extends ApplicationEvent
-{
+public final class PrefsClose extends ApplicationEvent {
 
+  /**
+   * SerialVersionUID.
+   */
+  public static final long serialVersionUID = 1L;
   private final boolean save;
 
-  public PrefsClose(final Object source, final boolean save)
-  {
+  public PrefsClose(final Object source, final boolean save) {
     super(source);
     this.save = save;
   }
 
-  public boolean isSave()
-  {
+  public boolean isSave() {
     return save;
   }
 }

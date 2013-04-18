@@ -1,7 +1,3 @@
-/*
- * © 2008 3kraft
- * $Id: SleepDataTimePeriodValues.java,v 1.5 2010-12-03 18:10:02 illetsch Exp $
- */
 package com.dreikraft.axbo.timeseries;
 
 import com.dreikraft.axbo.data.MovementData;
@@ -13,28 +9,25 @@ import org.jfree.data.time.TimePeriod;
 import org.jfree.data.time.TimePeriodValues;
 
 /**
- * $Id: SleepDataTimePeriodValues.java,v 1.5 2010-12-03 18:10:02 illetsch Exp $
- * 
- * @author 3kraft - $Author: illetsch $
- * @version $Revision: 1.5 $
+ * SleepDataTimePeriodValues
+ *
+ * @author jan.illetschko@3kraft.com
  */
 public class SleepDataTimePeriodValues extends TimePeriodValues implements
-    PropertyChangeListener
-{
+    PropertyChangeListener {
+
   private SleepData sleepData;
   private int movementDirection;
   private int stepIntervall;
-  
+
   @SuppressWarnings("LeakingThisInConstructor")
   public SleepDataTimePeriodValues(String name, SleepData sleepData,
-      int movementDirection, int stepIntervall)
-  {
+      int movementDirection, int stepIntervall) {
     super(name);
     this.sleepData = sleepData;
     this.movementDirection = movementDirection;
     this.stepIntervall = stepIntervall;
-    this.sleepData.addPropertyChangeListener(this);
-    
+
     // set start and end time
     TimePeriod startTime = new SimpleTimePeriod(
         sleepData.calculateStartTime().getTime(),
@@ -45,56 +38,46 @@ public class SleepDataTimePeriodValues extends TimePeriodValues implements
         sleepData.calculateEndTime().getTime() + stepIntervall);
     add(endTime, 0);
 
-    for (MovementData movement: sleepData.getMovements())
-    {
+    for (MovementData movement : sleepData.getMovements()) {
       addMovement(movement);
     }
   }
-  
-  public SleepData getSleepData()
-  {
+
+  public SleepData getSleepData() {
     return sleepData;
   }
-  
-  public void setSleepData(SleepData sleepData)
-  {
+
+  public void setSleepData(SleepData sleepData) {
     this.sleepData = sleepData;
   }
-  
-  public int getMovementDirection()
-  {
+
+  public int getMovementDirection() {
     return movementDirection;
   }
-  
-  public void setMovementDirection(int movementDirection)
-  {
+
+  public void setMovementDirection(int movementDirection) {
     this.movementDirection = movementDirection;
   }
-  
-  public int getStepIntervall()
-  {
+
+  public int getStepIntervall() {
     return stepIntervall;
   }
-  
-  public void setStepIntervall(int stepIntervall)
-  {
+
+  public void setStepIntervall(int stepIntervall) {
     this.stepIntervall = stepIntervall;
   }
-  
+
   @Override
-  public void propertyChange(PropertyChangeEvent evt)
-  {
-    MovementData movement = (MovementData)evt.getNewValue();
+  public void propertyChange(PropertyChangeEvent evt) {
+    MovementData movement = (MovementData) evt.getNewValue();
     addMovement(movement);
   }
-  
-  private void addMovement(MovementData movement)
-  {
+
+  private void addMovement(MovementData movement) {
     TimePeriod time = new SimpleTimePeriod(
         movement.getTimestamp().getTime(),
         movement.getTimestamp().getTime() + stepIntervall);
-    switch (movementDirection)
-    {
+    switch (movementDirection) {
       case MovementData.X:
         add(time, movement.getMovementsX());
         break;
@@ -104,6 +87,7 @@ public class SleepDataTimePeriodValues extends TimePeriodValues implements
       case MovementData.Z:
         add(time, movement.getMovementsZ());
         break;
+      default:
     }
   }
 }

@@ -8,12 +8,15 @@ import java.io.File;
  *
  * @author jan.illetschko@3kraft.com
  */
-public class SoundPackageUpload extends ApplicationEvent
-{
-  final private File soundPackageFile;
-  
-  public SoundPackageUpload(final Object source, final File soundPackageFile)
-  {
+public class SoundPackageUpload extends ApplicationEvent {
+
+  /**
+   * SerialVersionUID.
+   */
+  public static final long serialVersionUID = 1L;
+  private final File soundPackageFile;
+
+  public SoundPackageUpload(final Object source, final File soundPackageFile) {
     super(source);
     this.soundPackageFile = soundPackageFile;
   }
