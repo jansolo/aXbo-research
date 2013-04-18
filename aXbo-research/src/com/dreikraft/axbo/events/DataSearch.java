@@ -1,7 +1,3 @@
-/*
- * $Id: DataSearch.java,v 1.1 2010-12-14 14:41:29 illetsch Exp $
- * © 3kraft GmbH & Co KG 2010
- */
 package com.dreikraft.axbo.events;
 
 import com.dreikraft.events.ApplicationEvent;
@@ -9,39 +5,35 @@ import java.util.Date;
 
 /**
  * DataSearch
- *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.1 $
+ * @author jan.illetschko@3kraft.com
  */
-public final class DataSearch extends ApplicationEvent
-{
+public final class DataSearch extends ApplicationEvent {
 
+  /**
+   * SerialVersionUID.
+   */
+  public static final long serialVersionUID = 1L;
   private final String name;
   private final Date from;
   private final Date to;
 
   public DataSearch(final Object source, final String name, final Date from,
-      final Date to)
-  {
+      final Date to) {
     super(source);
     this.name = name;
-    this.from = from;
-    this.to = to;
+    this.from = from != null ? new Date(from.getTime()) : null;
+    this.to = to != null ? new Date(to.getTime()) : null;
   }
 
-  public String getName()
-  {
+  public String getName() {
     return name;
   }
 
-  public Date getFrom()
-  {
-    return from;
+  public Date getFrom() {
+    return from != null ? new Date(from.getTime()) : null;
   }
 
-  public Date getTo()
-  {
-    return to;
+  public Date getTo() {
+    return to != null ? new Date(to.getTime()) : null;
   }
 }

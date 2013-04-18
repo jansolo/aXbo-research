@@ -9,7 +9,11 @@ import com.dreikraft.events.ApplicationEvent;
  */
 public class SoundUpload extends ApplicationEvent {
 
-  final private String soundName;
+  /**
+   * SerialVersionUID.
+   */
+  public static final long serialVersionUID = 1L;
+  private final String soundName;
 
   public SoundUpload(final Object source, final String soundName) {
     super(source);

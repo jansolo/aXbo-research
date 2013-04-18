@@ -147,13 +147,13 @@ public final class Axbo implements ApplicationEventEnabled {
 
     // create the application and project dir
     File appDir = new File(Axbo.PROJECT_DIR_DEFAULT);
-    if (!appDir.mkdirs()) 
-      log.warn("failed to create project dir: " + appDir.getAbsolutePath());
+    if (appDir.mkdirs()) 
+      log.warn("successfully created project dir: " + appDir.getAbsolutePath());
 
     // create sound package dir
     File soundDir = new File(Axbo.SOUND_PACKAGES_DIR);
-    if (!soundDir.mkdirs())
-      log.warn("failed to create sound dir: " + appDir.getAbsolutePath());
+    if (soundDir.mkdirs())
+      log.info("successfully created sound dir: " + soundDir.getAbsolutePath());
       
 
     // create view and model

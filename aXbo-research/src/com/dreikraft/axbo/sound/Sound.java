@@ -1,19 +1,15 @@
-/*
- * $Id: Sound.java,v 1.7 2008-07-03 17:17:09 illetsch Exp $
- * Copyright 3kraft June 11, 2007
- */
 package com.dreikraft.axbo.sound;
 
 import com.dreikraft.axbo.util.ReflectUtil;
-import java.io.Serializable;
+import java.util.Arrays;
 
 /**
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision
+ * Sound
+ *
+ * @author jan.illetschko@3kraft.com
  */
-public class Sound implements Serializable
-{
+public class Sound {
+
   private Integer id;
   private String name;
   private SoundFile axboFile;
@@ -21,92 +17,77 @@ public class Sound implements Serializable
   private transient int startPage;
   private transient int pageCount;
   private transient byte[] data;
-  
-  /** Creates a new instance of Sound */
-  public Sound()
-  {
+
+  /**
+   * Creates a new instance of Sound
+   */
+  public Sound() {
   }
 
-  public Sound(final Integer id, final String name, final SoundFile axboFile)
-  {
+  public Sound(final Integer id, final String name, final SoundFile axboFile) {
     this.id = id;
     this.name = name;
     this.axboFile = axboFile;
   }
-  
-  public String getName()
-  {
+
+  public String getName() {
     return name;
   }
 
-  public void setName(String name)
-  {
+  public void setName(String name) {
     this.name = name;
   }
 
-  public SoundFile getAxboFile()
-  {
+  public SoundFile getAxboFile() {
     return axboFile;
   }
 
-  public void setAxboFile(SoundFile axboFile)
-  {
+  public void setAxboFile(SoundFile axboFile) {
     this.axboFile = axboFile;
   }
 
   @Override
-  public String toString()
-  {
+  public String toString() {
     return ReflectUtil.toString(this);
   }
 
-  public Integer getId()
-  {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(Integer id)
-  {
+  public void setId(Integer id) {
     this.id = id;
   }
 
-  public boolean isPlaying()
-  {
+  public boolean isPlaying() {
     return playing;
   }
 
-  public void setPlaying(boolean playing)
-  {
+  public void setPlaying(boolean playing) {
     this.playing = playing;
   }
 
-  public int getStartPage()
-  {
+  public int getStartPage() {
     return startPage;
   }
 
-  public void setStartPage(int startPage)
-  {
+  public void setStartPage(int startPage) {
     this.startPage = startPage;
   }
 
-  public int getPageCount()
-  {
+  public int getPageCount() {
     return pageCount;
   }
 
-  public void setPageCount(int pageCount)
-  {
+  public void setPageCount(int pageCount) {
     this.pageCount = pageCount;
   }
 
-  public byte[] getData()
-  {
-    return data;
+  public byte[] getData() {
+    return data != null ? Arrays.copyOf(data, data.length) : new byte[0];
   }
 
-  public void setData(byte[] data)
-  {
-    this.data = data;
+  public void setData(byte[] data) {
+    this.data = data != null ? Arrays.copyOf(data, data.length) : new byte[0];
   }
 }

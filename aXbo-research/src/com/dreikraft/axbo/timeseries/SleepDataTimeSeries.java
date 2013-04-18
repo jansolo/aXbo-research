@@ -39,7 +39,6 @@ public class SleepDataTimeSeries extends TimeSeries
     super(name);
     this.sleepData = sleepData;
     this.maxMovements = maxMovements;
-    this.sleepData.addPropertyChangeListener(this);
 
     movementsX = new HashMap<TimePeriod, Integer>();
     movementsY = new HashMap<TimePeriod, Integer>();
@@ -59,11 +58,6 @@ public class SleepDataTimeSeries extends TimeSeries
     {
       addMovementData(movement);
     }
-  }
-
-  public void close()
-  {
-    sleepData.removePropertyChangeListener(this);
   }
 
   public SleepData getSleepData()

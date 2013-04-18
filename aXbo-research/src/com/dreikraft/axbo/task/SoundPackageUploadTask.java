@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
 
   private static final Log log = LogFactory.getLog(SoundPackageUploadTask.class);
-  private File soundPackageFile;
+  private final File soundPackageFile;
 
   /**
    * Creates a new upload task.
@@ -70,7 +70,7 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
     int startPage = 1;
     int step = 0;
     final int stepCount = soundPackage.getSounds().size();
-    final float stepRate = 100 / stepCount;
+    final float stepRate = 100 / (float) stepCount;
     // for each sound
     for (Sound sound : soundPackage.getSounds()) {
       InputStream soundIn = null;
@@ -104,7 +104,8 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
             pos++;
           } else if (containsDataKeyword(headerOut)) {
             // get sound data length
-            dataLen = b + soundIn.read() * 256 + soundIn.read() * 256 * 256 + soundIn.
+            dataLen = b + soundIn.read() * 256 + soundIn.read() * 256 * 256
+                + soundIn.
                 read() * 256 * 256 * 256;
             isData = true;
           } else {

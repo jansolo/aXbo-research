@@ -1,30 +1,26 @@
-/*
- * $Id: SleepDataLoaded.java,v 1.1 2010-11-29 15:42:23 illetsch Exp $
- * © 3kraft GmbH & Co KG 2010
- */
 package com.dreikraft.axbo.events;
 
 import com.dreikraft.events.ApplicationEvent;
 
 /**
- * SleepDataLoadedEvent
+ * SleepDataLoaded
  *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.1 $
+ * @author jan.illetschko@3kraft.com
  */
-public class SleepDataLoaded extends ApplicationEvent
-{
- private Integer count;
+public class SleepDataLoaded extends ApplicationEvent {
 
-  public SleepDataLoaded(final Object source, final Integer count)
-  {
+  /**
+   * SerialVersionUID.
+   */
+  public static final long serialVersionUID = 1L;
+  private final Integer count;
+
+  public SleepDataLoaded(final Object source, final Integer count) {
     super(source);
     this.count = count;
   }
 
-  public Integer getCount()
-  {
+  public Integer getCount() {
     return count;
   }
 }

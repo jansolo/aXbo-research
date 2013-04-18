@@ -8,13 +8,16 @@ import com.dreikraft.events.ApplicationEvent;
  *
  * @author jan.illetschko@3kraft.com
  */
-public class SoundPackageUploadComplete extends ApplicationEvent
-{
- private SoundPackage soundPackage;
+public class SoundPackageUploadComplete extends ApplicationEvent {
 
-  public SoundPackageUploadComplete(final Object source, 
-      final SoundPackage soundPackage)
-  {
+  /**
+   * SerialVersionUID.
+   */
+  public static final long serialVersionUID = 1L;
+  private final SoundPackage soundPackage;
+
+  public SoundPackageUploadComplete(final Object source,
+      final SoundPackage soundPackage) {
     super(source);
     this.soundPackage = soundPackage;
   }

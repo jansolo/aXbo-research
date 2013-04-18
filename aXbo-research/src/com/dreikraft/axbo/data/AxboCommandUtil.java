@@ -6,6 +6,7 @@ import com.dreikraft.axbo.util.ByteUtil;
 import com.dreikraft.axbo.util.StringUtil;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.Calendar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,15 +62,15 @@ public class AxboCommandUtil {
     byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0xC8, // set date command
-      (byte) (Math.floor((cal.get(Calendar.YEAR) - 2000) / 10)), // year 1. digit
+      (byte) ((cal.get(Calendar.YEAR) - 2000) / 10), // year 1. digit
       (byte) ((cal.get(Calendar.YEAR) - 2000) % 10), // year 2. digit
-      (byte) (Math.floor((cal.get(Calendar.MONTH) + 1) / 10)), // month 1. digit
+      (byte) ((cal.get(Calendar.MONTH) + 1) / 10), // month 1. digit
       (byte) ((cal.get(Calendar.MONTH) + 1) % 10), // month 2. digit
-      (byte) (Math.floor(cal.get(Calendar.DAY_OF_MONTH) / 10)), // day 1.digit
+      (byte) (cal.get(Calendar.DAY_OF_MONTH) / 10), // day 1.digit
       (byte) (cal.get(Calendar.DAY_OF_MONTH) % 10), // day 2.digit
-      (byte) (Math.floor(cal.get(Calendar.HOUR_OF_DAY) / 10)), // hour 1.digit
+      (byte) (cal.get(Calendar.HOUR_OF_DAY) / 10), // hour 1.digit
       (byte) (cal.get(Calendar.HOUR_OF_DAY) % 10), // hour 2.digit
-      (byte) (Math.floor(cal.get(Calendar.MINUTE) / 10)), // minute 1.digit
+      (byte) (cal.get(Calendar.MINUTE) / 10), // minute 1.digit
       (byte) (cal.get(Calendar.MINUTE) % 10), // minute 2.digit
       (byte) 0x00, (byte) 0x00, // second
       (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0x00 // protocal end + checksum
@@ -79,7 +80,7 @@ public class AxboCommandUtil {
     cmd[cmd.length - 2] = (byte) (checksum >> 8 & 0x000000FF);
     cmd[cmd.length - 1] = (byte) (checksum & 0x000000FF);
     if (log.isDebugEnabled()) {
-      log.debug("data: " + cmd);
+      log.debug("data: " + Arrays.toString(cmd));
     }
 
     return escapeDLE(cmd);

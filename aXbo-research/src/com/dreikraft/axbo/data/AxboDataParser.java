@@ -242,6 +242,7 @@ enum AxboDataStates implements AxboDataState {
         case AxboDataParser.NACK: // NACK
           ctx.setState(AxboDataStates.NACK);
           break;
+        default:
       }
     }
   },
@@ -404,7 +405,8 @@ enum AxboDataStates implements AxboDataState {
           for (int i = 17; i < 17 + 8; i++) {
             if ((data[i] >= 0 && data[i] <= 9) || (data[i] >= 48 && data[i]
                 <= 57)) {
-              serialNumber.append((char) (data[i] < 48 ? data[i] + 48 : data[i]));
+              serialNumber
+                  .append((char) (data[i] < 48 ? data[i] + 48 : data[i]));
             }
           }
           if (serialNumber.toString().equals("00000000")) {
@@ -415,7 +417,7 @@ enum AxboDataStates implements AxboDataState {
               new String(hw).trim(), new String(version).trim(),
               String.valueOf(ByteUtil.hexToDec(rtc)));
           final InfoEvent info = new InfoEvent(this, axboData);
-          ApplicationEventDispatcher.getInstance().dispatchGUIEvent(info);
+          ApplicationEventDispatcher.getInstance().dispatchEvent(info);
 
           // notify data processed successfully
           DeviceContext.getDeviceType().getDataInterface().dataReceived();
@@ -429,7 +431,7 @@ enum AxboDataStates implements AxboDataState {
           }
 
           // reduce sender ids from 8 two 2
-          final SensorID sensorId = (data[1]) % 2 == 1 ? SensorID.P1
+          final SensorID sensorId = (data[1]) % 2 != 0 ? SensorID.P1
               : SensorID.P2;
 
           // create movement event from record
@@ -446,8 +448,8 @@ enum AxboDataStates implements AxboDataState {
           movementData.setMovementsX(ByteUtil.upperNibble(data[15]) + ByteUtil.
               lowerNibble(data[15]));
           if (data.length == 18) {
-            movementData.setMovementsY(ByteUtil.upperNibble(data[16]) + ByteUtil.
-                lowerNibble(data[16]));
+            movementData.setMovementsY(ByteUtil.upperNibble(data[16]) + ByteUtil
+                .lowerNibble(data[16]));
           } else {
             movementData.setMovementsY(0);
           }
@@ -460,7 +462,8 @@ enum AxboDataStates implements AxboDataState {
           }
 
           // put the event into the event queue
-          ApplicationEventDispatcher.getInstance().dispatchGUIEvent(movementEvent);
+          ApplicationEventDispatcher.getInstance().dispatchEvent(
+              movementEvent);
 
           // notify data processed successfully
           DeviceContext.getDeviceType().getDataInterface().dataReceived();
@@ -471,8 +474,12 @@ enum AxboDataStates implements AxboDataState {
           // notify data processed successfully
           DeviceContext.getDeviceType().getDataInterface().dataReceived();
           break;
+        default:
+          if (AxboDataParser.log.isDebugEnabled())
+            AxboDataParser.log.debug("Unhandled command: " + ByteUtil.dumpByte(
+                data[0]));
       }
-    } catch (Exception ex) {
+    } catch (RuntimeException ex) {
       AxboDataParser.log.error("failed to process data:" + ByteUtil.
           dumpByteArray(data), ex);
     }

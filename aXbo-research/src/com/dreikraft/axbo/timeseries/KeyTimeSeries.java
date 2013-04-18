@@ -31,7 +31,6 @@ public class KeyTimeSeries extends TimeSeries
   {
     super(name);
     this.sleepData = sleepData;
-    this.sleepData.addPropertyChangeListener(this);
     this.timePeriodClass = timePeriodClass;
     this.keyType = keyType;
 
@@ -39,11 +38,6 @@ public class KeyTimeSeries extends TimeSeries
     {
       addMovementData(movement);
     }
-  }
-
-  public void close()
-  {
-    sleepData.removePropertyChangeListener(this);
   }
 
   public SleepData getSleepData()
