@@ -57,8 +57,7 @@ public class BackgroundImagePanel extends javax.swing.JPanel {
   public void setBackgroundImageFilename(String backgroundImageFilename) {
     this.backgroundImageFilename = backgroundImageFilename;
     try {
-      backgroundImage = javax.imageio.ImageIO.read(getClass().getClassLoader()
-          .getResource(
+      backgroundImage = javax.imageio.ImageIO.read(getClass().getResource(
           backgroundImageFilename));
     } catch (java.io.IOException ex) {
       log.error("can not load background image", ex);
