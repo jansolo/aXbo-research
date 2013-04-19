@@ -442,6 +442,7 @@ public class AxboFrame extends JFrame
 
     btnCompare.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/ruler-32.png"))); // NOI18N
     btnCompare.setText(bundle.getString("compareMenuItem.text")); // NOI18N
+    btnCompare.setToolTipText(bundle.getString("button.compare.tooltip")); // NOI18N
     btnCompare.setBorderPainted(false);
     btnCompare.setFocusable(false);
     btnCompare.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -462,6 +463,7 @@ public class AxboFrame extends JFrame
 
     btnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/printer-32.png"))); // NOI18N
     btnPrint.setText(bundle.getString("menu.file.print")); // NOI18N
+    btnPrint.setToolTipText(bundle.getString("button.print.tooltip")); // NOI18N
     btnPrint.setBorderPainted(false);
     btnPrint.setFocusable(false);
     btnPrint.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -482,6 +484,7 @@ public class AxboFrame extends JFrame
 
     btnCloseAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-cross-32.png"))); // NOI18N
     btnCloseAll.setText(bundle.getString("menu.file.closeAll")); // NOI18N
+    btnCloseAll.setToolTipText(bundle.getString("button.closeAll.tooltip")); // NOI18N
     btnCloseAll.setBorderPainted(false);
     btnCloseAll.setFocusable(false);
     btnCloseAll.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
