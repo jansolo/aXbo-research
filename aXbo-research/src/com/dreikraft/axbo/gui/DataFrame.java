@@ -29,7 +29,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import org.apache.commons.logging.Log;
@@ -118,12 +117,6 @@ public class DataFrame extends JPanel implements Printable {
     plot.setBackgroundPaint(CHART_BG_COLOR);
     plot.setBackgroundImageAlpha(0.05f);
     plot.setBackgroundImageAlignment(Align.CENTER);
-    try {
-      plot.setBackgroundImage(ImageIO.read(getClass().
-          getResource("/resources/images/aXbo-logo-software-small.png")));
-    } catch (IOException ex) {
-      log.error(ex.getMessage(), ex);
-    }
     plot.setRangeGridlinesVisible(true);
     plot.setRangeGridlineStroke(new BasicStroke());
     plot.setRangeGridlinePaint(GRID_COLOR);
@@ -366,7 +359,7 @@ public class DataFrame extends JPanel implements Printable {
       lblSleepStart.setVisible(true);
       lblSleepStartValue.setVisible(true);
       lblSpacerSleepStart.setVisible(true);
-      
+
       Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
       cal.setTime(new Date(sleepData.calculateLatency()));
       lblLatencyValue.setText(String.format("%tT", cal));
