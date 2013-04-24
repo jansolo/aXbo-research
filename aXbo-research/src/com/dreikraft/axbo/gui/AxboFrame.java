@@ -46,37 +46,30 @@ import org.apache.commons.logging.*;
 
 /**
  * AxboFrame
- * 
+ *
  * @author jan.illetschko@3kraft.com
  */
-public class AxboFrame extends JFrame
-{
+public class AxboFrame extends JFrame {
 
   private static Log log = LogFactory.getLog(AxboFrame.class);
   private SplashScreen splashScreen;
 
-  public void init()
-  {
+  public void init() {
     initComponents();
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     modifyColumnWidths();
   }
 
-  public void jumpToDataView(final DataFrame dataView)
-  {
+  public void jumpToDataView(final DataFrame dataView) {
     dataViewsPanel.revalidate();
-    SwingUtilities.invokeLater(new Runnable()
-    {
-
+    SwingUtilities.invokeLater(new Runnable() {
       @Override
-      public void run()
-      {
+      public void run() {
         final double dataViewPosY = dataView.getLocation().getY();
         int scrollPosY = (int) dataViewPosY;
         final int dataViewsHeight = dataViewsPanel.getHeight();
         final int viewportHeight = dataScrollPane.getViewport().getHeight();
-        if (dataViewsHeight < viewportHeight + dataViewPosY)
-        {
+        if (dataViewsHeight < viewportHeight + dataViewPosY) {
           scrollPosY = dataViewsHeight - viewportHeight;
         }
         dataScrollPane.getViewport().setViewPosition(new Point(0, scrollPosY));
@@ -84,18 +77,15 @@ public class AxboFrame extends JFrame
     });
   }
 
-  public List<DataFrame> getDataViews()
-  {
+  public List<DataFrame> getDataViews() {
     final List<DataFrame> dataViews = new ArrayList<DataFrame>();
-    for (final Component component : dataViewsPanel.getComponents())
-    {
+    for (final Component component : dataViewsPanel.getComponents()) {
       dataViews.add((DataFrame) component);
     }
     return dataViews;
   }
 
-  public void addDataView(final DataFrame view)
-  {
+  public void addDataView(final DataFrame view) {
     final GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 0;
     gbc.gridy = GridBagConstraints.RELATIVE;
@@ -112,14 +102,12 @@ public class AxboFrame extends JFrame
     dataViewsPanel.add(view, gbc);
   }
 
-  public void updateDataViewsPanel()
-  {
+  public void updateDataViewsPanel() {
     dataViewsPanel.revalidate();
     dataViewsPanel.repaint();
   }
 
-  private void modifyColumnWidths()
-  {
+  private void modifyColumnWidths() {
     metaDataTable.getColumnModel().getColumn(0).setPreferredWidth(85);
     metaDataTable.getColumnModel().getColumn(0).setMaxWidth(85);
     metaDataTable.getColumnModel().getColumn(0).setMinWidth(85);
@@ -133,102 +121,90 @@ public class AxboFrame extends JFrame
     metaDataTable.getColumnModel().getColumn(2).setPreferredWidth(70);
   }
 
-  public void showMessage(final String msg, final boolean isErrorMsg)
-  {
+  public void showMessage(final String msg, final boolean isErrorMsg) {
     JOptionPane.showMessageDialog(this, msg, isErrorMsg ? BundleUtil.getMessage(
         "errorMessageBox.title") : BundleUtil.getMessage("infoMessageBox.title"),
         isErrorMsg ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE);
   }
 
-  public int showOptionMessage(String msg, String title)
-  {
+  public int showOptionMessage(String msg, String title) {
     return JOptionPane.showConfirmDialog(this, msg, title,
         JOptionPane.OK_CANCEL_OPTION);
   }
 
-  public MetaDataTableModel getMetaDataTableModel()
-  {
+  public MetaDataTableModel getMetaDataTableModel() {
     return (MetaDataTableModel) metaDataTable.getModel();
   }
 
-  public void showDeviceEnabled()
-  {
+  public void showDeviceEnabled() {
     this.statusTextLabel.setIcon(new javax.swing.ImageIcon(
         getClass().getResource("/resources/images/link-16.png")));
     this.statusTextLabel.setToolTipText(BundleUtil.getMessage(
         "toolTip.deviceEnabled"));
   }
 
-  public void showDeviceDisabled()
-  {
+  public void showDeviceDisabled() {
     this.statusTextLabel.setIcon(new javax.swing.ImageIcon(
         getClass().getResource("/resources/images/link-broken-16.png")));
     this.statusTextLabel.setToolTipText(BundleUtil.getMessage(
         "toolTip.deviceDisabled"));
   }
 
-  public void setMetaDataTableModel(final MetaDataTableModel model)
-  {
+  public void setMetaDataTableModel(final MetaDataTableModel model) {
     metaDataTable.setModel(model);
     modifyColumnWidths();
   }
 
-  public void showStatusMessage(final String text)
-  {
+  public void showStatusMessage(final String text) {
     statusTextLabel.setText(text);
   }
 
-  public void setStatusProgressBarLength(int len)
-  {
+  public void setStatusProgressBarLength(int len) {
     statusProgressBar.setMaximum(len);
   }
 
-  public void setStatusProgressBarValue(int val)
-  {
+  public void setStatusProgressBarStringPainted(boolean painted) {
+    statusProgressBar.setStringPainted(painted);
+  }
+
+  public void setStatusProgressBarValue(int val) {
     statusProgressBar.setValue(val);
   }
 
-  public void setStatusProgressBarIndeterminate(boolean b)
-  {
+  public void setStatusProgressBarIndeterminate(boolean b) {
     statusProgressBar.setIndeterminate(b);
   }
 
-  public void showSplashScreen()
-  {
-    try
-    {
+  public void showSplashScreen() {
+    try {
       this.splashScreen = new SplashScreen();
       this.splashScreen.setImageURL(this.getClass().getResource(
           "/resources/images/SplashScreen-11_07.gif"));
       this.splashScreen.setVisible(true);
-      if (!this.isVisible())
-      {
+      if (!this.isVisible()) {
         Rectangle screenRect = this.getGraphicsConfiguration().getBounds();
         splashScreen.setLocation(
             screenRect.x + screenRect.width / 2 - splashScreen.getBounds().width
             / 2,
-            screenRect.y + screenRect.height / 2 - splashScreen.getBounds().height
+            screenRect.y + screenRect.height / 2
+            - splashScreen.getBounds().height
             / 2);
-      }
-      else
-      {
+      } else {
         Rectangle screenRect = this.getBounds();
         splashScreen.setLocation(
             screenRect.x + screenRect.width / 2 - splashScreen.getBounds().width
             / 2,
-            screenRect.y + screenRect.height / 2 - splashScreen.getBounds().height
+            screenRect.y + screenRect.height / 2
+            - splashScreen.getBounds().height
             / 2);
       }
 
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       log.error(ex.getMessage(), ex);
     }
   }
 
-  public void hideSplashScreen()
-  {
+  public void hideSplashScreen() {
     this.setVisible(true);
     this.splashScreen.setVisible(false);
     this.splashScreen = null;
@@ -237,12 +213,10 @@ public class AxboFrame extends JFrame
 
   public void showSummary(final long sumDuration, final long avgDuration,
       final long minDuration, final long maxDuration, final long timeSaving,
-      final int count)
-  {
+      final int count) {
     legendPanel.setVisible(getDataViews().size() > 0);
 
-    if (sumDuration != 0)
-    {
+    if (sumDuration != 0) {
       summaryPanel.setVisible(true);
 
       final Calendar cal = Calendar.getInstance(
@@ -258,17 +232,15 @@ public class AxboFrame extends JFrame
       lblTimeSavingsValue.setText(String.format("%tR", cal));
 
       lblCountSelecetedVal.setText(String.format("%-2d", count));
-    }
-    else
-    {
+    } else {
       summaryPanel.setVisible(false);
     }
   }
 
-  /** This method is called from within the constructor to
-   * initialize the form.
-   * WARNING: Do NOT modify this code. The content of this method is
-   * always regenerated by the Form Editor.
+  /**
+   * This method is called from within the constructor to initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is always
+   * regenerated by the Form Editor.
    */
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
@@ -319,16 +291,16 @@ public class AxboFrame extends JFrame
     legendPanel = new javax.swing.JPanel();
     lblLegendMovementColor = new javax.swing.JLabel();
     lblLegendMovement = new javax.swing.JLabel();
-    lblLegendKeyColor = new javax.swing.JLabel();
-    lblLegendKey = new javax.swing.JLabel();
     lblLegendSleepStartColor = new javax.swing.JLabel();
     lblLegendSleepStart = new javax.swing.JLabel();
+    lblLegendKeyColor = new javax.swing.JLabel();
+    lblLegendKey = new javax.swing.JLabel();
+    lblLegendWakeIntervalColor = new javax.swing.JLabel();
+    lblLegendWakeInterval = new javax.swing.JLabel();
     lblLegendWakeTimeColor = new javax.swing.JLabel();
     lblLegendWakeTime = new javax.swing.JLabel();
     lblLegendSnoozeColor = new javax.swing.JLabel();
     lblLegendSnooze = new javax.swing.JLabel();
-    lblLegendWakeIntervalColor = new javax.swing.JLabel();
-    lblLegendWakeInterval = new javax.swing.JLabel();
     statusTextPanel = new javax.swing.JPanel();
     statusTextLabel = new javax.swing.JLabel();
     statusProgressBar = new javax.swing.JProgressBar();
@@ -409,19 +381,24 @@ public class AxboFrame extends JFrame
 
     mainToolbar.setLayout(new java.awt.BorderLayout());
 
-    dataToolbarPanel.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagLayout dataToolbarPanelLayout = new java.awt.GridBagLayout();
+    dataToolbarPanelLayout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0};
+    dataToolbarPanelLayout.rowHeights = new int[] {0};
+    dataToolbarPanel.setLayout(dataToolbarPanelLayout);
 
     loadDataButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/inbox-32.png"))); // NOI18N
-    loadDataButton.setText(bundle.getString("menu.device.readStoredData")); // NOI18N
+    loadDataButton.setText(bundle.getString("button.loadData")); // NOI18N
     loadDataButton.setToolTipText(bundle.getString("button.loadData.tooltip")); // NOI18N
     loadDataButton.setBorderPainted(false);
     loadDataButton.setFocusable(false);
     loadDataButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     loadDataButton.setIconTextGap(2);
-    loadDataButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    loadDataButton.setMaximumSize(new java.awt.Dimension(90, 80));
+    loadDataButton.setMinimumSize(new java.awt.Dimension(90, 80));
     loadDataButton.setMultiClickThreshhold(1000L);
+    loadDataButton.setPreferredSize(new java.awt.Dimension(90, 80));
     loadDataButton.setRequestFocusEnabled(false);
-    loadDataButton.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    loadDataButton.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     loadDataButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     loadDataButton.putClientProperty("JButton.buttonType", "segmentedTextured");
     loadDataButton.putClientProperty("JButton.segmentPosition", "middle");
@@ -431,20 +408,24 @@ public class AxboFrame extends JFrame
       }
     });
     gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(loadDataButton, gridBagConstraints);
 
     btnCompare.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/ruler-32.png"))); // NOI18N
-    btnCompare.setText(bundle.getString("compareMenuItem.text")); // NOI18N
+    btnCompare.setText(bundle.getString("button.compare")); // NOI18N
     btnCompare.setToolTipText(bundle.getString("button.compare.tooltip")); // NOI18N
     btnCompare.setBorderPainted(false);
     btnCompare.setFocusable(false);
     btnCompare.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnCompare.setIconTextGap(2);
-    btnCompare.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    btnCompare.setMaximumSize(new java.awt.Dimension(90, 80));
+    btnCompare.setMinimumSize(new java.awt.Dimension(90, 80));
     btnCompare.setMultiClickThreshhold(1000L);
+    btnCompare.setPreferredSize(new java.awt.Dimension(90, 80));
     btnCompare.setRequestFocusEnabled(false);
-    btnCompare.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    btnCompare.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     btnCompare.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     btnCompare.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -452,20 +433,24 @@ public class AxboFrame extends JFrame
       }
     });
     gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 2;
+    gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnCompare, gridBagConstraints);
 
     btnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/printer-32.png"))); // NOI18N
-    btnPrint.setText(bundle.getString("menu.file.print")); // NOI18N
+    btnPrint.setText(bundle.getString("button.print")); // NOI18N
     btnPrint.setToolTipText(bundle.getString("button.print.tooltip")); // NOI18N
     btnPrint.setBorderPainted(false);
     btnPrint.setFocusable(false);
     btnPrint.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnPrint.setIconTextGap(2);
-    btnPrint.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    btnPrint.setMaximumSize(new java.awt.Dimension(90, 80));
+    btnPrint.setMinimumSize(new java.awt.Dimension(90, 80));
     btnPrint.setMultiClickThreshhold(1000L);
+    btnPrint.setPreferredSize(new java.awt.Dimension(90, 80));
     btnPrint.setRequestFocusEnabled(false);
-    btnPrint.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    btnPrint.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     btnPrint.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     btnPrint.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -473,20 +458,24 @@ public class AxboFrame extends JFrame
       }
     });
     gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 4;
+    gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnPrint, gridBagConstraints);
 
     btnCloseAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-cross-32.png"))); // NOI18N
-    btnCloseAll.setText(bundle.getString("menu.file.closeAll")); // NOI18N
+    btnCloseAll.setText(bundle.getString("button.closeAll")); // NOI18N
     btnCloseAll.setToolTipText(bundle.getString("button.closeAll.tooltip")); // NOI18N
     btnCloseAll.setBorderPainted(false);
     btnCloseAll.setFocusable(false);
     btnCloseAll.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnCloseAll.setIconTextGap(2);
-    btnCloseAll.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    btnCloseAll.setMaximumSize(new java.awt.Dimension(90, 80));
+    btnCloseAll.setMinimumSize(new java.awt.Dimension(90, 80));
     btnCloseAll.setMultiClickThreshhold(1000L);
+    btnCloseAll.setPreferredSize(new java.awt.Dimension(90, 80));
     btnCloseAll.setRequestFocusEnabled(false);
-    btnCloseAll.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    btnCloseAll.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     btnCloseAll.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     btnCloseAll.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -494,6 +483,8 @@ public class AxboFrame extends JFrame
       }
     });
     gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 6;
+    gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnCloseAll, gridBagConstraints);
 
@@ -646,50 +637,61 @@ public class AxboFrame extends JFrame
     summaryPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
     summaryPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
-    lblSleepDuration.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDuration.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDuration.setForeground(new java.awt.Color(193, 155, 62));
     lblSleepDuration.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
     lblSleepDuration.setText(bundle.getString("lblSleepDuration")); // NOI18N
     summaryPanel.add(lblSleepDuration);
 
-    lblSleepDurationMin.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationMin.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationMin.setForeground(new java.awt.Color(193, 155, 62));
     lblSleepDurationMin.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
     lblSleepDurationMin.setText(bundle.getString("lblSleepDurationMin")); // NOI18N
     summaryPanel.add(lblSleepDurationMin);
 
-    lblSleepDurationMinValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationMinValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationMinValue.setForeground(new java.awt.Color(193, 155, 62));
     lblSleepDurationMinValue.setText("--:--:--");
     summaryPanel.add(lblSleepDurationMinValue);
 
-    lblSleepDurationMax.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationMax.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationMax.setForeground(new java.awt.Color(193, 155, 62));
     lblSleepDurationMax.setText(bundle.getString("lblSleepDurationMax")); // NOI18N
     summaryPanel.add(lblSleepDurationMax);
 
-    lblSleepDurationMaxValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationMaxValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationMaxValue.setForeground(new java.awt.Color(193, 155, 62));
     lblSleepDurationMaxValue.setText("--:--:--");
     summaryPanel.add(lblSleepDurationMaxValue);
 
-    lblSleepDurationAvg.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationAvg.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationAvg.setForeground(new java.awt.Color(193, 155, 62));
     lblSleepDurationAvg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
     lblSleepDurationAvg.setText(bundle.getString("lblSleepDurationAvg")); // NOI18N
     summaryPanel.add(lblSleepDurationAvg);
 
-    lblSleepDurationAvgValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblSleepDurationAvgValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationAvgValue.setForeground(new java.awt.Color(193, 155, 62));
     lblSleepDurationAvgValue.setText("--:--:--");
     summaryPanel.add(lblSleepDurationAvgValue);
 
-    lblTimeSavings.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblTimeSavings.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblTimeSavings.setForeground(new java.awt.Color(193, 155, 62));
     lblTimeSavings.setText(bundle.getString("lblTimeSaving")); // NOI18N
     summaryPanel.add(lblTimeSavings);
 
-    lblTimeSavingsValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblTimeSavingsValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblTimeSavingsValue.setForeground(new java.awt.Color(193, 155, 62));
     lblTimeSavingsValue.setText("--:--");
     summaryPanel.add(lblTimeSavingsValue);
 
-    lblCountSelected.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblCountSelected.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblCountSelected.setForeground(new java.awt.Color(193, 155, 62));
     lblCountSelected.setText(bundle.getString("lblCountSelected")); // NOI18N
     summaryPanel.add(lblCountSelected);
 
-    lblCountSelecetedVal.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblCountSelecetedVal.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblCountSelecetedVal.setForeground(new java.awt.Color(193, 155, 62));
     lblCountSelecetedVal.setText("--");
     summaryPanel.add(lblCountSelecetedVal);
 
@@ -700,64 +702,70 @@ public class AxboFrame extends JFrame
     legendPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
     lblLegendMovementColor.setBackground(DataFrame.BAR_COLOR);
-    lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
     lblLegendMovementColor.setText("  ");
     lblLegendMovementColor.setOpaque(true);
     legendPanel.add(lblLegendMovementColor);
 
-    lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendMovement.setForeground(new java.awt.Color(255, 212, 107));
     lblLegendMovement.setText(bundle.getString("lblLegendMovements")); // NOI18N
     legendPanel.add(lblLegendMovement);
 
-    lblLegendKeyColor.setBackground(DataFrame.KEY_PAINT);
-    lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLegendKeyColor.setText("  ");
-    lblLegendKeyColor.setOpaque(true);
-    legendPanel.add(lblLegendKeyColor);
-
-    lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLegendKey.setText(bundle.getString("lblLegendKeys")); // NOI18N
-    legendPanel.add(lblLegendKey);
-
     lblLegendSleepStartColor.setBackground(DataFrame.SLEEP_MARKER_PAINT);
-    lblLegendSleepStartColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendSleepStartColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
     lblLegendSleepStartColor.setText("  ");
     lblLegendSleepStartColor.setOpaque(true);
     legendPanel.add(lblLegendSleepStartColor);
 
-    lblLegendSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendSleepStart.setForeground(new java.awt.Color(243, 101, 252));
     lblLegendSleepStart.setText(bundle.getString("lblLegendSleepStart")); // NOI18N
     legendPanel.add(lblLegendSleepStart);
 
-    lblLegendWakeTimeColor.setBackground(DataFrame.WAKE_PAINT);
-    lblLegendWakeTimeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLegendWakeTimeColor.setText("  ");
-    lblLegendWakeTimeColor.setOpaque(true);
-    legendPanel.add(lblLegendWakeTimeColor);
+    lblLegendKeyColor.setBackground(DataFrame.KEY_PAINT);
+    lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendKeyColor.setText("  ");
+    lblLegendKeyColor.setOpaque(true);
+    legendPanel.add(lblLegendKeyColor);
 
-    lblLegendWakeTime.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLegendWakeTime.setText(bundle.getString("lblLegendWakeupTime")); // NOI18N
-    legendPanel.add(lblLegendWakeTime);
-
-    lblLegendSnoozeColor.setBackground(DataFrame.SNOOZE_PAINT);
-    lblLegendSnoozeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLegendSnoozeColor.setText("  ");
-    lblLegendSnoozeColor.setOpaque(true);
-    legendPanel.add(lblLegendSnoozeColor);
-
-    lblLegendSnooze.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLegendSnooze.setText(bundle.getString("lblLegendSnooze")); // NOI18N
-    legendPanel.add(lblLegendSnooze);
+    lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendKey.setForeground(new java.awt.Color(125, 155, 255));
+    lblLegendKey.setText(bundle.getString("lblLegendKeys")); // NOI18N
+    legendPanel.add(lblLegendKey);
 
     lblLegendWakeIntervalColor.setBackground(DataFrame.WAKE_INTERVALL_PAINT);
-    lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
     lblLegendWakeIntervalColor.setText("  ");
     lblLegendWakeIntervalColor.setOpaque(true);
     legendPanel.add(lblLegendWakeIntervalColor);
 
-    lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+    lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendWakeInterval.setForeground(new java.awt.Color(130, 109, 61));
     lblLegendWakeInterval.setText(bundle.getString("lblLegendWakeInterval")); // NOI18N
     legendPanel.add(lblLegendWakeInterval);
+
+    lblLegendWakeTimeColor.setBackground(DataFrame.WAKE_PAINT);
+    lblLegendWakeTimeColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendWakeTimeColor.setText("  ");
+    lblLegendWakeTimeColor.setOpaque(true);
+    legendPanel.add(lblLegendWakeTimeColor);
+
+    lblLegendWakeTime.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendWakeTime.setForeground(new java.awt.Color(16, 206, 21));
+    lblLegendWakeTime.setText(bundle.getString("lblLegendWakeupTime")); // NOI18N
+    legendPanel.add(lblLegendWakeTime);
+
+    lblLegendSnoozeColor.setBackground(DataFrame.SNOOZE_PAINT);
+    lblLegendSnoozeColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendSnoozeColor.setText("  ");
+    lblLegendSnoozeColor.setOpaque(true);
+    legendPanel.add(lblLegendSnoozeColor);
+
+    lblLegendSnooze.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendSnooze.setForeground(new java.awt.Color(255, 255, 255));
+    lblLegendSnooze.setText(bundle.getString("lblLegendSnooze")); // NOI18N
+    legendPanel.add(lblLegendSnooze);
 
     infoPanel.add(legendPanel, java.awt.BorderLayout.SOUTH);
 
@@ -780,7 +788,6 @@ public class AxboFrame extends JFrame
     statusProgressBar.setMinimumSize(new java.awt.Dimension(20, 20));
     statusProgressBar.setPreferredSize(new java.awt.Dimension(200, 20));
     statusProgressBar.setRequestFocusEnabled(false);
-    statusProgressBar.setStringPainted(true);
     statusProgressBar.putClientProperty("JProgressBar.style", "circular");
     statusTextPanel.add(statusProgressBar, java.awt.BorderLayout.EAST);
 
@@ -903,11 +910,11 @@ public class AxboFrame extends JFrame
   }// </editor-fold>//GEN-END:initComponents
   private void resetClockMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_resetClockMenuItemActionPerformed
   {//GEN-HEADEREND:event_resetClockMenuItemActionPerformed
-    int result = showOptionMessage(BundleUtil.getMessage("message.confirmReset"),
+    int result =
+        showOptionMessage(BundleUtil.getMessage("message.confirmReset"),
         BundleUtil.getMessage("infoMessageBox.title"));
 
-    if (result == JOptionPane.OK_OPTION)
-    {
+    if (result == JOptionPane.OK_OPTION) {
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new AxboReset(
           this));
     }
@@ -915,30 +922,25 @@ public class AxboFrame extends JFrame
 
   private void deleteMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_deleteMenuItemActionPerformed
   {//GEN-HEADEREND:event_deleteMenuItemActionPerformed
-    if (metaDataTable.getSelectedRowCount() > 0)
-    {
+    if (metaDataTable.getSelectedRowCount() > 0) {
       int response = showOptionMessage(BundleUtil.getMessage(
           "notification.message.delete"), BundleUtil.getMessage(
           "infoMessageBox.title"));
-      if (response == JOptionPane.OK_OPTION)
-      {
+      if (response == JOptionPane.OK_OPTION) {
         int selectedRows[] = metaDataTable.getSelectedRows();
         ArrayList<SleepData> tmpSleepData =
             new ArrayList<SleepData>(Array.getLength(selectedRows));
-        for (int selectedRowIdx : selectedRows)
-        {
+        for (int selectedRowIdx : selectedRows) {
           tmpSleepData.add(getMetaDataTableModel().getSleepDataAt(
               metaDataTable.convertRowIndexToModel(selectedRowIdx)));
         }
-        for (SleepData sleepData : tmpSleepData)
-        {
-          ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataDelete(
+        for (SleepData sleepData : tmpSleepData) {
+          ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+              new SleepDataDelete(
               this, sleepData));
         }
       }
-    }
-    else
-    {
+    } else {
       showMessage(BundleUtil.getErrorMessage(
           "MetaDataTableModel.nothingSelected"), true);
     }
@@ -946,13 +948,15 @@ public class AxboFrame extends JFrame
 
   private void formWindowClosed(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosed
   {//GEN-HEADEREND:event_formWindowClosed
-    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new AxboDisconnect(
+    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+        new AxboDisconnect(
         this));
   }//GEN-LAST:event_formWindowClosed
 
   private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadDataButtonActionPerformed
   {//GEN-HEADEREND:event_loadDataButtonActionPerformed
-    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataImport(
+    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+        new SleepDataImport(
         this));
   }//GEN-LAST:event_loadDataButtonActionPerformed
 
@@ -964,9 +968,9 @@ public class AxboFrame extends JFrame
 
   private void closeAllMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_closeAllMenuItemActionPerformed
   {//GEN-HEADEREND:event_closeAllMenuItemActionPerformed
-    for (final Component dataView : dataViewsPanel.getComponents())
-    {
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new DiagramClose(
+    for (final Component dataView : dataViewsPanel.getComponents()) {
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+          new DiagramClose(
           log, (DataFrame) dataView));
     }
   }//GEN-LAST:event_closeAllMenuItemActionPerformed
@@ -985,7 +989,8 @@ public class AxboFrame extends JFrame
 
   private void readStoredDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_readStoredDataMenuItemActionPerformed
   {//GEN-HEADEREND:event_readStoredDataMenuItemActionPerformed
-    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataImport(
+    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+        new SleepDataImport(
         this));
   }//GEN-LAST:event_readStoredDataMenuItemActionPerformed
 
@@ -997,25 +1002,22 @@ public class AxboFrame extends JFrame
 
   private void metaDataTableMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_metaDataTableMouseClicked
   {//GEN-HEADEREND:event_metaDataTableMouseClicked
-    if (evt.getButton() == MouseEvent.BUTTON3)
-    {
+    if (evt.getButton() == MouseEvent.BUTTON3) {
       int row = metaDataTable.rowAtPoint(evt.getPoint());
       metaDataTable.getSelectionModel().addSelectionInterval(row, row);
     }
 
     // is it a double click, open a new internal frame with the selected sleep data
-    if (evt.getClickCount() == 2)
-    {
+    if (evt.getClickCount() == 2) {
       int[] selectedRows = metaDataTable.getSelectedRows();
       final List<SleepData> sleepDataList = new ArrayList<SleepData>();
-      for (int row : selectedRows)
-      {
+      for (int row : selectedRows) {
         sleepDataList.add(getMetaDataTableModel().getSleepDataAt(metaDataTable.
             convertRowIndexToModel(row)));
       }
-      if (sleepDataList.size() > 0)
-      {
-        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataOpen(
+      if (sleepDataList.size() > 0) {
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new SleepDataOpen(
             this, sleepDataList));
       }
     }
@@ -1023,8 +1025,7 @@ public class AxboFrame extends JFrame
 
   private void searchTextFieldsKeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_searchTextFieldsKeyPressed
   {//GEN-HEADEREND:event_searchTextFieldsKeyPressed
-    if (evt.getKeyCode() == KeyEvent.VK_ENTER)
-    {
+    if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new DataSearch(
           this, searchNameTextField.getText(), searchDateFromTextField.getDate(),
           searchDateToTextField.getDate()));
@@ -1039,7 +1040,8 @@ public class AxboFrame extends JFrame
   }//GEN-LAST:event_searchButtonActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ApplicationExit(
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+          new ApplicationExit(
           this));
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
@@ -1051,22 +1053,20 @@ public class AxboFrame extends JFrame
     private void viewMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_viewMenuItemActionPerformed
     {//GEN-HEADEREND:event_viewMenuItemActionPerformed
       int[] selectedRows = metaDataTable.getSelectedRows();
-      if (selectedRows.length < 1)
-      {
+      if (selectedRows.length < 1) {
         showMessage(BundleUtil.getErrorMessage(
             "MetaDataTableModel.nothingSelected"), true);
         return;
       }
       final List<SleepData> sleepDataList = new ArrayList<SleepData>(
           selectedRows.length);
-      for (int selectedRowIdx : selectedRows)
-      {
+      for (int selectedRowIdx : selectedRows) {
         sleepDataList.add(getMetaDataTableModel().getSleepDataAt(metaDataTable.
             convertRowIndexToModel(selectedRowIdx)));
       }
-      if (sleepDataList.size() > 0)
-      {
-        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataOpen(
+      if (sleepDataList.size() > 0) {
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new SleepDataOpen(
             this, sleepDataList));
       }
     }//GEN-LAST:event_viewMenuItemActionPerformed
@@ -1092,52 +1092,46 @@ public class AxboFrame extends JFrame
 
     private void uploadSoundPackageMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_uploadSoundPackageMenuItemActionPerformed
     {//GEN-HEADEREND:event_uploadSoundPackageMenuItemActionPerformed
-      
 
-    final FileFilter filter = new FileFilter()
-    {
 
-      @Override
-      public boolean accept(File f)
-      {
-        if (!(f.getName().toLowerCase(Locale.ENGLISH).indexOf(Axbo.SOUND_DATA_FILE_EXT.
-            toLowerCase()) < 0) || f.isDirectory())
-        {
-          return true;
+      final FileFilter filter = new FileFilter() {
+        @Override
+        public boolean accept(File f) {
+          if (!(f.getName().toLowerCase(Locale.ENGLISH).indexOf(
+              Axbo.SOUND_DATA_FILE_EXT.
+              toLowerCase()) < 0) || f.isDirectory()) {
+            return true;
+          } else {
+            return false;
+          }
         }
-        else
-        {
-          return false;
+
+        @Override
+        public String getDescription() {
+          return "Axbo Sound Package Files";
         }
-      }
+      };
 
-      @Override
-      public String getDescription()
-      {
-        return "Axbo Sound Package Files";
-      }
-    };
+      // open file chooser for directory with sleep data files
+      JFileChooser chooser = new JFileChooser(Axbo.SOUND_PACKAGES_DIR);
+      chooser.setFileFilter(filter);
+      chooser.setMultiSelectionEnabled(false);
+      chooser.setAcceptAllFileFilterUsed(false);
+      chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      int returnVal = chooser.showOpenDialog(this);
 
-    // open file chooser for directory with sleep data files
-    JFileChooser chooser = new JFileChooser(Axbo.SOUND_PACKAGES_DIR);
-    chooser.setFileFilter(filter);
-    chooser.setMultiSelectionEnabled(false);
-    chooser.setAcceptAllFileFilterUsed(false);
-    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    int returnVal = chooser.showOpenDialog(this);
-
-    // process selected directory
-    if (returnVal == JFileChooser.APPROVE_OPTION)
-    {
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+      // process selected directory
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
             new SoundPackageUpload(this, chooser.getSelectedFile()));
-    }
-        
+      }
+
     }//GEN-LAST:event_uploadSoundPackageMenuItemActionPerformed
 
 private void btnCompareActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnCompareActionPerformed
 {//GEN-HEADEREND:event_btnCompareActionPerformed
-  ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataCompare(
+  ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+      new SleepDataCompare(
       this));
 }//GEN-LAST:event_btnCompareActionPerformed
 
@@ -1148,26 +1142,22 @@ private void btnCloseAllActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIR
 
 private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnPrintActionPerformed
 {//GEN-HEADEREND:event_btnPrintActionPerformed
-  if (getDataViews().size() > 0)
-  {
+  if (getDataViews().size() > 0) {
     final PrinterJob job = PrinterJob.getPrinterJob();
-    if (job.printDialog())
-    {
+    if (job.printDialog()) {
       final Book book = new Book();
       job.setPageable(book);
       job.setJobName("aXbo");
       ApplicationEventDispatcher.getInstance().dispatchEvent(new DiagramPrint(
           this, job, book));
-      try
-      {
+      try {
         job.print();
-      }
-      catch (PrinterException ex)
-      {
+      } catch (PrinterException ex) {
         final String msg = BundleUtil.getErrorMessage(
             "globalError.printingFailed");
         log.error(msg, ex);
-        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ApplicationMessageEvent(
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new ApplicationMessageEvent(
             this, msg, true));
       }
     }

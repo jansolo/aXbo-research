@@ -63,17 +63,18 @@ public class DataFrame extends JPanel implements Printable {
 
   public static final Log log = LogFactory.getLog(DataFrame.class);
   public static final Color CHART_BG_COLOR = new Color(0, 0, 0, 0);
-  public static final Color AXIS_COLOR = new Color(80, 80, 80, 200);
-  public static final Color GRID_COLOR = new Color(80, 80, 80, 200);
+  public static final Color AXIS_COLOR = new Color(0x7D, 0x7D, 0x7D, 0xFF);
+  public static final Color GRID_COLOR = new Color(0x7D, 0x7D, 0x7D, 0xFF);
   public static final Color BAR_COLOR = new Color(255, 212, 107, 255);
   public static final Color BAR_COLOR2 = new Color(155, 112, 7, 255);
   public static final GradientPaint BAR_PAINT =
       new GradientPaint(0f, 0f, BAR_COLOR, 0f, 0f, BAR_COLOR2);
-  public static final Color SLEEP_MARKER_PAINT = new Color(255, 107, 212, 255);
-  public static final Color WAKE_PAINT = new Color(107, 255, 212, 255);
-  public static final Color SNOOZE_PAINT = new Color(255, 255, 255, 255);
+  public static final Color SLEEP_MARKER_PAINT = new Color(0xF0, 0x00, 0XFF,
+      0xFF);
+  public static final Color WAKE_PAINT = new Color(0x10, 0xCE, 0x15, 0xFF);
+  public static final Color SNOOZE_PAINT = new Color(0xFF, 0xFF, 0xFF, 0xFF);
   public static final Color WAKE_INTERVALL_PAINT = new Color(155, 112, 7, 64);
-  public static final Color KEY_PAINT = new Color(212, 107, 255, 255);
+  public static final Color KEY_PAINT = new Color(0x2F, 0x5A, 0xE7, 0xFF);
   public static final Stroke MARKER_STROKE = new BasicStroke(1.5f);
   private static final int INSET = 20;
   private static final int PRINT_FONT_SIZE = 8;
@@ -181,7 +182,7 @@ public class DataFrame extends JPanel implements Printable {
       keyMarker.setPaint(KEY_PAINT);
       keyMarker.setOutlinePaint(null);
       keyMarker.setStroke(MARKER_STROKE);
-      plot.addDomainMarker(keyMarker, Layer.BACKGROUND);
+      plot.addDomainMarker(keyMarker, Layer.FOREGROUND);
     }
 
     // snooze keys
@@ -192,7 +193,7 @@ public class DataFrame extends JPanel implements Printable {
       snoozeMarker.setPaint(SNOOZE_PAINT);
       snoozeMarker.setOutlinePaint(null);
       snoozeMarker.setStroke(MARKER_STROKE);
-      plot.addDomainMarker(snoozeMarker, Layer.BACKGROUND);
+      plot.addDomainMarker(snoozeMarker, Layer.FOREGROUND);
     }
 
     // create a new chart panel
@@ -364,26 +365,31 @@ public class DataFrame extends JPanel implements Printable {
       lblSleepStartValue.setText(String.format("%tR", sleepStart));
       lblSleepStart.setVisible(true);
       lblSleepStartValue.setVisible(true);
-
+      lblSpacerSleepStart.setVisible(true);
+      
       Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
       cal.setTime(new Date(sleepData.calculateLatency()));
       lblLatencyValue.setText(String.format("%tT", cal));
       lblLatency.setVisible(true);
       lblLatencyValue.setVisible(true);
+      lblSpacerLatency.setVisible(true);
 
       cal.setTime(new Date(sleepData.calculateDuration()));
       lblDurationValue.setText(String.format("%tT", cal));
       lblDuration.setVisible(true);
       lblDurationValue.setVisible(true);
+      lblSpacerDuration.setVisible(true);
 
       if (sleepData.getWakeupTime() != null) {
         lblWakeupTime.setVisible(true);
         lblWakeupTimeValue.setVisible(true);
         lblWakeupTimeValue.setText(String.format("%tR",
             sleepData.getWakeupTime()));
+        lblSpacerWakeupTime.setVisible(true);
       } else {
         lblWakeupTime.setVisible(false);
         lblWakeupTimeValue.setVisible(false);
+        lblSpacerWakeupTime.setVisible(false);
       }
 
       if (sleepData.calculateTimeSaving() != SleepData.UNSET) {
@@ -391,9 +397,11 @@ public class DataFrame extends JPanel implements Printable {
         lblTimeSavingValue.setText(String.format("%tR", cal));
         lblTimeSaving.setVisible(true);
         lblTimeSavingValue.setVisible(true);
+        lblSpacerTimeSaving.setVisible(true);
       } else {
         lblTimeSaving.setVisible(false);
         lblTimeSavingValue.setVisible(false);
+        lblSpacerTimeSaving.setVisible(false);
       }
 
       if (sleepData.getWakeIntervalStart() != null) {
@@ -402,33 +410,44 @@ public class DataFrame extends JPanel implements Printable {
         lblLatestValue.setText(String.format("%tR", end));
         lblLatest.setVisible(true);
         lblLatestValue.setVisible(true);
+        lblSpacerLatest.setVisible(true);
       } else {
         lblLatest.setVisible(false);
         lblLatestValue.setVisible(false);
+        lblSpacerLatest.setVisible(false);
       }
     } else {
       lblSleepStart.setVisible(false);
       lblSleepStartValue.setVisible(false);
+      lblSpacerSleepStart.setVisible(false);
       lblLatency.setVisible(false);
       lblLatencyValue.setVisible(false);
+      lblSpacerLatency.setVisible(false);
       lblDuration.setVisible(false);
       lblDurationValue.setVisible(false);
+      lblSpacerDuration.setVisible(false);
       lblLatest.setVisible(false);
       lblLatestValue.setVisible(false);
+      lblSpacerLatest.setVisible(false);
       lblTimeSaving.setVisible(false);
       lblTimeSavingValue.setVisible(false);
+      lblSpacerTimeSaving.setVisible(false);
       lblWakeupTime.setVisible(false);
       lblWakeupTimeValue.setVisible(false);
+      lblSpacerWakeupTime.setVisible(false);
     }
 
     if (sleepData.isPowerNap()) {
       lblSleepStart.setText(BundleUtil.getMessage("label.powerNapStart"));
       lblTimeSaving.setVisible(false);
       lblTimeSavingValue.setVisible(false);
+      lblSpacerTimeSaving.setVisible(false);
       lblMovementsAverage.setVisible(false);
       lblMovementsAverageValue.setVisible(false);
       lblLatency.setVisible(false);
       lblLatencyValue.setVisible(false);
+      lblSpacerLatency.setVisible(false);
+      lblSpacerMovementsCount.setVisible(false);
     }
 
     lblMovementsCountValue.setText(String.format("%d",
@@ -471,18 +490,25 @@ public class DataFrame extends JPanel implements Printable {
     pnlStats = new javax.swing.JPanel();
     lblDuration = new javax.swing.JLabel();
     lblDurationValue = new javax.swing.JLabel();
+    lblSpacerDuration = new javax.swing.JLabel();
     lblSleepStart = new javax.swing.JLabel();
     lblSleepStartValue = new javax.swing.JLabel();
+    lblSpacerSleepStart = new javax.swing.JLabel();
     lblLatency = new javax.swing.JLabel();
     lblLatencyValue = new javax.swing.JLabel();
+    lblSpacerLatency = new javax.swing.JLabel();
     lblWakeupTime = new javax.swing.JLabel();
     lblWakeupTimeValue = new javax.swing.JLabel();
+    lblSpacerWakeupTime = new javax.swing.JLabel();
     lblLatest = new javax.swing.JLabel();
     lblLatestValue = new javax.swing.JLabel();
+    lblSpacerLatest = new javax.swing.JLabel();
     lblTimeSaving = new javax.swing.JLabel();
     lblTimeSavingValue = new javax.swing.JLabel();
+    lblSpacerTimeSaving = new javax.swing.JLabel();
     lblMovementsCount = new javax.swing.JLabel();
     lblMovementsCountValue = new javax.swing.JLabel();
+    lblSpacerMovementsCount = new javax.swing.JLabel();
     lblMovementsAverage = new javax.swing.JLabel();
     lblMovementsAverageValue = new javax.swing.JLabel();
     pnlComment = new javax.swing.JPanel();
@@ -532,84 +558,147 @@ public class DataFrame extends JPanel implements Printable {
 
     pnlStats.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 2, 0));
 
-    lblDuration.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblDuration.setForeground(new java.awt.Color(100, 100, 100));
+    lblDuration.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblDuration.setForeground(new java.awt.Color(174, 173, 173));
     lblDuration.setText(bundle.getString("label.sleepDuration")); // NOI18N
     pnlStats.add(lblDuration);
 
-    lblDurationValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblDurationValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblDurationValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblDurationValue.setForeground(new java.awt.Color(174, 173, 173));
     lblDurationValue.setText("--:--:--");
     pnlStats.add(lblDurationValue);
 
-    lblSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblSleepStart.setForeground(new java.awt.Color(100, 100, 100));
+    lblSpacerDuration.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacerDuration.setForeground(new java.awt.Color(174, 173, 173));
+    lblSpacerDuration.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacerDuration.setText("|");
+    lblSpacerDuration.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacerDuration.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacerDuration.setPreferredSize(new java.awt.Dimension(14, 14));
+    pnlStats.add(lblSpacerDuration);
+
+    lblSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepStart.setForeground(new java.awt.Color(174, 173, 173));
     lblSleepStart.setText(bundle.getString("label.sleepStart")); // NOI18N
     pnlStats.add(lblSleepStart);
 
-    lblSleepStartValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblSleepStartValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblSleepStartValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepStartValue.setForeground(new java.awt.Color(174, 173, 173));
     lblSleepStartValue.setText("--:--");
     pnlStats.add(lblSleepStartValue);
 
-    lblLatency.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLatency.setForeground(new java.awt.Color(100, 100, 100));
+    lblSpacerSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacerSleepStart.setForeground(new java.awt.Color(174, 173, 173));
+    lblSpacerSleepStart.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacerSleepStart.setText("|");
+    lblSpacerSleepStart.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacerSleepStart.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacerSleepStart.setPreferredSize(new java.awt.Dimension(14, 14));
+    pnlStats.add(lblSpacerSleepStart);
+
+    lblLatency.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLatency.setForeground(new java.awt.Color(174, 173, 173));
     lblLatency.setText(bundle.getString("dataFrame.label.latency")); // NOI18N
     lblLatency.setToolTipText("");
     pnlStats.add(lblLatency);
 
-    lblLatencyValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLatencyValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblLatencyValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLatencyValue.setForeground(new java.awt.Color(174, 173, 173));
     lblLatencyValue.setText("--:--");
     pnlStats.add(lblLatencyValue);
 
-    lblWakeupTime.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblWakeupTime.setForeground(new java.awt.Color(100, 100, 100));
+    lblSpacerLatency.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacerLatency.setForeground(new java.awt.Color(174, 173, 173));
+    lblSpacerLatency.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacerLatency.setText("|");
+    lblSpacerLatency.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacerLatency.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacerLatency.setPreferredSize(new java.awt.Dimension(14, 14));
+    pnlStats.add(lblSpacerLatency);
+
+    lblWakeupTime.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblWakeupTime.setForeground(new java.awt.Color(174, 173, 173));
     lblWakeupTime.setText(bundle.getString("label.wakeupTime")); // NOI18N
     pnlStats.add(lblWakeupTime);
 
-    lblWakeupTimeValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblWakeupTimeValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblWakeupTimeValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblWakeupTimeValue.setForeground(new java.awt.Color(174, 173, 173));
     lblWakeupTimeValue.setText("--:--");
     pnlStats.add(lblWakeupTimeValue);
 
-    lblLatest.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLatest.setForeground(new java.awt.Color(100, 100, 100));
+    lblSpacerWakeupTime.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacerWakeupTime.setForeground(new java.awt.Color(174, 173, 173));
+    lblSpacerWakeupTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacerWakeupTime.setText("|");
+    lblSpacerWakeupTime.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacerWakeupTime.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacerWakeupTime.setPreferredSize(new java.awt.Dimension(14, 14));
+    pnlStats.add(lblSpacerWakeupTime);
+
+    lblLatest.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLatest.setForeground(new java.awt.Color(174, 173, 173));
     lblLatest.setText(bundle.getString("label.latest")); // NOI18N
     pnlStats.add(lblLatest);
 
-    lblLatestValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblLatestValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblLatestValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLatestValue.setForeground(new java.awt.Color(174, 173, 173));
     lblLatestValue.setText("--:--");
     pnlStats.add(lblLatestValue);
 
-    lblTimeSaving.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblTimeSaving.setForeground(new java.awt.Color(100, 100, 100));
+    lblSpacerLatest.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacerLatest.setForeground(new java.awt.Color(174, 173, 173));
+    lblSpacerLatest.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacerLatest.setText("|");
+    lblSpacerLatest.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacerLatest.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacerLatest.setPreferredSize(new java.awt.Dimension(14, 14));
+    pnlStats.add(lblSpacerLatest);
+
+    lblTimeSaving.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblTimeSaving.setForeground(new java.awt.Color(174, 173, 173));
     lblTimeSaving.setText(bundle.getString("label.timeSaving")); // NOI18N
     pnlStats.add(lblTimeSaving);
 
-    lblTimeSavingValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblTimeSavingValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblTimeSavingValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblTimeSavingValue.setForeground(new java.awt.Color(174, 173, 173));
     lblTimeSavingValue.setText("--:--");
     pnlStats.add(lblTimeSavingValue);
 
-    lblMovementsCount.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblMovementsCount.setForeground(new java.awt.Color(100, 100, 100));
+    lblSpacerTimeSaving.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacerTimeSaving.setForeground(new java.awt.Color(174, 173, 173));
+    lblSpacerTimeSaving.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacerTimeSaving.setText("|");
+    lblSpacerTimeSaving.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacerTimeSaving.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacerTimeSaving.setPreferredSize(new java.awt.Dimension(14, 14));
+    pnlStats.add(lblSpacerTimeSaving);
+
+    lblMovementsCount.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblMovementsCount.setForeground(new java.awt.Color(174, 173, 173));
     lblMovementsCount.setText(bundle.getString("dataFrame.label.movementsCount")); // NOI18N
     pnlStats.add(lblMovementsCount);
 
-    lblMovementsCountValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblMovementsCountValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblMovementsCountValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblMovementsCountValue.setForeground(new java.awt.Color(174, 173, 173));
     lblMovementsCountValue.setText("-");
     pnlStats.add(lblMovementsCountValue);
 
-    lblMovementsAverage.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblMovementsAverage.setForeground(new java.awt.Color(100, 100, 100));
+    lblSpacerMovementsCount.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacerMovementsCount.setForeground(new java.awt.Color(174, 173, 173));
+    lblSpacerMovementsCount.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacerMovementsCount.setText("|");
+    lblSpacerMovementsCount.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacerMovementsCount.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacerMovementsCount.setPreferredSize(new java.awt.Dimension(14, 14));
+    pnlStats.add(lblSpacerMovementsCount);
+
+    lblMovementsAverage.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblMovementsAverage.setForeground(new java.awt.Color(174, 173, 173));
     lblMovementsAverage.setText(bundle.getString("dataFrame.label.movementsAverage")); // NOI18N
     pnlStats.add(lblMovementsAverage);
 
-    lblMovementsAverageValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblMovementsAverageValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblMovementsAverageValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblMovementsAverageValue.setForeground(new java.awt.Color(174, 173, 173));
     lblMovementsAverageValue.setText("-");
     pnlStats.add(lblMovementsAverageValue);
 
@@ -617,24 +706,25 @@ public class DataFrame extends JPanel implements Printable {
 
     pnlComment.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 2, 0));
 
-    lblComment.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblComment.setForeground(new java.awt.Color(100, 100, 100));
+    lblComment.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblComment.setForeground(new java.awt.Color(174, 173, 173));
     lblComment.setText(bundle.getString("dataframe.label.comment")); // NOI18N
     pnlComment.add(lblComment);
 
-    lblCommentValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblCommentValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblCommentValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblCommentValue.setForeground(new java.awt.Color(174, 173, 173));
+    lblCommentValue.setText("Comment Value");
     pnlComment.add(lblCommentValue);
 
     lblIdValue.setVisible(false);
-    lblIdValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblIdValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblIdValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblIdValue.setForeground(new java.awt.Color(174, 173, 173));
     lblIdValue.setText(bundle.getString("label.id")); // NOI18N
     pnlComment.add(lblIdValue);
 
     lblNameValue.setVisible(false);
-    lblNameValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-    lblNameValue.setForeground(new java.awt.Color(100, 100, 100));
+    lblNameValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblNameValue.setForeground(new java.awt.Color(174, 173, 173));
     lblNameValue.setText(bundle.getString("label.name")); // NOI18N
     pnlComment.add(lblNameValue);
 
@@ -721,6 +811,13 @@ public class DataFrame extends JPanel implements Printable {
   private javax.swing.JLabel lblNameValue;
   private javax.swing.JLabel lblSleepStart;
   private javax.swing.JLabel lblSleepStartValue;
+  private javax.swing.JLabel lblSpacerDuration;
+  private javax.swing.JLabel lblSpacerLatency;
+  private javax.swing.JLabel lblSpacerLatest;
+  private javax.swing.JLabel lblSpacerMovementsCount;
+  private javax.swing.JLabel lblSpacerSleepStart;
+  private javax.swing.JLabel lblSpacerTimeSaving;
+  private javax.swing.JLabel lblSpacerWakeupTime;
   private javax.swing.JLabel lblTimeSaving;
   private javax.swing.JLabel lblTimeSavingValue;
   private javax.swing.JLabel lblWakeupTime;

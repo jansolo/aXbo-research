@@ -1,6 +1,6 @@
 package com.dreikraft.axbo.task;
 
-import com.dreikraft.axbo.events.SleepDataLoaded;
+import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.axbo.data.SleepData;
 import com.dreikraft.axbo.events.SleepDataAdded;
@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author jan.illetschko@3kraft.com
  */
-public class SleepDataLoadTask extends SwingWorker<Integer, SleepData>
+public class SleepDataLoadTask extends AxboTask<Integer, SleepData>
     implements ExceptionListener {
 
   private static final Log log = LogFactory.getLog(SleepDataLoadTask.class);
@@ -37,6 +37,9 @@ public class SleepDataLoadTask extends SwingWorker<Integer, SleepData>
 
   @Override
   protected Integer doInBackground() throws Exception {
+    
+    log.info("performing task" + getClass().getSimpleName() + " ...");
+    
     int count = 0;
     for (File file : spwFiles) {
       XMLDecoder decoder = null;
@@ -76,15 +79,9 @@ public class SleepDataLoadTask extends SwingWorker<Integer, SleepData>
 
   @Override
   protected void done() {
-    try {
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
-          new SleepDataLoaded(
-          this, get()));
-    } catch (InterruptedException ex) {
-      log.error(ex.getMessage(), ex);
-    } catch (ExecutionException ex) {
-      log.error(ex.getMessage(), ex);
-    }
+    log.info("task " + getClass().getSimpleName() + " performed successfully");
+    setResult(AxboTask.Result.SUCCESS);
+    DeviceContext.getDeviceType().getDataInterface().stop();
   }
 
   @Override
@@ -98,11 +95,9 @@ public class SleepDataLoadTask extends SwingWorker<Integer, SleepData>
 
   @Override
   public void exceptionThrown(Exception ex) {
-    if (log.isDebugEnabled()) {
+    if (log.isDebugEnabled())
       log.warn(
           "recoverable exception while deserializing sleepdata objects from disk: "
-          + ex.
-          getMessage());
-    }
+          + ex.getMessage());
   }
 }
