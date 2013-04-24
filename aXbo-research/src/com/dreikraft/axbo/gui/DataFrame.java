@@ -12,6 +12,7 @@ import com.dreikraft.axbo.events.DiagramClose;
 import com.dreikraft.axbo.util.BundleUtil;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -30,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import javax.swing.JPanel;
+import javax.swing.RepaintManager;
 import javax.swing.border.TitledBorder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -290,55 +292,61 @@ public class DataFrame extends JPanel implements Printable {
     if (graphics instanceof Graphics2D) {
       final Graphics2D printer = (Graphics2D) graphics;
 
+      printer.setColor(GRID_COLOR);
+      printer.setFont(new Font("SansSerif", Font.PLAIN, PRINT_FONT_SIZE));
+      int lineHeight = printer.getFontMetrics().getHeight() + 4;
+
       double x = pageFormat.getImageableX() + INSET;
       double y = pageFormat.getImageableY() + INSET;
       double w = pageFormat.getImageableWidth() - 2 * INSET;
       double h = pageFormat.getImageableHeight() - 2 * INSET;
 
-      chartPanel.getChart().draw(printer, new Rectangle2D.Double(x, y, w, h
-          - PRINT_FONT_SIZE
-          * 7));
-
-      printer.setColor(new Color(80, 80, 80, 200));
-      printer.setFont(new Font("SansSerif", Font.PLAIN, PRINT_FONT_SIZE));
-      int lineHeight = printer.getFontMetrics().getHeight();
+      disableDoubleBuffering(chartPanel);
+      chartPanel.getChart().draw(printer, new Rectangle2D.Double(x, y
+          + lineHeight * 3, w, h - lineHeight * 6));
+      enableDoubleBuffering(chartPanel);
 
       x = x + INSET;
       w = w - 2 * INSET;
 
-      printer.drawString(BundleUtil.getMessage("label.name") + " "
-          + lblNameValue.
-          getText(), (int) (x + w / 4 * 0), (int) (y + h - lineHeight * 4));
-      printer.drawString(BundleUtil.getMessage("label.id") + " " + lblIdValue.
-          getText(),
-          (int) (x + w / 4 * 1), (int) (y + h - lineHeight * 4));
+      printer.drawString(getTitle(), (int) (x), (int) y + lineHeight * 2);
       printer.drawString(lblSleepStart.getText() + " " + lblSleepStartValue.
-          getText(),
-          (int) (x + w / 4 * 0), (int) (y + h - lineHeight * 3));
+          getText(), (int) (x), (int) (y + h - lineHeight * 2));
       printer.drawString(lblLatency.getText() + " " + lblLatencyValue.getText(),
-          (int) (x + w / 4 * 1), (int) (y + h - lineHeight * 3));
-      printer.drawString(lblDuration.getText() + " " + lblDurationValue
-          .getText(),
-          (int) (x + w / 4 * 2), (int) (y + h - lineHeight * 3));
-      printer.drawString(lblWakeupTime.getText() + " " + lblWakeupTimeValue.
-          getText(),
-          (int) (x + w / 4 * 3), (int) (y + h - lineHeight * 3));
-      printer.drawString(lblLatest.getText() + " " + lblLatestValue.getText(),
-          (int) (x + w / 4 * 0), (int) (y + h - lineHeight * 2));
-      printer.drawString(lblTimeSaving.getText() + " " + lblTimeSavingValue.
-          getText(),
           (int) (x + w / 4 * 1), (int) (y + h - lineHeight * 2));
+      printer.drawString(lblDuration.getText() + " " + lblDurationValue
+          .getText(), (int) (x + w / 4 * 2), (int) (y + h - lineHeight * 2));
+      printer.drawString(lblWakeupTime.getText() + " " + lblWakeupTimeValue.
+          getText(), (int) (x + w / 4 * 3), (int) (y + h - lineHeight * 2));
+      printer.drawString(lblLatest.getText() + " " + lblLatestValue.getText(),
+          (int) (x), (int) (y + h - lineHeight * 1));
+      printer.drawString(lblTimeSaving.getText() + " " + lblTimeSavingValue.
+          getText(), (int) (x + w / 4 * 1), (int) (y + h - lineHeight * 1));
       printer.drawString(lblMovementsCount.getText() + " "
           + lblMovementsCountValue.
-          getText(), (int) (x + w / 4 * 2), (int) (y + h - lineHeight * 2));
+          getText(), (int) (x + w / 4 * 2), (int) (y + h - lineHeight * 1));
       printer.drawString(lblMovementsAverage.getText() + " "
           + lblMovementsAverageValue.
-          getText(), (int) (x + w / 4 * 3), (int) (y + h - lineHeight * 2));
-      printer.drawString(BundleUtil.getMessage("dataframe.label.comment") + " "
-          + lblCommentValue.
-          getText(), (int) (x + w / 4 * 0), (int) (y + h - lineHeight * 1));
+          getText(), (int) (x + w / 4 * 3), (int) (y + h - lineHeight * 1));
+
+      if (lblCommentValue.getText() != null && lblCommentValue.getText().trim()
+          .length() > 0) {
+        printer.drawString(BundleUtil.getMessage("dataframe.label.comment")
+            + " " + lblCommentValue.getText(), (int) (x + w / 4 * 0),
+            (int) (y + h - lineHeight * 0));
+      }
     }
     return PAGE_EXISTS;
+  }
+
+  private static void disableDoubleBuffering(Component c) {
+    RepaintManager currentManager = RepaintManager.currentManager(c);
+    currentManager.setDoubleBufferingEnabled(false);
+  }
+
+  private static void enableDoubleBuffering(Component c) {
+    RepaintManager currentManager = RepaintManager.currentManager(c);
+    currentManager.setDoubleBufferingEnabled(true);
   }
 
   public void updateChart() {
@@ -706,7 +714,6 @@ public class DataFrame extends JPanel implements Printable {
 
     lblCommentValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
     lblCommentValue.setForeground(new java.awt.Color(174, 173, 173));
-    lblCommentValue.setText("Comment Value");
     pnlComment.add(lblCommentValue);
 
     lblIdValue.setVisible(false);

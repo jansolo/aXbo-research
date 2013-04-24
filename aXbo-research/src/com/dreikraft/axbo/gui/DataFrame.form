@@ -482,7 +482,6 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ad" green="ad" red="ae" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Comment Value"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblIdValue">
