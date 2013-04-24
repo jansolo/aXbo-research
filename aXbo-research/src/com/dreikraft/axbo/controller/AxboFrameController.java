@@ -520,7 +520,9 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     // register progress bar updates
     uploadTask.addPropertyChangeListener(new TaskProgressListener(frame,
         BundleUtil.getMessage("statusLabel.uploadSoundPackage"),
-        BundleUtil.getMessage("statusLabel.uploadSoundPackageSuccess"),
+        MessageFormat.format(BundleUtil.getMessage(
+        "statusLabel.uploadSoundPackageSuccess"), evt.getSoundPackageFile()
+        .getName()),
         BundleUtil.getErrorMessage("globalError.uploadFailed"),
         false));
     // find aXbo first, then execute upload
