@@ -358,13 +358,15 @@ public class AxboFrame extends JFrame {
     navToolbarPanel.setLayout(new java.awt.GridBagLayout());
 
     jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/aXbo-logo-software-small.png"))); // NOI18N
-    navToolbarPanel.add(jLabel1, new java.awt.GridBagConstraints());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.insets = new java.awt.Insets(0, 21, 0, 0);
+    navToolbarPanel.add(jLabel1, gridBagConstraints);
 
     org.jdesktop.layout.GroupLayout spacerPanelLayout = new org.jdesktop.layout.GroupLayout(spacerPanel);
     spacerPanel.setLayout(spacerPanelLayout);
     spacerPanelLayout.setHorizontalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 260, Short.MAX_VALUE)
+      .add(0, 239, Short.MAX_VALUE)
     );
     spacerPanelLayout.setVerticalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -393,10 +395,10 @@ public class AxboFrame extends JFrame {
     loadDataButton.setFocusable(false);
     loadDataButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     loadDataButton.setIconTextGap(2);
-    loadDataButton.setMaximumSize(new java.awt.Dimension(90, 80));
-    loadDataButton.setMinimumSize(new java.awt.Dimension(90, 80));
+    loadDataButton.setMaximumSize(new java.awt.Dimension(150, 80));
+    loadDataButton.setMinimumSize(new java.awt.Dimension(100, 80));
     loadDataButton.setMultiClickThreshhold(1000L);
-    loadDataButton.setPreferredSize(new java.awt.Dimension(90, 80));
+    loadDataButton.setPreferredSize(new java.awt.Dimension(100, 80));
     loadDataButton.setRequestFocusEnabled(false);
     loadDataButton.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     loadDataButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -420,10 +422,10 @@ public class AxboFrame extends JFrame {
     btnCompare.setFocusable(false);
     btnCompare.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnCompare.setIconTextGap(2);
-    btnCompare.setMaximumSize(new java.awt.Dimension(90, 80));
-    btnCompare.setMinimumSize(new java.awt.Dimension(90, 80));
+    btnCompare.setMaximumSize(new java.awt.Dimension(150, 80));
+    btnCompare.setMinimumSize(new java.awt.Dimension(100, 80));
     btnCompare.setMultiClickThreshhold(1000L);
-    btnCompare.setPreferredSize(new java.awt.Dimension(90, 80));
+    btnCompare.setPreferredSize(new java.awt.Dimension(100, 80));
     btnCompare.setRequestFocusEnabled(false);
     btnCompare.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     btnCompare.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -445,10 +447,10 @@ public class AxboFrame extends JFrame {
     btnPrint.setFocusable(false);
     btnPrint.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnPrint.setIconTextGap(2);
-    btnPrint.setMaximumSize(new java.awt.Dimension(90, 80));
-    btnPrint.setMinimumSize(new java.awt.Dimension(90, 80));
+    btnPrint.setMaximumSize(new java.awt.Dimension(150, 80));
+    btnPrint.setMinimumSize(new java.awt.Dimension(100, 80));
     btnPrint.setMultiClickThreshhold(1000L);
-    btnPrint.setPreferredSize(new java.awt.Dimension(90, 80));
+    btnPrint.setPreferredSize(new java.awt.Dimension(100, 80));
     btnPrint.setRequestFocusEnabled(false);
     btnPrint.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     btnPrint.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -470,10 +472,10 @@ public class AxboFrame extends JFrame {
     btnCloseAll.setFocusable(false);
     btnCloseAll.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnCloseAll.setIconTextGap(2);
-    btnCloseAll.setMaximumSize(new java.awt.Dimension(90, 80));
-    btnCloseAll.setMinimumSize(new java.awt.Dimension(90, 80));
+    btnCloseAll.setMaximumSize(new java.awt.Dimension(150, 80));
+    btnCloseAll.setMinimumSize(new java.awt.Dimension(100, 80));
     btnCloseAll.setMultiClickThreshhold(1000L);
-    btnCloseAll.setPreferredSize(new java.awt.Dimension(90, 80));
+    btnCloseAll.setPreferredSize(new java.awt.Dimension(100, 80));
     btnCloseAll.setRequestFocusEnabled(false);
     btnCloseAll.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     btnCloseAll.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -488,7 +490,7 @@ public class AxboFrame extends JFrame {
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnCloseAll, gridBagConstraints);
 
-    mainToolbar.add(dataToolbarPanel, java.awt.BorderLayout.CENTER);
+    mainToolbar.add(dataToolbarPanel, java.awt.BorderLayout.WEST);
 
     toolbarPanel.add(mainToolbar, java.awt.BorderLayout.CENTER);
 
