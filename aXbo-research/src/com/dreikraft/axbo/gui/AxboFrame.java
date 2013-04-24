@@ -363,14 +363,14 @@ public class AxboFrame extends JFrame {
 
     jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/aXbo-logo-software-small.png"))); // NOI18N
     gridBagConstraints = new java.awt.GridBagConstraints();
-    gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+    gridBagConstraints.insets = new java.awt.Insets(0, 21, 0, 0);
     navToolbarPanel.add(jLabel1, gridBagConstraints);
 
     org.jdesktop.layout.GroupLayout spacerPanelLayout = new org.jdesktop.layout.GroupLayout(spacerPanel);
     spacerPanel.setLayout(spacerPanelLayout);
     spacerPanelLayout.setHorizontalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 257, Short.MAX_VALUE)
+      .add(0, 239, Short.MAX_VALUE)
     );
     spacerPanelLayout.setVerticalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -494,7 +494,7 @@ public class AxboFrame extends JFrame {
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnCloseAll, gridBagConstraints);
 
-    mainToolbar.add(dataToolbarPanel, java.awt.BorderLayout.CENTER);
+    mainToolbar.add(dataToolbarPanel, java.awt.BorderLayout.WEST);
 
     toolbarPanel.add(mainToolbar, java.awt.BorderLayout.CENTER);
 
