@@ -71,7 +71,7 @@ public final class Axbo implements ApplicationEventEnabled {
       ? "/dev/tty.SLAB_USBtoUART" : "COM1";
   // language prefs
   public static final String LANGUAGES_PREF = "languages";
-  public static final String LANGUAGES_DEFAULT = "en,de,ja,ru";
+  public static final String LANGUAGES_DEFAULT = "en,de,fr,ja,ru";
   public static final String LANGUAGE_PREF = "language";
   public static final String LANGUAGE_DEFAULT = "en";
   // diagramm prefs
