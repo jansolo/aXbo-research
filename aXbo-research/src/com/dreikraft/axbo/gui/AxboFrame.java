@@ -178,27 +178,19 @@ public class AxboFrame extends JFrame {
 
   public void showSplashScreen() {
     try {
-      this.splashScreen = new SplashScreen();
-      this.splashScreen.setImageURL(this.getClass().getResource(
-          "/resources/images/Splash_screen_research_aXbo_Limited.png"));
-      this.splashScreen.setVisible(true);
-      if (!this.isVisible()) {
-        Rectangle screenRect = this.getGraphicsConfiguration().getBounds();
-        splashScreen.setLocation(
-            screenRect.x + screenRect.width / 2 - splashScreen.getBounds().width
-            / 2,
-            screenRect.y + screenRect.height / 2
-            - splashScreen.getBounds().height
-            / 2);
-      } else {
-        Rectangle screenRect = this.getBounds();
-        splashScreen.setLocation(
-            screenRect.x + screenRect.width / 2 - splashScreen.getBounds().width
-            / 2,
-            screenRect.y + screenRect.height / 2
-            - splashScreen.getBounds().height
-            / 2);
+      if (splashScreen == null) {
+        splashScreen = new SplashScreen();
+        splashScreen.setImageURL(this.getClass().getResource(
+            "/resources/images/Splash_screen_research_aXbo_Limited.png"));
       }
+      final Rectangle screenRect = isVisible() ? this.getBounds() : this
+          .getGraphicsConfiguration().getBounds();
+      splashScreen.setLocation(
+          screenRect.x + screenRect.width / 2 - splashScreen.getBounds().width
+          / 2,
+          screenRect.y + screenRect.height / 2 - splashScreen.getBounds().height
+          / 2);
+      this.splashScreen.setVisible(true);
 
     } catch (Exception ex) {
       log.error(ex.getMessage(), ex);
@@ -1200,7 +1192,6 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private void searchDateFromTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchDateFromTextFieldActionPerformed
     // TODO add your handling code here:
   }//GEN-LAST:event_searchDateFromTextFieldActionPerformed
-
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem aboutMenuItem;
   private javax.swing.JButton btnCloseAll;
