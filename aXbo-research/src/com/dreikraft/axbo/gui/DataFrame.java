@@ -292,7 +292,6 @@ public class DataFrame extends JPanel implements Printable {
     if (graphics instanceof Graphics2D) {
       final Graphics2D printer = (Graphics2D) graphics;
 
-      printer.setColor(GRID_COLOR);
       printer.setFont(new Font("SansSerif", Font.PLAIN, PRINT_FONT_SIZE));
       int lineHeight = printer.getFontMetrics().getHeight() + 4;
 
@@ -309,6 +308,7 @@ public class DataFrame extends JPanel implements Printable {
       x = x + INSET;
       w = w - 2 * INSET;
 
+      printer.setColor(GRID_COLOR);
       printer.drawString(getTitle(), (int) (x), (int) y + lineHeight * 2);
       printer.drawString(lblSleepStart.getText() + " " + lblSleepStartValue.
           getText(), (int) (x), (int) (y + h - lineHeight * 2));
