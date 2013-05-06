@@ -737,6 +737,7 @@ public class DataFrame extends JPanel implements Printable {
 
     btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-cross-16.png"))); // NOI18N
     btnClose.setBorderPainted(false);
+    btnClose.setContentAreaFilled(false);
     btnClose.setFocusable(false);
     btnClose.setIconTextGap(2);
     btnClose.setMultiClickThreshhold(1000L);

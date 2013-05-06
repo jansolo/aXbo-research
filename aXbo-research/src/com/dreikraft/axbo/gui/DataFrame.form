@@ -543,6 +543,7 @@
               <Image iconType="3" name="/resources/images/button-cross-16.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
+            <Property name="contentAreaFilled" type="boolean" value="false"/>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="iconTextGap" type="int" value="2"/>
             <Property name="multiClickThreshhold" type="long" value="1000"/>
