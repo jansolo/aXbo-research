@@ -43,7 +43,7 @@ public class PreferencesDialog extends javax.swing.JDialog
 
   public void initComPortCB(final List<String> items, final String sel)
   {
-    final ComboBoxModel<String> model = new DefaultComboBoxModel<String>(
+    final ComboBoxModel model = new DefaultComboBoxModel(
         items.toArray(new String[0]));
     this.comPortCB.setModel(model);
     this.comPortCB.setSelectedItem(sel);
@@ -51,7 +51,7 @@ public class PreferencesDialog extends javax.swing.JDialog
 
   public void initLanguageCB(final List<String> items, String sel)
   {
-    final ComboBoxModel<String> model = new DefaultComboBoxModel<String>(
+    final ComboBoxModel model = new DefaultComboBoxModel(
         items.toArray(new String[0]));
     this.languageCB.setModel(model);
     this.languageCB.setSelectedItem(sel);
@@ -103,10 +103,10 @@ public class PreferencesDialog extends javax.swing.JDialog
     preferencesPanel = new javax.swing.JPanel();
     comPortLabel = new javax.swing.JLabel();
     languageLabel = new javax.swing.JLabel();
-    languageCB = new javax.swing.JComboBox<String>();
+    languageCB = new javax.swing.JComboBox();
     saveButton = new javax.swing.JButton();
     cancelButton = new javax.swing.JButton();
-    comPortCB = new javax.swing.JComboBox<String>();
+    comPortCB = new javax.swing.JComboBox();
     sensor1NameLabel = new javax.swing.JLabel();
     sensor2NameLabel = new javax.swing.JLabel();
     sensor1NameTextField = new javax.swing.JTextField();
@@ -233,9 +233,9 @@ public class PreferencesDialog extends javax.swing.JDialog
   }//GEN-LAST:event_saveButtonActionPerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton cancelButton;
-  private javax.swing.JComboBox<String> comPortCB;
+  private javax.swing.JComboBox comPortCB;
   private javax.swing.JLabel comPortLabel;
-  private javax.swing.JComboBox<String> languageCB;
+  private javax.swing.JComboBox languageCB;
   private javax.swing.JLabel languageLabel;
   private javax.swing.JPanel preferencesPanel;
   private javax.swing.JLabel restartLabel;
