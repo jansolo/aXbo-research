@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.logging.*;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
@@ -135,7 +136,18 @@ public final class Axbo implements ApplicationEventEnabled {
     if (log.isDebugEnabled()) {
       log.debug("Current Locale: " + Locale.getDefault());
     }
-
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (ClassNotFoundException ex) {
+      log.warn("failed to set system look & feel", ex);
+    } catch (InstantiationException ex) {
+      log.warn("failed to set system look & feel", ex);
+    } catch (IllegalAccessException ex) {
+      log.warn("failed to set system look & feel", ex);
+    } catch (UnsupportedLookAndFeelException ex) {
+      log.warn("failed to set system look & feel", ex);
+    }
+    
     // OSX laf 
     System.setProperty("apple.laf.useScreenMenuBar", "true");
     System.setProperty("apple.awt.brushMetalLook", "true");
