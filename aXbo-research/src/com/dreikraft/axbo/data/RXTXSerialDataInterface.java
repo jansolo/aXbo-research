@@ -2,6 +2,7 @@ package com.dreikraft.axbo.data;
 
 import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.axbo.Axbo;
+import com.dreikraft.axbo.OS;
 import com.dreikraft.axbo.events.AxboConnected;
 import com.dreikraft.axbo.events.AxboDisconnected;
 import com.dreikraft.axbo.util.ByteUtil;
@@ -238,7 +239,7 @@ public enum RXTXSerialDataInterface implements DataInterface {
   public List<String> getCommPortNames() {
 
     final List<String> commPortNames = new ArrayList<String>();
-    if (Axbo.MAC_OS_X) {
+    if (OS.Mac.isCurrent()) {
       // on mac os there is only this device
       commPortNames.add("/dev/tty.SLAB_USBtoUART");
     } else {

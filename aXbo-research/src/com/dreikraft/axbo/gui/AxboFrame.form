@@ -89,7 +89,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator1">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="if (Axbo.MAC_OS_X)&#xa;  jSeparator1.setVisible(false);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="if (OS.Mac.isCurrent())&#xa;  jSeparator1.setVisible(false);"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="prefsMenuItem">
@@ -105,12 +105,12 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="prefsMenuItemActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (Axbo.MAC_OS_X)&#xa;  prefsMenuItem.setVisible(false);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (OS.Mac.isCurrent())&#xa;  prefsMenuItem.setVisible(false);"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="if (Axbo.MAC_OS_X)&#xa;  jSeparator3.setVisible(false);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="if (OS.Mac.isCurrent())&#xa;  jSeparator3.setVisible(false);"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
@@ -126,7 +126,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exitMenuItemActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (Axbo.MAC_OS_X)&#xa;  exitMenuItem.setVisible(false);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (OS.Mac.isCurrent())&#xa;  exitMenuItem.setVisible(false);"/>
               </AuxValues>
             </MenuItem>
           </SubComponents>

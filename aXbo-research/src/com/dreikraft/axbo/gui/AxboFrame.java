@@ -4,6 +4,7 @@ import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.events.ApplicationExit;
 import com.dreikraft.events.ApplicationMessageEvent;
 import com.dreikraft.axbo.Axbo;
+import com.dreikraft.axbo.OS;
 import com.dreikraft.axbo.data.SleepData;
 import com.dreikraft.axbo.events.AxboClear;
 import com.dreikraft.axbo.events.AxboDisconnect;
@@ -830,11 +831,11 @@ public class AxboFrame extends JFrame {
     });
     fileMenu.add(uploadSoundPackageMenuItem);
 
-    if (Axbo.MAC_OS_X)
+    if (OS.Mac.isCurrent())
     jSeparator1.setVisible(false);
     fileMenu.add(jSeparator1);
 
-    if (Axbo.MAC_OS_X)
+    if (OS.Mac.isCurrent())
     prefsMenuItem.setVisible(false);
     prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/wrench-16.png"))); // NOI18N
     prefsMenuItem.setText(bundle.getString("menu.file.prefs")); // NOI18N
@@ -845,11 +846,11 @@ public class AxboFrame extends JFrame {
     });
     fileMenu.add(prefsMenuItem);
 
-    if (Axbo.MAC_OS_X)
+    if (OS.Mac.isCurrent())
     jSeparator3.setVisible(false);
     fileMenu.add(jSeparator3);
 
-    if (Axbo.MAC_OS_X)
+    if (OS.Mac.isCurrent())
     exitMenuItem.setVisible(false);
     exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-power-16.png"))); // NOI18N
     exitMenuItem.setText(bundle.getString("menu.file.exit")); // NOI18N
