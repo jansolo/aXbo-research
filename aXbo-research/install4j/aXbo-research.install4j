@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="4.2.8" transformSequenceNumber="2">
-  <directoryPresets config="./resources/licenses" />
-  <application name="aXbo research" distributionSourceDir="" applicationId="3914-4662-2767-1873" mediaDir="./install4j_output" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" keepModificationTimes="false" missingFilesStrategy="warn" shortName="aXbo" publisher="aXbo Ltd." publisherWeb="http://www.axbo.com" version="3.0.01" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" installerName="" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
+  <directoryPresets config="../resource/native/librxtxSerial.jnilib" />
+  <application name="aXbo research" distributionSourceDir="" applicationId="3914-4662-2767-1873" mediaDir="./install4j_output" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" keepModificationTimes="false" missingFilesStrategy="warn" shortName="aXbo" publisher="aXbo Ltd." publisherWeb="http://www.axbo.com" version="3.0.02" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" installerName="" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="true" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="./resources/messages/messages_en.utf8" />
       <additionalLanguages>
@@ -30,7 +30,6 @@
       <mountPoint id="606" root="501" location="aXbo/sounds" mode="755" />
     </mountPoints>
     <entries>
-      <fileEntry mountPoint="18" file="../dist/librxtxSerial.so" overwrite="4" shared="false" mode="644" uninstallMode="0" />
       <fileEntry mountPoint="18" file="../dist/rxtxSerial.dll" overwrite="4" shared="false" mode="644" uninstallMode="0" />
       <dirEntry mountPoint="18" file="../dist/lib" overwrite="4" shared="false" mode="644" uninstallMode="0" excludeSuffixes="" dirMode="755">
         <exclude />
@@ -1550,7 +1549,6 @@ if (wizardContext != null) {
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude>
-        <entry location="lib/librxtxSerial.so" fileType="regular" />
         <entry location="drivers/mac" fileType="regular" />
         <entry location="librxtxSerial.jnilib" fileType="regular" />
       </exclude>
@@ -1572,24 +1570,6 @@ if (wizardContext != null) {
         <variable name="sys.javaMaxVersion" value="1.5" />
       </variables>
     </macosArchive>
-    <unixInstaller name="Unix Installer" id="604" mediaFileName="" installDir="aXbo" overridePrincipalLanguage="false" requires64bit="false" jreBitType="all" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" includedJRE="" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" directDownload="false" customInstallBaseDir="" createUninstallIcon="true" contentFilesType="1" downloadURL="">
-      <excludedLaunchers />
-      <excludedComponents>
-        <component id="69" />
-      </excludedComponents>
-      <excludedBeans />
-      <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
-      <exclude>
-        <entry location="lib/librxtxSerial.jnilib" fileType="regular" />
-        <entry location="lib/rxtxSerial.dll" fileType="regular" />
-        <entry location="drivers" fileType="regular" />
-        <entry location="librxtxSerial.jnilib" fileType="regular" />
-      </exclude>
-      <variables />
-      <installerScript mode="1" file="">
-        <scriptLines />
-      </installerScript>
-    </unixInstaller>
   </mediaSets>
   <buildIds buildAll="true">
     <mediaSet refId="22" />
