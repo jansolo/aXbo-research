@@ -31,7 +31,9 @@ A build from command line requires JDK 1.6+ and ant. JAVA_HOME must be set. Ant 
 	cd aXbo-research/aXbo-research
 	$ANT_HOME/bin/ant clean jar
 
-Additionally the build script supports the generation of an app wrapper (aXbo research.app) on Mac OSX.
+The binaries are copied to the dist directory.
+
+Additionally the build script supports the generation of an app wrapper (``aXbo research.app``.) on Mac OSX.
 
 	$ANT_HOME/bin/ant bundle-aXbo-research
 
@@ -39,19 +41,26 @@ Additionally the build script supports the generation of an app wrapper (aXbo re
 Run
 ---
 
-aXbo research requires a JRE 1.6+. On Windows and Linux only 32-bit JREs are supported, because I was not able to create fully functional 64-bit RXTX native libraries yet. To run aXbo research from command line:
+aXbo research requires a JRE 1.6+. Both 32-bit and 64-bit JVMs are supported on Mac OSX, Windows and Linux. To run aXbo research from command line:
 
     cd dist
     $JAVA_HOME/bin/java -jar axbo.jar
 
+Linux users may require to set the ``java.library.path`` system property to the directory of rxtxSerial.so native libraries:
+
+    cd dist
+    $JAVA_HOME/bin/java -Djava.library.path=. -jar axbo.jar
+
+aXbo uses the ``CP2102 USB to UART Bridge Controller``from SiLabs. Therefore the used Linux kernel needs to include the corresponding modules (cp210x). For most standard distributions the modules should be already there. 
+Additionally Linux users need to have correct permissions to read and write from the serial interface (/dev/ttyUSB0 on Ubuntu). Typically assigning the group ``dailout`` to the user should be sufficient. 
+
 On Mac OSX one can simply start "aXbo research.app".
+
 
 Development
 -----------
 
-Netbeans 7.3
-
-TODO
+The sources include project files for NetBeans 7.3. Simply open the project with Netbeans 7.3 and start coding. 
 
 
 Architecture
