@@ -1121,7 +1121,7 @@
                   <SubComponents>
                     <Container class="com.dreikraft.swing.BackgroundImagePanel" name="dataViewsPanel">
                       <Properties>
-                        <Property name="backgroundImageFilename" type="java.lang.String" value="/resources/images/background_dark.png"/>
+                        <Property name="backgroundImageFilename" type="java.lang.String" value="/resources/images/aXbo_Features_transparent.png"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
