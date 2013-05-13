@@ -1,7 +1,3 @@
-/*
- * © 2010 3kraft GmbH & Co KG
- * $Id: Axbo.java,v 1.39 2010-12-29 15:20:34 illetsch Exp $
- */
 package com.dreikraft.axbo;
 
 import com.dreikraft.axbo.controller.AxboFrameController;
@@ -24,9 +20,10 @@ import java.io.FilenameFilter;
 import java.util.Locale;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.logging.*;
 import java.io.IOException;
-import javax.swing.UIManager;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXMonthView;
@@ -34,20 +31,15 @@ import org.jdesktop.swingx.plaf.basic.BasicHeaderUI;
 import org.jdesktop.swingx.plaf.basic.BasicHyperlinkUI;
 import org.jdesktop.swingx.plaf.basic.BasicMonthViewUI;
 
+
 /**
- * $Id: Axbo.java,v 1.39 2010-12-29 15:20:34 illetsch Exp $
+ * aXbo startup class.
  *
- * @author 3kraft - $Author: illetsch $
- * @version $Revision: 1.39 $
+ * @author jan.illetschko@3kraft.com
  */
 public final class Axbo implements ApplicationEventEnabled {
 
   public static final Log log = LogFactory.getLog(Axbo.class);
-  // === constants === 
-  // Check that we are on Mac OS X.  This is crucial to loading and using the 
-  // OSXAdapter class.
-  public static final boolean MAC_OS_X = (System.getProperty("os.name").
-      toLowerCase(Locale.ENGLISH).startsWith("mac os x"));
   // default dirs
   public static final String APPLICATION_DIR = "aXbo";
   public static final String PROJECT_DIR_DEFAULT =
@@ -74,8 +66,6 @@ public final class Axbo implements ApplicationEventEnabled {
   // === preferences ===
   // serial port prefs
   public static final String SERIAL_PORT_NAME_PREF = "serialPort.name";
-  public static final String SERIAL_PORT_NAME_DEFAULT = MAC_OS_X
-      ? "/dev/tty.SLAB_USBtoUART" : "COM1";
   // language prefs
   public static final String LANGUAGES_PREF = "languages";
   public static final String LANGUAGES_DEFAULT = "en,de,fr,ja,ru";
@@ -114,7 +104,7 @@ public final class Axbo implements ApplicationEventEnabled {
 
   public static String getPortName() {
     return getApplicationPreferences().get(DeviceContext.getDeviceType() + "."
-        + Axbo.SERIAL_PORT_NAME_PREF, Axbo.SERIAL_PORT_NAME_DEFAULT);
+        + Axbo.SERIAL_PORT_NAME_PREF, OS.get().getDefaultPort());
   }
 
   private Axbo() {
@@ -164,6 +154,17 @@ public final class Axbo implements ApplicationEventEnabled {
     if (log.isDebugEnabled()) {
       log.debug("Current Locale: " + Locale.getDefault());
     }
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (ClassNotFoundException ex) {
+      log.warn("failed to set system look & feel", ex);
+    } catch (InstantiationException ex) {
+      log.warn("failed to set system look & feel", ex);
+    } catch (IllegalAccessException ex) {
+      log.warn("failed to set system look & feel", ex);
+    } catch (UnsupportedLookAndFeelException ex) {
+      log.warn("failed to set system look & feel", ex);
+    }
 
     // set gui prefs
     String[] li =
@@ -192,14 +193,13 @@ public final class Axbo implements ApplicationEventEnabled {
 
     // create the application and project dir
     File appDir = new File(Axbo.PROJECT_DIR_DEFAULT);
-    if (appDir.mkdirs()) 
+    if (appDir.mkdirs())
       log.warn("successfully created project dir: " + appDir.getAbsolutePath());
 
     // create sound package dir
     File soundDir = new File(Axbo.SOUND_PACKAGES_DIR);
     if (soundDir.mkdirs())
       log.info("successfully created sound dir: " + soundDir.getAbsolutePath());
-      
 
     // create view and model
     axboFrameController = new AxboFrameController();
@@ -249,7 +249,6 @@ public final class Axbo implements ApplicationEventEnabled {
     }
   };
 }
-
 class AxboShutdownHook extends Thread {
 
   @Override

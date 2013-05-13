@@ -4,6 +4,7 @@ import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.events.ApplicationExit;
 import com.dreikraft.events.ApplicationMessageEvent;
 import com.dreikraft.axbo.Axbo;
+import com.dreikraft.axbo.OS;
 import com.dreikraft.axbo.data.SleepData;
 import com.dreikraft.axbo.events.AxboClear;
 import com.dreikraft.axbo.events.AxboDisconnect;
@@ -388,6 +389,7 @@ public class AxboFrame extends JFrame {
     loadDataButton.setText(bundle.getString("button.loadData")); // NOI18N
     loadDataButton.setToolTipText(bundle.getString("button.loadData.tooltip")); // NOI18N
     loadDataButton.setBorderPainted(false);
+    loadDataButton.setContentAreaFilled(false);
     loadDataButton.setFocusable(false);
     loadDataButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     loadDataButton.setIconTextGap(2);
@@ -409,12 +411,14 @@ public class AxboFrame extends JFrame {
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+    gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
     dataToolbarPanel.add(loadDataButton, gridBagConstraints);
 
     btnCompare.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/ruler-32.png"))); // NOI18N
     btnCompare.setText(bundle.getString("button.compare")); // NOI18N
     btnCompare.setToolTipText(bundle.getString("button.compare.tooltip")); // NOI18N
     btnCompare.setBorderPainted(false);
+    btnCompare.setContentAreaFilled(false);
     btnCompare.setFocusable(false);
     btnCompare.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnCompare.setIconTextGap(2);
@@ -440,6 +444,7 @@ public class AxboFrame extends JFrame {
     btnPrint.setText(bundle.getString("button.print")); // NOI18N
     btnPrint.setToolTipText(bundle.getString("button.print.tooltip")); // NOI18N
     btnPrint.setBorderPainted(false);
+    btnPrint.setContentAreaFilled(false);
     btnPrint.setFocusable(false);
     btnPrint.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnPrint.setIconTextGap(2);
@@ -465,6 +470,7 @@ public class AxboFrame extends JFrame {
     btnCloseAll.setText(bundle.getString("button.closeAll")); // NOI18N
     btnCloseAll.setToolTipText(bundle.getString("button.closeAll.tooltip")); // NOI18N
     btnCloseAll.setBorderPainted(false);
+    btnCloseAll.setContentAreaFilled(false);
     btnCloseAll.setFocusable(false);
     btnCloseAll.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnCloseAll.setIconTextGap(2);
@@ -828,11 +834,11 @@ public class AxboFrame extends JFrame {
     });
     fileMenu.add(uploadSoundPackageMenuItem);
 
-    if (Axbo.MAC_OS_X)
+    if (OS.Mac.isCurrent())
     jSeparator1.setVisible(false);
     fileMenu.add(jSeparator1);
 
-    if (Axbo.MAC_OS_X)
+    if (OS.Mac.isCurrent())
     prefsMenuItem.setVisible(false);
     prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/wrench-16.png"))); // NOI18N
     prefsMenuItem.setText(bundle.getString("menu.file.prefs")); // NOI18N
@@ -843,11 +849,11 @@ public class AxboFrame extends JFrame {
     });
     fileMenu.add(prefsMenuItem);
 
-    if (Axbo.MAC_OS_X)
+    if (OS.Mac.isCurrent())
     jSeparator3.setVisible(false);
     fileMenu.add(jSeparator3);
 
-    if (Axbo.MAC_OS_X)
+    if (OS.Mac.isCurrent())
     exitMenuItem.setVisible(false);
     exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-power-16.png"))); // NOI18N
     exitMenuItem.setText(bundle.getString("menu.file.exit")); // NOI18N
@@ -910,7 +916,7 @@ public class AxboFrame extends JFrame {
     menuBar.add(deviceMenu);
 
     helpMenu.setText(bundle.getString("menu.help")); // NOI18N
-    if (Axbo.MAC_OS_X)
+    if (OS.Mac.isCurrent())
     helpMenu.setVisible(true);
 
     checkUpdateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/hard-drive-download-16.png"))); // NOI18N

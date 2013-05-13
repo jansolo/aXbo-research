@@ -9,6 +9,7 @@ import com.dreikraft.events.ApplicationEventEnabled;
 import com.dreikraft.events.ApplicationInitialize;
 import com.dreikraft.events.ApplicationInitialized;
 import com.dreikraft.axbo.Axbo;
+import com.dreikraft.axbo.OS;
 import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.axbo.data.SensorID;
 import com.dreikraft.axbo.events.PrefsClose;
@@ -73,7 +74,7 @@ public class PreferencesController implements ApplicationEventEnabled
         get(Axbo.DEVICE_TYPE_PREF, Axbo.DEVICE_TYPE_DEFAULT);
     view.initComPortCB(portNames, Axbo.getApplicationPreferences().
         get(deviceTypeName + "." + Axbo.SERIAL_PORT_NAME_PREF,
-        Axbo.SERIAL_PORT_NAME_DEFAULT));
+        OS.get().getDefaultPort()));
 
     // list languages
     langCodes = Axbo.LANGUAGES_DEFAULT.replaceAll(" ", "").split(",");

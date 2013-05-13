@@ -8,6 +8,7 @@ import com.dreikraft.events.ApplicationInitialize;
 import com.dreikraft.events.ApplicationInitialized;
 import com.dreikraft.events.ApplicationMessageEvent;
 import com.dreikraft.axbo.Axbo;
+import com.dreikraft.axbo.OS;
 import com.dreikraft.axbo.data.AxboInfo;
 import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.axbo.data.SleepData;
@@ -541,7 +542,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
   }
 
   private void registerForMacOSXEvents() {
-    if (Axbo.MAC_OS_X) {
+    if (OS.Mac.isCurrent()) {
       try {
         OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("exit",
             (Class[]) null));
