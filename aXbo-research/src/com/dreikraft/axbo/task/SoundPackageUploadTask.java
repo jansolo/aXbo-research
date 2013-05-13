@@ -19,6 +19,9 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -187,8 +190,18 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
    */
   @Override
   protected void done() {
-    log.info("task " + getClass().getSimpleName() + " performed successfully");
-    setResult(AxboTask.Result.SUCCESS);
+    
+    try {
+      final SoundPackage soundPackage = get();
+      log.info("task " + getClass().getSimpleName() + " performed successfully");
+      setResult(AxboTask.Result.SUCCESS);
+    } catch (InterruptedException ex) {
+      log.error("failed to upload sound package", ex);
+      setResult(AxboTask.Result.FAILED);
+    } catch (ExecutionException ex) {
+      log.error("failed to upload sound package", ex);
+      setResult(AxboTask.Result.FAILED);
+    }
     DeviceContext.getDeviceType().getDataInterface().stop();
   }
 
