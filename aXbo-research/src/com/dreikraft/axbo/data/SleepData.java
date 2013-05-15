@@ -19,9 +19,9 @@ public class SleepData implements Serializable {
 
   public static final long serialVersionUID = 1L;
   public static final Log log = LogFactory.getLog(SleepData.class);
-  public static final long UNSET = -1;
+  public static final int UNSET = -1;
   public static final long HOUR = 60 * 60 * 1000;
-  public static final long WAKE_INTERVAL = 30 * 60 * 1000;
+  public static final long SNOOZE_WAIT_INTERVAL = 60 * 1000;
   public static final long SLEEP_TRIGGER_INTERVAL = 8 * 60 * 1000;
   public static final long SLEEP_START_DELAY = 4 * 60 * 1000;
   public static final long DEFAULT_SLEEP_DURATION = 8 * 60 * 60 * 1000;
@@ -31,6 +31,7 @@ public class SleepData implements Serializable {
   private String name;
   private Date wakeupTime;
   private Date wakeIntervalStart;
+  private WakeInterval wakeInterval;
   private List<MovementData> movements;
   private DeviceType deviceType;
   private String comment;
@@ -38,8 +39,10 @@ public class SleepData implements Serializable {
   private WakeType wakeType = WakeType.NONE;
   private String firmwareVersion;
   private transient Date sleepStart;
+  private transient Date endTime;
+  private transient Date wakeIntervalEnd;
   private transient File dataFile;
-  private transient int startHour = (int) UNSET;
+  private transient int startHour = UNSET;
 
   /**
    * Creates a new instance of SleepData
@@ -49,6 +52,9 @@ public class SleepData implements Serializable {
     movements = new ArrayList<MovementData>();
   }
 
+  /**
+   * Creates a new instance of SleepData
+   */
   public SleepData(final String id, final String name,
       final DeviceType deviceType, final String comment) {
     this();
@@ -58,6 +64,9 @@ public class SleepData implements Serializable {
     this.comment = comment;
   }
 
+  /**
+   * Creates a new instance of SleepData
+   */
   public SleepData(final String id, final String name, final Date wakeupTime,
       final Date wakeIntervalStart, final List<MovementData> movements,
       final DeviceType deviceType, final String comment,
@@ -72,46 +81,86 @@ public class SleepData implements Serializable {
     this.powerNap = powerNap;
   }
 
+  /**
+   * Calculates the start time of this sleep record.
+   *
+   * @return if this is sleep record is a recorded power nap, returns the wake
+   * interval start time, otherwise the first entry of the record.
+   */
   public Date calculateStartTime() {
-    Date startTime = null;
     if (isPowerNap()) {
-      startTime = getWakeIntervalStart();
+      return getWakeIntervalStart();
+    } else {
+      return movements.get(0).getTimestamp();
     }
-    if (startTime == null && movements.size() > 0) {
-      startTime = movements.get(0).getTimestamp();
-    }
-    return startTime;
   }
 
-  private int calculateStartHour() {
+  /**
+   * Calculates the hour of the day when the record starts. Used to compare
+   * diagrams.
+   *
+   * @return the hour of the day
+   */
+  public int calculateStartHour() {
     Calendar curStartCal = Calendar.getInstance();
     curStartCal.setTime(calculateStartTime());
     return curStartCal.get(Calendar.HOUR_OF_DAY);
   }
 
+  /**
+   * Calculates the end time of this sleep record.
+   *
+   * @return the calculated end of this sleep record
+   */
   public Date calculateEndTime() {
-    Date endTime = new Date(new Date().getTime()
-        + DEFAULT_SLEEP_DURATION);
-    if (powerNap) {
-      endTime = new Date(calculateStartTime().getTime() + WAKE_INTERVAL);
-    } else if (movements.size() > 0) {
-      endTime = movements.get(movements.size() - 1).getTimestamp();
-    }
-    if (getWakeIntervalStart() != null && getWakeIntervalStart().getTime()
-        + WAKE_INTERVAL > endTime.getTime()) {
-      endTime = new Date(getWakeIntervalStart().getTime() + WAKE_INTERVAL);
-    }
-    if (getWakeupTime() != null && getWakeupTime().getTime() > endTime.getTime()) {
-      endTime = getWakeupTime();
+
+    // use previously calculated value
+    if (endTime == null) {
+
+      // calculate a default value from start time and default duration
+      endTime = new Date(new Date().getTime()
+          + DEFAULT_SLEEP_DURATION);
+
+      if (powerNap) {
+        // use start time plus wake interval for powernap
+        endTime = new Date(calculateStartTime().getTime() + getWakeInterval()
+            .getTime());
+      } else if (movements.size() > 0) {
+        // otherwise take last movement entry
+        endTime = movements.get(movements.size() - 1).getTimestamp();
+      }
+
+      // if the record has a wake interval
+      endTime = calculateWakeIntervalEnd() != null ? calculateWakeIntervalEnd()
+          : endTime;
+
+      // if the record has a wake up time and its after the current calculated time
+      if (getWakeupTime() != null && getWakeupTime().getTime() > endTime
+          .getTime()) {
+        endTime = getWakeupTime();
+      }
     }
     return endTime;
   }
 
+  /**
+   * Calculates the hour of the day when this sleep record ends. Used to compare
+   * diagrams.
+   *
+   * @return the end hour
+   */
   public int calculateEndHour() {
-    int durationHours = 2 + (int) (calculateDuration() / (1000 * 60 * 60));
-    return getStartHour() + durationHours;
+    final Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date(calculateEndTime().getTime() + HOUR));
+    return cal.get(Calendar.HOUR_OF_DAY);
   }
 
+  /**
+   * Calculates the time when the person of this record felt asleep. Only
+   * calculated once.
+   *
+   * @return the time when the person felt asleep
+   */
   public Date calculateSleepStart() {
     if (sleepStart != null) {
       return new Date(sleepStart.getTime());
@@ -138,6 +187,35 @@ public class SleepData implements Serializable {
     return new Date(sleepStart.getTime());
   }
 
+  /**
+   * Calculate the end of the wake interval. The wake interval may be extended
+   * by using i-Snooze.
+   *
+   * @return the end of the wake interval or null, if there is no wake interval
+   * in this record
+   */
+  public Date calculateWakeIntervalEnd() {
+    if (wakeIntervalEnd == null) {
+      if (getWakeIntervalStart() != null) {
+        wakeIntervalEnd = new Date(getWakeIntervalStart().getTime()
+            + getWakeInterval().getTime());
+        for (final MovementData movement : getMovements()) {
+          if (movement.getMovementsZ() == MovementData.SNOOZE) {
+            wakeIntervalEnd = new Date(movement.getTimestamp().getTime()
+                + getWakeInterval().getTime());
+          }
+        }
+      }
+    }
+    return wakeIntervalEnd;
+  }
+
+  /**
+   * Calculates the sleep duration for this data set. If possible the wake up
+   * time is used for the calculation.
+   *
+   * @return the duration of the sleep in msec
+   */
   public long calculateDuration() {
     if (calculateSleepStart() != null && wakeupTime != null) {
       return wakeupTime.getTime() - calculateSleepStart().getTime();
@@ -146,10 +224,20 @@ public class SleepData implements Serializable {
     }
   }
 
+  /**
+   * Calculates the time between applying the sensor and falling asleep.
+   *
+   * @return the time in msec
+   */
   public long calculateLatency() {
     return calculateSleepStart().getTime() - calculateStartTime().getTime();
   }
 
+  /**
+   * Calculates the sum of all movements of this sleep record.
+   *
+   * @return the movements sum
+   */
   public int calculateMovementCount() {
     int count = 0;
     for (MovementData move : movements) {
@@ -159,29 +247,37 @@ public class SleepData implements Serializable {
     return count;
   }
 
+  /**
+   * Calculates the average movement count per hour.
+   *
+   * @return the movement count
+   */
   public double calculateMovementsPerHour() {
     long duration = calculateDuration();
-    if (duration != UNSET && duration != 0) {
-      double durationInHours = (double) calculateDuration() / (60 * 60 * 1000);
+    if (duration > 0) {
+      double durationInHours = (double) duration / (60 * 60 * 1000);
       return (double) calculateMovementCount() / durationInHours;
     }
     return 0;
   }
 
+  /**
+   * Calculates the time saving. The saving is the difference between the actual
+   * wake up time and the latest wake up time.
+   *
+   * @return the timesaving in msec or zero, if it can not be calculated
+   */
   public long calculateTimeSaving() {
     if (wakeIntervalStart == null || wakeupTime == null) {
-      return UNSET;
+      return 0;
     }
-
-    long timesaving = wakeIntervalStart.getTime() + WAKE_INTERVAL - wakeupTime.
-        getTime();
-
-    if (timesaving < 0) {
-      return UNSET;
-    }
-    return timesaving;
+    return Math.max(0, wakeIntervalStart.getTime() + getWakeInterval().getTime()
+        - wakeupTime.getTime());
   }
 
+  /**
+   * {@inheritDoc} 
+   */
   @Override
   public String toString() {
     String s = "";
@@ -193,7 +289,7 @@ public class SleepData implements Serializable {
           .isPowerNap() + ", " + this.getWakeType() + ", " + this.
           getFirmwareVersion() + "}";
     } catch (Exception ex) {
-      log.error(ex.getMessage() ,ex);
+      log.error(ex.getMessage(), ex);
     }
     return s;
   }
@@ -269,6 +365,17 @@ public class SleepData implements Serializable {
     this.wakeIntervalStart = new Date(wakeIntervalStart.getTime());
   }
 
+  public WakeInterval getWakeInterval() {
+    if (wakeInterval == null) {
+      wakeInterval = WakeInterval.LONG;
+    }
+    return wakeInterval;
+  }
+
+  public void setWakeInterval(WakeInterval wakeInterval) {
+    this.wakeInterval = wakeInterval;
+  }
+
   public String getComment() {
     return comment == null ? "" : comment;
   }
@@ -294,7 +401,7 @@ public class SleepData implements Serializable {
   }
 
   public int getStartHour() {
-    if (startHour == (int) UNSET) {
+    if (startHour == UNSET) {
       startHour = calculateStartHour();
     }
     return startHour;

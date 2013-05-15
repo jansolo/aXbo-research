@@ -11,6 +11,7 @@ import com.dreikraft.axbo.data.DeviceType;
 import com.dreikraft.axbo.data.MovementData;
 import com.dreikraft.axbo.data.SensorID;
 import com.dreikraft.axbo.data.SleepData;
+import com.dreikraft.axbo.data.WakeInterval;
 import com.dreikraft.axbo.data.WakeType;
 import com.dreikraft.axbo.events.MovementEvent;
 import com.dreikraft.axbo.events.SleepDataAdded;
@@ -71,7 +72,7 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
     } catch (InterruptedException ex) {
       log.error(ex.getMessage(), ex);
     }
-    
+
     // store data ffrom aXbo to file
     processLogData(movementEventsP1);
     processLogData(movementEventsP2);
@@ -84,7 +85,7 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
     try {
       final Integer newCount = get();
       log.info("task " + getClass().getSimpleName() + " performed successfully");
-      
+
       setResult(Result.SUCCESS);
 
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
@@ -106,11 +107,11 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
 
   /**
    * Process movement records.
-   * 
-   * @param movementEvent 
+   *
+   * @param movementEvent
    */
   public void handle(final MovementEvent movementEvent) {
-    
+
     // notify swingworker about data
     synchronized (this) {
       dataCount = AxboResponseProtocol.END.getLetterAsString().equals(
@@ -140,7 +141,7 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
       // create initial sleep data object
       SleepData sleepData = new SleepData(sensorId.toString(), name,
           DeviceType.AXBO, "");
-      long currentWakeIntervalEnd = Long.MAX_VALUE;
+      long currentSleepEnd = Long.MAX_VALUE;
 
       // iterate over all movements for current sensor id
       for (int i = 0; i < movementEvents.size(); i++) {
@@ -157,24 +158,34 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
               getMovementData().getTimestamp().getTime();
         }
 
-        if (currentWakeIntervalEnd < movement.getTimestamp().getTime() || delta
+        if (currentSleepEnd < movement.getTimestamp().getTime() || delta
             > Axbo.CLEANER_INTERVAL_DEFAULT) {
           // store current sleepdata
           storeSleepData(sleepData);
           sleepData = new SleepData(sensorId.toString(), name,
               DeviceType.AXBO, "");
-          currentWakeIntervalEnd = Long.MAX_VALUE;
+          currentSleepEnd = Long.MAX_VALUE;
         }
 
         // handle different protocols
         switch (protocolType) {
-          // begin and next movement
+          case BEGIN:
+          case NEXT:
+          case END:
+            if (movement.getMovementsX() > 0)
+              sleepData.addMovement(movement);
+            break;
+            
           case KEY:
             movement.setMovementsZ(MovementData.KEY);
+            sleepData.addMovement(movement);
             break;
 
           case SNOOZE:
             movement.setMovementsZ(MovementData.SNOOZE);
+            sleepData.addMovement(movement);
+            currentSleepEnd = movement.getTimestamp().getTime()
+                + sleepData.getWakeInterval().getTime();
             break;
 
           case RANDOM_WAKE:
@@ -182,12 +193,16 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
             // set wake time and mark sleep data for saving
             sleepData.setWakeupTime(movement.getTimestamp());
             sleepData.setWakeType(WakeType.GOOD);
+            currentSleepEnd = movement.getTimestamp().getTime()
+                + SleepData.SNOOZE_WAIT_INTERVAL;
             break;
 
           case WAKE:
             // set wake time and mark sleepdata for saving
             sleepData.setWakeupTime(movement.getTimestamp());
             sleepData.setWakeType(WakeType.NONE);
+            currentSleepEnd = movement.getTimestamp().getTime()
+                + SleepData.SNOOZE_WAIT_INTERVAL;
             break;
 
           case POWER_NAPPING:
@@ -199,16 +214,21 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
             sleepData.setWakeIntervalStart(movement.getTimestamp());
             break;
 
-          case WAKE_INTERVALL_START:
+          case WAKE_INTERVAL_START:
+          case WAKE_INTERVAL_SHORT:
             if (sleepData.getWakeIntervalStart() == null) {
               sleepData.setWakeIntervalStart(movement.getTimestamp());
+              sleepData.setWakeInterval(WakeInterval
+                  .getWakeIntervalFromProtocol(protocolType));
             }
-            currentWakeIntervalEnd = movement.getTimestamp().getTime()
-                + SleepData.WAKE_INTERVAL;
+            currentSleepEnd = movement.getTimestamp().getTime()
+                + sleepData.getWakeInterval().getTime();
             break;
           default:
+            if (log.isDebugEnabled())
+              log.debug("unprocessed protocol type: " + protocolType);
+            break;
         }
-        sleepData.addMovement(movement);
       }
       // store last sleepData Object
       storeSleepData(sleepData);

@@ -91,6 +91,7 @@ public class DataFrame extends JPanel implements Printable {
       final Date start,
       final Date sleepStart,
       final Date wakeIntervalStart,
+      final Date wakeIntervalEnd,
       final Date wakeupTime,
       final KeyTimeSeries keys,
       final KeyTimeSeries snoozes) {
@@ -152,21 +153,11 @@ public class DataFrame extends JPanel implements Printable {
 
     // wake intervall marker
     if (wakeIntervalStart != null) {
-      final Marker wakeInterval =
-          new IntervalMarker(wakeIntervalStart.getTime(),
-          wakeIntervalStart.getTime() + SleepData.WAKE_INTERVAL);
+      final Marker wakeInterval = new IntervalMarker(
+          wakeIntervalStart.getTime(),wakeIntervalEnd.getTime());
       wakeInterval.setPaint(WAKE_INTERVALL_PAINT);
       wakeInterval.setOutlinePaint(null);
       plot.addDomainMarker(wakeInterval, Layer.BACKGROUND);
-    }
-
-    // wakeup time
-    if (wakeupTime != null) {
-      final Marker wakeupMarker = new ValueMarker((double) wakeupTime.getTime());
-      wakeupMarker.setPaint(WAKE_PAINT);
-      wakeupMarker.setOutlinePaint(null);
-      wakeupMarker.setStroke(MARKER_STROKE);
-      plot.addDomainMarker(wakeupMarker, Layer.FOREGROUND);
     }
 
     // sensor keys
@@ -189,6 +180,15 @@ public class DataFrame extends JPanel implements Printable {
       snoozeMarker.setOutlinePaint(null);
       snoozeMarker.setStroke(MARKER_STROKE);
       plot.addDomainMarker(snoozeMarker, Layer.FOREGROUND);
+    }
+
+    // wakeup time
+    if (wakeupTime != null) {
+      final Marker wakeupMarker = new ValueMarker((double) wakeupTime.getTime());
+      wakeupMarker.setPaint(WAKE_PAINT);
+      wakeupMarker.setOutlinePaint(null);
+      wakeupMarker.setStroke(MARKER_STROKE);
+      plot.addDomainMarker(wakeupMarker, Layer.FOREGROUND);
     }
 
     // create a new chart panel
@@ -393,7 +393,7 @@ public class DataFrame extends JPanel implements Printable {
         lblSpacerWakeupTime.setVisible(false);
       }
 
-      if (sleepData.calculateTimeSaving() != SleepData.UNSET) {
+      if (sleepData.calculateTimeSaving() != 0) {
         cal.setTime(new Date(sleepData.calculateTimeSaving()));
         lblTimeSavingValue.setText(String.format("%tR", cal));
         lblTimeSaving.setVisible(true);
@@ -404,10 +404,9 @@ public class DataFrame extends JPanel implements Printable {
         lblTimeSavingValue.setVisible(false);
         lblSpacerTimeSaving.setVisible(false);
       }
-
+      
       if (sleepData.getWakeIntervalStart() != null) {
-        long end = sleepData.getWakeIntervalStart().getTime()
-            + SleepData.WAKE_INTERVAL;
+        long end = sleepData.calculateWakeIntervalEnd().getTime();
         lblLatestValue.setText(String.format("%tR", end));
         lblLatest.setVisible(true);
         lblLatestValue.setVisible(true);
