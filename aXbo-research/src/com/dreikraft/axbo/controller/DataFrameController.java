@@ -74,6 +74,7 @@ public class DataFrameController implements ApplicationEventEnabled
         sleepData.calculateStartTime(),
         sleepData.calculateSleepStart(),
         sleepData.getWakeIntervalStart(),
+        sleepData.calculateWakeIntervalEnd(),
         sleepData.getWakeupTime(),
         createKeyDataset(),
         createSnoozeDataset());
