@@ -19,7 +19,6 @@ public class SleepData implements Serializable {
 
   public static final long serialVersionUID = 1L;
   public static final Log log = LogFactory.getLog(SleepData.class);
-  public static final int UNSET = -1;
   public static final long HOUR = 60 * 60 * 1000;
   public static final long SNOOZE_WAIT_INTERVAL = 60 * 1000;
   public static final long SLEEP_TRIGGER_INTERVAL = 8 * 60 * 1000;
@@ -42,7 +41,7 @@ public class SleepData implements Serializable {
   private transient Date endTime;
   private transient Date wakeIntervalEnd;
   private transient File dataFile;
-  private transient int startHour = UNSET;
+  private transient int compareStartHour;
 
   /**
    * Creates a new instance of SleepData
@@ -141,18 +140,6 @@ public class SleepData implements Serializable {
       }
     }
     return endTime;
-  }
-
-  /**
-   * Calculates the hour of the day when this sleep record ends. Used to compare
-   * diagrams.
-   *
-   * @return the end hour
-   */
-  public int calculateEndHour() {
-    final Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date(calculateEndTime().getTime() + HOUR));
-    return cal.get(Calendar.HOUR_OF_DAY);
   }
 
   /**
@@ -276,7 +263,21 @@ public class SleepData implements Serializable {
   }
 
   /**
-   * {@inheritDoc} 
+   * Finds the last movement or key press in this sleep data record.
+   *
+   * @return the last movement or null
+   */
+  public MovementData findLastMovement() {
+    for (int i = movements.size() - 1; i > -1; i--) {
+      final MovementData movement = movements.get(i);
+      if (movement.isMovement())
+        return movement;
+    }
+    return null;  
+  }
+
+  /**
+   * {@inheritDoc}
    */
   @Override
   public String toString() {
@@ -400,15 +401,12 @@ public class SleepData implements Serializable {
     this.wakeType = wakeType;
   }
 
-  public int getStartHour() {
-    if (startHour == UNSET) {
-      startHour = calculateStartHour();
-    }
-    return startHour;
+  public int getCompareStartHour() {
+    return compareStartHour;
   }
 
-  public void setStartHour(int startHour) {
-    this.startHour = startHour;
+  public void setCompareStartHour(int compareStartHour) {
+    this.compareStartHour = compareStartHour;
   }
 
   public String getFirmwareVersion() {

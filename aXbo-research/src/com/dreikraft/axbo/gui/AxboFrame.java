@@ -283,18 +283,18 @@ public class AxboFrame extends JFrame {
     lblCountSelected = new javax.swing.JLabel();
     lblCountSelecetedVal = new javax.swing.JLabel();
     legendPanel = new javax.swing.JPanel();
-    lblLegendMovementColor = new javax.swing.JLabel();
-    lblLegendMovement = new javax.swing.JLabel();
     lblLegendSleepStartColor = new javax.swing.JLabel();
     lblLegendSleepStart = new javax.swing.JLabel();
-    lblLegendKeyColor = new javax.swing.JLabel();
-    lblLegendKey = new javax.swing.JLabel();
-    lblLegendWakeIntervalColor = new javax.swing.JLabel();
-    lblLegendWakeInterval = new javax.swing.JLabel();
     lblLegendWakeTimeColor = new javax.swing.JLabel();
     lblLegendWakeTime = new javax.swing.JLabel();
+    lblLegendWakeIntervalColor = new javax.swing.JLabel();
+    lblLegendWakeInterval = new javax.swing.JLabel();
+    lblLegendKeyColor = new javax.swing.JLabel();
+    lblLegendKey = new javax.swing.JLabel();
     lblLegendSnoozeColor = new javax.swing.JLabel();
     lblLegendSnooze = new javax.swing.JLabel();
+    lblLegendMovementColor = new javax.swing.JLabel();
+    lblLegendMovement = new javax.swing.JLabel();
     statusTextPanel = new javax.swing.JPanel();
     statusTextLabel = new javax.swing.JLabel();
     statusProgressBar = new javax.swing.JProgressBar();
@@ -712,17 +712,6 @@ public class AxboFrame extends JFrame {
     legendPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
     legendPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
-    lblLegendMovementColor.setBackground(DataFrame.BAR_COLOR);
-    lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendMovementColor.setText("  ");
-    lblLegendMovementColor.setOpaque(true);
-    legendPanel.add(lblLegendMovementColor);
-
-    lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendMovement.setForeground(new java.awt.Color(255, 212, 107));
-    lblLegendMovement.setText(bundle.getString("lblLegendMovements")); // NOI18N
-    legendPanel.add(lblLegendMovement);
-
     lblLegendSleepStartColor.setBackground(DataFrame.SLEEP_MARKER_PAINT);
     lblLegendSleepStartColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
     lblLegendSleepStartColor.setText("  ");
@@ -730,31 +719,9 @@ public class AxboFrame extends JFrame {
     legendPanel.add(lblLegendSleepStartColor);
 
     lblLegendSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendSleepStart.setForeground(new java.awt.Color(243, 101, 252));
+    lblLegendSleepStart.setForeground(DataFrame.SLEEP_MARKER_PAINT);
     lblLegendSleepStart.setText(bundle.getString("lblLegendSleepStart")); // NOI18N
     legendPanel.add(lblLegendSleepStart);
-
-    lblLegendKeyColor.setBackground(DataFrame.KEY_PAINT);
-    lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendKeyColor.setText("  ");
-    lblLegendKeyColor.setOpaque(true);
-    legendPanel.add(lblLegendKeyColor);
-
-    lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendKey.setForeground(new java.awt.Color(125, 155, 255));
-    lblLegendKey.setText(bundle.getString("lblLegendKeys")); // NOI18N
-    legendPanel.add(lblLegendKey);
-
-    lblLegendWakeIntervalColor.setBackground(DataFrame.WAKE_INTERVALL_PAINT);
-    lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendWakeIntervalColor.setText("  ");
-    lblLegendWakeIntervalColor.setOpaque(true);
-    legendPanel.add(lblLegendWakeIntervalColor);
-
-    lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendWakeInterval.setForeground(new java.awt.Color(130, 109, 61));
-    lblLegendWakeInterval.setText(bundle.getString("lblLegendWakeInterval")); // NOI18N
-    legendPanel.add(lblLegendWakeInterval);
 
     lblLegendWakeTimeColor.setBackground(DataFrame.WAKE_PAINT);
     lblLegendWakeTimeColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
@@ -763,9 +730,31 @@ public class AxboFrame extends JFrame {
     legendPanel.add(lblLegendWakeTimeColor);
 
     lblLegendWakeTime.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendWakeTime.setForeground(new java.awt.Color(16, 206, 21));
+    lblLegendWakeTime.setForeground(DataFrame.WAKE_PAINT);
     lblLegendWakeTime.setText(bundle.getString("lblLegendWakeupTime")); // NOI18N
     legendPanel.add(lblLegendWakeTime);
+
+    lblLegendWakeIntervalColor.setBackground(DataFrame.WAKE_INTERVALL_PAINT);
+    lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendWakeIntervalColor.setText("  ");
+    lblLegendWakeIntervalColor.setOpaque(true);
+    legendPanel.add(lblLegendWakeIntervalColor);
+
+    lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendWakeInterval.setForeground(DataFrame.WAKE_INTERVALL_PAINT);
+    lblLegendWakeInterval.setText(bundle.getString("lblLegendWakeInterval")); // NOI18N
+    legendPanel.add(lblLegendWakeInterval);
+
+    lblLegendKeyColor.setBackground(DataFrame.KEY_PAINT);
+    lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendKeyColor.setText("  ");
+    lblLegendKeyColor.setOpaque(true);
+    legendPanel.add(lblLegendKeyColor);
+
+    lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendKey.setForeground(DataFrame.KEY_PAINT);
+    lblLegendKey.setText(bundle.getString("lblLegendKeys")); // NOI18N
+    legendPanel.add(lblLegendKey);
 
     lblLegendSnoozeColor.setBackground(DataFrame.SNOOZE_PAINT);
     lblLegendSnoozeColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
@@ -774,9 +763,20 @@ public class AxboFrame extends JFrame {
     legendPanel.add(lblLegendSnoozeColor);
 
     lblLegendSnooze.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendSnooze.setForeground(new java.awt.Color(255, 255, 255));
+    lblLegendSnooze.setForeground(DataFrame.SNOOZE_PAINT);
     lblLegendSnooze.setText(bundle.getString("lblLegendSnooze")); // NOI18N
     legendPanel.add(lblLegendSnooze);
+
+    lblLegendMovementColor.setBackground(DataFrame.BAR_COLOR);
+    lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendMovementColor.setText("  ");
+    lblLegendMovementColor.setOpaque(true);
+    legendPanel.add(lblLegendMovementColor);
+
+    lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendMovement.setForeground(DataFrame.BAR_COLOR);
+    lblLegendMovement.setText(bundle.getString("lblLegendMovements")); // NOI18N
+    legendPanel.add(lblLegendMovement);
 
     infoPanel.add(legendPanel, java.awt.BorderLayout.SOUTH);
 

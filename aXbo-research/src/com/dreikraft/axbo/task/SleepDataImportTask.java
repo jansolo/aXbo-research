@@ -153,10 +153,10 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
 
         // calculate the time difference between previous and current movement
         long delta = 0;
-        if (i > 0) {
-          delta = movement.getTimestamp().getTime() - movementEvents.get(i - 1).
-              getMovementData().getTimestamp().getTime();
-        }
+        final MovementData prevMovement = sleepData.findLastMovement();
+        if (prevMovement != null && movement.isMovement())
+          delta = movement.getTimestamp().getTime() - prevMovement
+              .getTimestamp().getTime();
 
         if (currentSleepEnd < movement.getTimestamp().getTime() || delta
             > Axbo.CLEANER_INTERVAL_DEFAULT) {
@@ -175,7 +175,7 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
             if (movement.getMovementsX() > 0)
               sleepData.addMovement(movement);
             break;
-            
+
           case KEY:
             movement.setMovementsZ(MovementData.KEY);
             sleepData.addMovement(movement);
