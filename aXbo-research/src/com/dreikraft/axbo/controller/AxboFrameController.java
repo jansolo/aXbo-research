@@ -65,6 +65,7 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.apache.commons.logging.*;
 import org.apache.commons.logging.Log;
+import org.jfree.data.Range;
 
 /**
  * AxboFrameController
@@ -77,6 +78,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
   public static final Log log = LogFactory.getLog(AxboFrameController.class);
   public static final String MINUTE_CLASS = "org.jfree.data.time.Minute";
   public static final String SECOND_CLASS = "org.jfree.data.time.Second";
+  public static final Range COMPARE_RANGE = new Range(0, 80);
   private final AxboFrame frame;
   private boolean taskInProgress = false;
 
@@ -482,16 +484,16 @@ public final class AxboFrameController implements ApplicationEventEnabled {
       int maxEndHour = 0;
       for (SleepData sleepData : openSleepDataList) {
         int endHour = sleepData.getCompareStartHour() + (int) (sleepData
-            .calculateDuration() / 60 / 60 / 1000) + 2;
+            .calculateDuration() / SleepData.HOUR) + 2;
         if (endHour > maxEndHour) {
           maxEndHour = endHour;
         }
       }
-
+      
       // zoom all diagrams to the same range
       for (final SleepData sleepData : openSleepDataList) {
         ApplicationEventDispatcher.getInstance().dispatchEvent(new DiagramZoom(
-            this, minStartHour + ":01", (maxEndHour - minStartHour) * 60));
+            this, minStartHour + ":01", (maxEndHour - minStartHour) * 60, COMPARE_RANGE));
 
         final String msgParam = new StringBuffer(sleepData.getName()).append(
             " ").append(DateFormat.getDateInstance(DateFormat.SHORT).format(

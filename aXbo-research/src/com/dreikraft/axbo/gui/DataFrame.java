@@ -47,6 +47,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.data.Range;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.TimeSeriesDataItem;
@@ -238,7 +239,8 @@ public class DataFrame extends JPanel implements Printable {
 
   public void zoom(final SleepData sleepData,
       final String fromText,
-      final Integer range) {
+      final Integer duration,
+      final Range range) {
     try {
       long sleepDataStart = sleepData.calculateStartTime().getTime();
       long sleepDataEnd = sleepData.calculateEndTime().getTime();
@@ -251,20 +253,22 @@ public class DataFrame extends JPanel implements Printable {
       int startMinutes = startHours * 60 + minutes;
 
       long start = getZoomTimeMillis(sleepDataStart, startMinutes);
-      long end = (1000L * range * 60) + start;
+      long end = (1000L * duration * 60) + start;
 
       if (end < sleepDataStart) {
         start += 24 * 60 * 60 * 1000;
-        end = start + (range * 60 * 1000);
+        end = start + (duration * 60 * 1000);
       }
 
       if (start > sleepDataEnd) {
         start -= 24 * 60 * 60 * 1000;
-        end = start + (range * 60 * 1000);
+        end = start + (duration * 60 * 1000);
       }
 
       chartPanel.getChart().getXYPlot().getDomainAxis().setRange(start - 1000,
           end + 1000);
+      chartPanel.getChart().getXYPlot().getRangeAxis().setAutoRange(false);
+      chartPanel.getChart().getXYPlot().getRangeAxis().setRange(range);
     } catch (Exception ex) {
       log.warn("invalid zoom input", ex);
       chartPanel.restoreAutoBounds();
@@ -310,27 +314,36 @@ public class DataFrame extends JPanel implements Printable {
 
       printer.setColor(GRID_COLOR);
       printer.drawString(getTitle(), (int) (x), (int) y + lineHeight * 2);
+      printer.setColor(SLEEP_MARKER_PAINT);
       printer.drawString(lblSleepStart.getText() + " " + lblSleepStartValue.
           getText(), (int) (x), (int) (y + h - lineHeight * 2));
+      printer.setColor(GRID_COLOR);
       printer.drawString(lblLatency.getText() + " " + lblLatencyValue.getText(),
           (int) (x + w / 4 * 1), (int) (y + h - lineHeight * 2));
+      printer.setColor(GRID_COLOR);
       printer.drawString(lblDuration.getText() + " " + lblDurationValue
           .getText(), (int) (x + w / 4 * 2), (int) (y + h - lineHeight * 2));
+      printer.setColor(WAKE_PAINT);
       printer.drawString(lblWakeupTime.getText() + " " + lblWakeupTimeValue.
           getText(), (int) (x + w / 4 * 3), (int) (y + h - lineHeight * 2));
+      printer.setColor(WAKE_INTERVALL_PAINT);
       printer.drawString(lblLatest.getText() + " " + lblLatestValue.getText(),
           (int) (x), (int) (y + h - lineHeight * 1));
+      printer.setColor(GRID_COLOR);
       printer.drawString(lblTimeSaving.getText() + " " + lblTimeSavingValue.
           getText(), (int) (x + w / 4 * 1), (int) (y + h - lineHeight * 1));
+      printer.setColor(BAR_COLOR);
       printer.drawString(lblMovementsCount.getText() + " "
           + lblMovementsCountValue.
           getText(), (int) (x + w / 4 * 2), (int) (y + h - lineHeight * 1));
+      printer.setColor(GRID_COLOR);
       printer.drawString(lblMovementsAverage.getText() + " "
           + lblMovementsAverageValue.
           getText(), (int) (x + w / 4 * 3), (int) (y + h - lineHeight * 1));
 
       if (lblCommentValue.getText() != null && lblCommentValue.getText().trim()
           .length() > 0) {
+        printer.setColor(GRID_COLOR);
         printer.drawString(BundleUtil.getMessage("dataframe.label.comment")
             + " " + lblCommentValue.getText(), (int) (x + w / 4 * 0),
             (int) (y + h - lineHeight * 0));
@@ -578,12 +591,12 @@ public class DataFrame extends JPanel implements Printable {
     pnlStats.add(lblSpacerDuration);
 
     lblSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblSleepStart.setForeground(new java.awt.Color(174, 173, 173));
+    lblSleepStart.setForeground(SLEEP_MARKER_PAINT);
     lblSleepStart.setText(bundle.getString("label.sleepStart")); // NOI18N
     pnlStats.add(lblSleepStart);
 
     lblSleepStartValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblSleepStartValue.setForeground(new java.awt.Color(174, 173, 173));
+    lblSleepStartValue.setForeground(SLEEP_MARKER_PAINT);
     lblSleepStartValue.setText("--:--");
     pnlStats.add(lblSleepStartValue);
 
@@ -617,12 +630,12 @@ public class DataFrame extends JPanel implements Printable {
     pnlStats.add(lblSpacerLatency);
 
     lblWakeupTime.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblWakeupTime.setForeground(new java.awt.Color(174, 173, 173));
+    lblWakeupTime.setForeground(WAKE_PAINT);
     lblWakeupTime.setText(bundle.getString("label.wakeupTime")); // NOI18N
     pnlStats.add(lblWakeupTime);
 
     lblWakeupTimeValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblWakeupTimeValue.setForeground(new java.awt.Color(174, 173, 173));
+    lblWakeupTimeValue.setForeground(WAKE_PAINT);
     lblWakeupTimeValue.setText("--:--");
     pnlStats.add(lblWakeupTimeValue);
 
@@ -636,12 +649,12 @@ public class DataFrame extends JPanel implements Printable {
     pnlStats.add(lblSpacerWakeupTime);
 
     lblLatest.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLatest.setForeground(new java.awt.Color(174, 173, 173));
+    lblLatest.setForeground(WAKE_INTERVALL_PAINT);
     lblLatest.setText(bundle.getString("label.latest")); // NOI18N
     pnlStats.add(lblLatest);
 
     lblLatestValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLatestValue.setForeground(new java.awt.Color(174, 173, 173));
+    lblLatestValue.setForeground(WAKE_INTERVALL_PAINT);
     lblLatestValue.setText("--:--");
     pnlStats.add(lblLatestValue);
 
@@ -674,12 +687,12 @@ public class DataFrame extends JPanel implements Printable {
     pnlStats.add(lblSpacerTimeSaving);
 
     lblMovementsCount.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblMovementsCount.setForeground(new java.awt.Color(174, 173, 173));
+    lblMovementsCount.setForeground(BAR_COLOR);
     lblMovementsCount.setText(bundle.getString("dataFrame.label.movementsCount")); // NOI18N
     pnlStats.add(lblMovementsCount);
 
     lblMovementsCountValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblMovementsCountValue.setForeground(new java.awt.Color(174, 173, 173));
+    lblMovementsCountValue.setForeground(BAR_COLOR);
     lblMovementsCountValue.setText("-");
     pnlStats.add(lblMovementsCountValue);
 

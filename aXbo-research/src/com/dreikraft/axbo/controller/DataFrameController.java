@@ -157,7 +157,7 @@ public class DataFrameController implements ApplicationEventEnabled
 
   public void handle(final DiagramZoom evt)
   {
-    view.zoom(sleepData, evt.getZoomStart(), evt.getZoomDuration());
+    view.zoom(sleepData, evt.getZoomStart(), evt.getZoomDuration(), evt.getZoomRange());
   }
 
   public void handle(final SleepDataSave evt)
