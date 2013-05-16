@@ -24,10 +24,10 @@ public class SleepDataComparator implements Comparator<SleepData>,
     if (s1 == null || s2 == null) {
       throw new IllegalArgumentException("compare value may not be null");
     }
-    if (s1.getStartHour() == s2.getStartHour()) {
+    if (s1.getCompareStartHour() == s2.getCompareStartHour()) {
       return 0;
     }
-    if (s1.getStartHour() < s2.getStartHour()) {
+    if (s1.getCompareStartHour() < s2.getCompareStartHour()) {
       return -1;
     } else {
       return 1;

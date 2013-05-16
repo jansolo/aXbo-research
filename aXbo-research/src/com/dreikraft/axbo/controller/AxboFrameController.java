@@ -445,33 +445,50 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     return null;
   }
 
+  /**
+   * Compares open sleep data records. Zooms all diagrams to the same start and
+   * end time for easy visual comparison of the charts.
+   *
+   * @param evt a SleepDataCompare event with a list of sleep records to compare
+   */
   public void handle(final SleepDataCompare evt) {
     final List<SleepData> openSleepDataList = getOpenSleepDataList();
     if (openSleepDataList.size() > 1) {
+      // set initial compare start hours to begin of sleep record
+      for (final SleepData sleepData : openSleepDataList) {
+        sleepData.setCompareStartHour(sleepData.calculateStartHour());
+      }
+      // sort sleep records by start hour of day
       Collections.sort(openSleepDataList, new SleepDataComparator());
-      int maxInterval = openSleepDataList.get(openSleepDataList.size() - 1).
-          getStartHour() - openSleepDataList.get(0).getStartHour();
-
-      if (maxInterval > 12) {
+      // calculate the maximum gap in hours of day
+      final int maxStartGap = openSleepDataList
+          .get(openSleepDataList.size() - 1).getCompareStartHour()
+          - openSleepDataList.get(0).getCompareStartHour();
+      // if the maximum gap is greater than 12 hours
+      if (maxStartGap > 12) {
+        // align sleep data records
         for (SleepData sleepData : openSleepDataList) {
-          int offset = sleepData.getStartHour() < 12 ? 24 : 0;
-          sleepData.setStartHour(sleepData.getStartHour() + offset);
+          int offset = sleepData.getCompareStartHour() < 12 ? 24 : 0;
+          sleepData
+              .setCompareStartHour(sleepData.getCompareStartHour() + offset);
         }
         Collections.sort(openSleepDataList, new SleepDataComparator());
       }
 
       // get the start
-      int minStartHour = openSleepDataList.get(0).getStartHour();
+      int minStartHour = openSleepDataList.get(0).getCompareStartHour();
 
       // get latest end time
       int maxEndHour = 0;
       for (SleepData sleepData : openSleepDataList) {
-        int endHour = sleepData.calculateEndHour();
+        int endHour = sleepData.getCompareStartHour() + (int) (sleepData
+            .calculateDuration() / 60 / 60 / 1000) + 2;
         if (endHour > maxEndHour) {
           maxEndHour = endHour;
         }
       }
 
+      // zoom all diagrams to the same range
       for (final SleepData sleepData : openSleepDataList) {
         ApplicationEventDispatcher.getInstance().dispatchEvent(new DiagramZoom(
             this, minStartHour + ":01", (maxEndHour - minStartHour) * 60));
