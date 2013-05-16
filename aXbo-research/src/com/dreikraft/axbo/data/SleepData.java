@@ -263,7 +263,21 @@ public class SleepData implements Serializable {
   }
 
   /**
-   * {@inheritDoc} 
+   * Finds the last movement or key press in this sleep data record.
+   *
+   * @return the last movement or null
+   */
+  public MovementData findLastMovement() {
+    for (int i = movements.size() - 1; i > -1; i--) {
+      final MovementData movement = movements.get(i);
+      if (movement.isMovement())
+        return movement;
+    }
+    return null;  
+  }
+
+  /**
+   * {@inheritDoc}
    */
   @Override
   public String toString() {

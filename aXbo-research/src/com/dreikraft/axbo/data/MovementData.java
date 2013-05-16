@@ -72,6 +72,10 @@ public class MovementData implements Serializable, Comparable<MovementData> {
   public void setMovementsZ(int movementsZ) {
     this.movementsZ = movementsZ;
   }
+  
+  public boolean isMovement() {
+    return movementsX > 0 || movementsY < 0;
+  }
 
   @Override
   public boolean equals(Object obj) {
