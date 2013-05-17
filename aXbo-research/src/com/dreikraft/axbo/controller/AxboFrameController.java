@@ -169,7 +169,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
 
   public void handle(final ApplicationInitialized evt) {
     registerForMacOSXEvents();
-    frame.setSize(1024, 768);
+    frame.setSize(1280, 768);
     frame.setVisible(true);
   }
 
