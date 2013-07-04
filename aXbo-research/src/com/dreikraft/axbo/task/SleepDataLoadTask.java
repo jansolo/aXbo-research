@@ -9,8 +9,11 @@ import com.googlecode.streamflyer.core.ModifyingReader;
 import com.googlecode.streamflyer.regex.RegexModifier;
 import java.beans.ExceptionListener;
 import java.beans.XMLDecoder;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
@@ -37,9 +40,9 @@ public class SleepDataLoadTask extends AxboTask<Integer, SleepData>
 
   @Override
   protected Integer doInBackground() throws Exception {
-    
+
     log.info("performing task" + getClass().getSimpleName() + " ...");
-    
+
     int count = 0;
     for (File file : spwFiles) {
       XMLDecoder decoder = null;
@@ -48,7 +51,9 @@ public class SleepDataLoadTask extends AxboTask<Integer, SleepData>
         Modifier regex = new RegexModifier("com\\.dreikraft\\.infactory", 0,
             "com.dreikraft.axbo");
         decoder = new XMLDecoder(new ReaderInputStream(new ModifyingReader(
-            new FileReader(file), regex), Charset.forName("UTF-8")));
+            new BufferedReader(new InputStreamReader(new FileInputStream(file),
+            Charset.forName("UTF-8")), 1024), regex), Charset
+            .forName("UTF-8")));
         decoder.setExceptionListener(this);
         final Object obj = decoder.readObject();
 
