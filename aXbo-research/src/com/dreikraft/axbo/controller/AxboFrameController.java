@@ -57,6 +57,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -427,7 +428,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     final long avgDuration = count > 0 ? sumDuration / count : 0;
     frame
         .showSummary(sumDuration, avgDuration, minDuration, maxDuration, saving,
-        count);
+        count, openSleepDataList.size());
   }
 
   private List<SleepData> getOpenSleepDataList() {
@@ -513,7 +514,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     try {
       final XMLEncoder encoder =
           new XMLEncoder(new BufferedOutputStream(new FileOutputStream(sleepData
-          .getDataFile())));
+          .getDataFile())), Charset.forName("UTF-8").name(), true, 0);
       encoder.writeObject(sleepData);
       encoder.close();
     } catch (FileNotFoundException ex) {
