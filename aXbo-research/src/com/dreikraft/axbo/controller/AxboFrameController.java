@@ -428,7 +428,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     final long avgDuration = count > 0 ? sumDuration / count : 0;
     frame
         .showSummary(sumDuration, avgDuration, minDuration, maxDuration, saving,
-        count);
+        count, openSleepDataList.size());
   }
 
   private List<SleepData> getOpenSleepDataList() {

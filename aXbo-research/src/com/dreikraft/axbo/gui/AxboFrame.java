@@ -214,9 +214,9 @@ public class AxboFrame extends JFrame {
 
   public void showSummary(final long sumDuration, final long avgDuration,
       final long minDuration, final long maxDuration, final long timeSaving,
-      final int count) {
+      final int count, final int countOpen) {
+    
     legendPanel.setVisible(getDataViews().size() > 0);
-
     if (sumDuration != 0) {
       summaryPanel.setVisible(true);
 
@@ -233,6 +233,7 @@ public class AxboFrame extends JFrame {
       lblTimeSavingsValue.setText(String.format("%tR", cal));
 
       lblCountSelecetedVal.setText(String.format("%-2d", count));
+      lblCountOpenVal.setText(String.format("%-2d", countOpen));
     } else {
       summaryPanel.setVisible(false);
     }
@@ -278,6 +279,9 @@ public class AxboFrame extends JFrame {
     dataViewsPanel = new com.dreikraft.swing.BackgroundImagePanel();
     infoPanel = new javax.swing.JPanel();
     summaryPanel = new javax.swing.JPanel();
+    lblCountOpen = new javax.swing.JLabel();
+    lblCountOpenVal = new javax.swing.JLabel();
+    lblSpacer4 = new javax.swing.JLabel();
     lblCountSelected = new javax.swing.JLabel();
     lblCountSelecetedVal = new javax.swing.JLabel();
     lblSpacer = new javax.swing.JLabel();
@@ -648,6 +652,25 @@ public class AxboFrame extends JFrame {
     summaryPanel.setVisible(false);
     summaryPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
     summaryPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 2, 0));
+
+    lblCountOpen.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblCountOpen.setForeground(DataFrame.AXIS_COLOR);
+    lblCountOpen.setText(bundle.getString("lblCountOpen")); // NOI18N
+    summaryPanel.add(lblCountOpen);
+
+    lblCountOpenVal.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblCountOpenVal.setForeground(DataFrame.AXIS_COLOR);
+    lblCountOpenVal.setText("--");
+    summaryPanel.add(lblCountOpenVal);
+
+    lblSpacer4.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacer4.setForeground(DataFrame.AXIS_COLOR);
+    lblSpacer4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacer4.setText("|");
+    lblSpacer4.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacer4.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacer4.setPreferredSize(new java.awt.Dimension(14, 14));
+    summaryPanel.add(lblSpacer4);
 
     lblCountSelected.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
     lblCountSelected.setForeground(DataFrame.AXIS_COLOR);
@@ -1231,6 +1254,8 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JLabel jLabel1;
   private javax.swing.JSeparator jSeparator1;
   private javax.swing.JSeparator jSeparator3;
+  private javax.swing.JLabel lblCountOpen;
+  private javax.swing.JLabel lblCountOpenVal;
   private javax.swing.JLabel lblCountSelecetedVal;
   private javax.swing.JLabel lblCountSelected;
   private javax.swing.JLabel lblLegendKey;
@@ -1256,6 +1281,7 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JLabel lblSpacer1;
   private javax.swing.JLabel lblSpacer2;
   private javax.swing.JLabel lblSpacer3;
+  private javax.swing.JLabel lblSpacer4;
   private javax.swing.JLabel lblTimeSavings;
   private javax.swing.JLabel lblTimeSavingsValue;
   private javax.swing.JPanel legendPanel;
