@@ -1,4 +1,4 @@
-Copyright 2001-2005 (C) MetaStuff, Ltd. All Rights Reserved.
+Copyright 2001-2010 (C) MetaStuff, Ltd. All Rights Reserved.
 
 Redistribution and use of this software and associated documentation
 ("Software"), with or without modification, are permitted provided
@@ -24,7 +24,7 @@ that the following conditions are met:
    trademark of MetaStuff, Ltd.
  
 5. Due credit should be given to the DOM4J Project - 
-   http://www.dom4j.org
+   http://dom4j.sourceforge.net
  
 THIS SOFTWARE IS PROVIDED BY METASTUFF, LTD. AND CONTRIBUTORS
 ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT

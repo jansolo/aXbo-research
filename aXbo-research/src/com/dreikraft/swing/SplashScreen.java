@@ -1,17 +1,11 @@
-/*
- * SplashScreen.java
- *
- * Created on 22. März 2006, 16:13
- */
-
 package com.dreikraft.swing;
 
 import java.net.URL;
 import javax.swing.ImageIcon;
 
 /**
- *
- * @author  illetsch
+ * SplashScreen.
+ * @author jan.illetschko@3kraft.com
  */
 public class SplashScreen extends javax.swing.JWindow
 {  

@@ -1,24 +1,18 @@
-/*
- * $Id: ApplicationDataLoad.java,v 1.1 2010-11-23 15:33:34 illetsch Exp $
- * © 3kraft GmbH & Co KG 2009
- */
 package com.dreikraft.events;
 
 /**
  * Initial data starts to be loaded.
  *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.1 $
+ * @author jan.illetschko@3kraft.com
  */
-public class ApplicationDataLoad extends ApplicationEvent
-{
+public class ApplicationDataLoad extends ApplicationEvent {
+
   /**
-   * @param source
-   * @param data empty
+   * SerialVersionUID.
    */
-  public ApplicationDataLoad(Object source)
-  {
+  public static final long serialVersionUID = 1L;
+
+  public ApplicationDataLoad(Object source) {
     super(source);
   }
 }

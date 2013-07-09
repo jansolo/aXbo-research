@@ -32,13 +32,13 @@ public class SleepDataTimeSeries extends TimeSeries
   private final Map<TimePeriod, Integer> movementsX;
   private final Map<TimePeriod, Integer> movementsY;
 
+  @SuppressWarnings("LeakingThisInConstructor")
   public SleepDataTimeSeries(final String name, final SleepData sleepData,
       final Class<?> timePeriodClass, final int maxMovements)
   {
     super(name);
     this.sleepData = sleepData;
     this.maxMovements = maxMovements;
-    this.sleepData.addPropertyChangeListener(this);
 
     movementsX = new HashMap<TimePeriod, Integer>();
     movementsY = new HashMap<TimePeriod, Integer>();
@@ -58,11 +58,6 @@ public class SleepDataTimeSeries extends TimeSeries
     {
       addMovementData(movement);
     }
-  }
-
-  public void close()
-  {
-    sleepData.removePropertyChangeListener(this);
   }
 
   public SleepData getSleepData()
@@ -87,8 +82,8 @@ public class SleepDataTimeSeries extends TimeSeries
     final RegularTimePeriod timePeriod = RegularTimePeriod.createInstance(
         getTimePeriodClass(), data.getTimestamp(), timeZone);
 
-    int x = 0;
-    Integer xOld = 0;
+    int x;
+    Integer xOld;
     if ((x = data.getMovementsX()) > 0)
     {
       if ((xOld = movementsX.get(timePeriod)) != null)
@@ -98,8 +93,8 @@ public class SleepDataTimeSeries extends TimeSeries
       movementsX.put(timePeriod, x);
     }
 
-    int y = 0;
-    Integer yOld = 0;
+    int y;
+    Integer yOld;
     if ((y = data.getMovementsY()) > 0)
     {
       if ((yOld = movementsY.get(timePeriod)) != null)

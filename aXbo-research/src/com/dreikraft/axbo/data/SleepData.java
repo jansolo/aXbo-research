@@ -1,11 +1,5 @@
-/*
- * © 2008 3kraft
- * $Id: SleepData.java,v 1.33 2010-12-16 23:13:53 illetsch Exp $
- */
 package com.dreikraft.axbo.data;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -17,27 +11,26 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * $Id: SleepData.java,v 1.33 2010-12-16 23:13:53 illetsch Exp $
- * 
- * @author 3kraft - $Author: illetsch $
- * @version $Revision: 1.33 $
+ * Combines movements records into a sleep record.
+ *
+ * @author jan.illetschko@3kraft.com
  */
-public class SleepData implements Serializable
-{
+public class SleepData implements Serializable {
 
+  public static final long serialVersionUID = 1L;
   public static final Log log = LogFactory.getLog(SleepData.class);
-  public static final long UNSET = -1;
   public static final long HOUR = 60 * 60 * 1000;
-  public static final long WAKE_INTERVAL = 30 * 60 * 1000;
+  public static final long SNOOZE_WAIT_INTERVAL = 60 * 1000;
   public static final long SLEEP_TRIGGER_INTERVAL = 8 * 60 * 1000;
   public static final long SLEEP_START_DELAY = 4 * 60 * 1000;
   public static final long DEFAULT_SLEEP_DURATION = 8 * 60 * 60 * 1000;
-  public static final String SLEEP_DATA_FILE_EXT1 = ".axm";
-  public static final String SLEEP_DATA_FILE_EXT2 = ".spw";
+  public static final String SLEEP_DATA_FILE_EXT = ".axm";
+  public static final String SLEEP_DATA_FILE_EXT_PATTERN = "^.*(\\.axm|\\.spw)$";
   private String id;
   private String name;
   private Date wakeupTime;
   private Date wakeIntervalStart;
+  private WakeInterval wakeInterval;
   private List<MovementData> movements;
   private DeviceType deviceType;
   private String comment;
@@ -45,21 +38,24 @@ public class SleepData implements Serializable
   private WakeType wakeType = WakeType.NONE;
   private String firmwareVersion;
   private transient Date sleepStart;
-  private transient PropertyChangeSupport propertyChangeSupport;
+  private transient Date endTime;
+  private transient Date wakeIntervalEnd;
   private transient File dataFile;
-  private transient int startHour = (int) UNSET;
+  private transient int compareStartHour;
 
-  /** Creates a new instance of SleepData */
-  public SleepData()
-  {
+  /**
+   * Creates a new instance of SleepData
+   */
+  public SleepData() {
     this.powerNap = false;
     movements = new ArrayList<MovementData>();
-    this.propertyChangeSupport = new PropertyChangeSupport(this);
   }
 
-  public SleepData(String id, String name, DeviceType deviceType,
-      String comment)
-  {
+  /**
+   * Creates a new instance of SleepData
+   */
+  public SleepData(final String id, final String name,
+      final DeviceType deviceType, final String comment) {
     this();
     this.id = id;
     this.name = name;
@@ -67,383 +63,395 @@ public class SleepData implements Serializable
     this.comment = comment;
   }
 
-  public SleepData(String id, String name, Date wakeupTime,
-      Date wakeIntervalStart,
-      List<MovementData> movements, DeviceType deviceType, String comment,
-      boolean powerNap)
-  {
+  /**
+   * Creates a new instance of SleepData
+   */
+  public SleepData(final String id, final String name, final Date wakeupTime,
+      final Date wakeIntervalStart, final List<MovementData> movements,
+      final DeviceType deviceType, final String comment,
+      final boolean powerNap) {
     this.id = id;
     this.name = name;
-    this.wakeupTime = wakeupTime;
-    this.wakeIntervalStart = wakeIntervalStart;
+    this.wakeupTime = new Date(wakeupTime.getTime());
+    this.wakeIntervalStart = new Date(wakeIntervalStart.getTime());
     this.movements = movements;
     this.deviceType = deviceType;
     this.comment = comment;
     this.powerNap = powerNap;
-    propertyChangeSupport = new PropertyChangeSupport(this);
   }
 
-  public Date calculateStartTime()
-  {
-    Date startTime = null;
-    if (isPowerNap())
-    {
-      startTime = getWakeIntervalStart();
+  /**
+   * Calculates the start time of this sleep record.
+   *
+   * @return if this is sleep record is a recorded power nap, returns the wake
+   * interval start time, otherwise the first entry of the record.
+   */
+  public Date calculateStartTime() {
+    if (isPowerNap()) {
+      return getWakeIntervalStart();
+    } else {
+      return movements.get(0).getTimestamp();
     }
-    if (startTime == null && movements.size() > 0)
-    {
-      startTime = movements.get(0).getTimestamp();
-    }
-    return startTime;
   }
 
-  private int calculateStartHour()
-  {
+  /**
+   * Calculates the hour of the day when the record starts. Used to compare
+   * diagrams.
+   *
+   * @return the hour of the day
+   */
+  public int calculateStartHour() {
     Calendar curStartCal = Calendar.getInstance();
     curStartCal.setTime(calculateStartTime());
     return curStartCal.get(Calendar.HOUR_OF_DAY);
   }
 
-  public Date calculateEndTime()
-  {
-    Date endTime = new Date(new Date().getTime()
-        + DEFAULT_SLEEP_DURATION);
-    if (powerNap)
-    {
-      endTime = new Date(calculateStartTime().getTime() + WAKE_INTERVAL);
-    }
-    else if (movements.size() > 0)
-    {
-      endTime = movements.get(movements.size() - 1).getTimestamp();
-    }
-    if (getWakeIntervalStart() != null && getWakeIntervalStart().getTime()
-        + WAKE_INTERVAL > endTime.getTime())
-    {
-      endTime = new Date(getWakeIntervalStart().getTime() + WAKE_INTERVAL);
-    }
-    if (getWakeupTime() != null && getWakeupTime().getTime() > endTime.getTime())
-    {
-      endTime = getWakeupTime();
+  /**
+   * Calculates the end time of this sleep record.
+   *
+   * @return the calculated end of this sleep record
+   */
+  public Date calculateEndTime() {
+
+    // use previously calculated value
+    if (endTime == null) {
+
+      // calculate a default value from start time and default duration
+      endTime = new Date(new Date().getTime()
+          + DEFAULT_SLEEP_DURATION);
+
+      if (powerNap) {
+        // use start time plus wake interval for powernap
+        endTime = new Date(calculateStartTime().getTime() + getWakeInterval()
+            .getTime());
+      } else if (movements.size() > 0) {
+        // otherwise take last movement entry
+        endTime = movements.get(movements.size() - 1).getTimestamp();
+      }
+
+      // if the record has a wake interval
+      endTime = calculateWakeIntervalEnd() != null ? calculateWakeIntervalEnd()
+          : endTime;
+
+      // if the record has a wake up time and its after the current calculated time
+      if (getWakeupTime() != null && getWakeupTime().getTime() > endTime
+          .getTime()) {
+        endTime = getWakeupTime();
+      }
     }
     return endTime;
   }
 
-  public int calculateEndHour()
-  {
-    int durationHours = 2 + (int) (calculateDuration() / (1000 * 60 * 60));
-    return getStartHour() + durationHours;
-  }
-
-  public Date calculateSleepStart()
-  {
-    if (sleepStart != null)
-    {
-      return sleepStart;
+  /**
+   * Calculates the time when the person of this record felt asleep. Only
+   * calculated once.
+   *
+   * @return the time when the person felt asleep
+   */
+  public Date calculateSleepStart() {
+    if (sleepStart != null) {
+      return new Date(sleepStart.getTime());
     }
 
     sleepStart = calculateStartTime();
-    if (powerNap)
-    {
-      return sleepStart;
+    if (powerNap) {
+      return new Date(sleepStart.getTime());
     }
 
-    if (movements.size() > 0)
-    {
+    if (movements.size() > 0) {
       MovementData prevMove = movements.get(0);
-      for (int i = 1; i < movements.size(); i++)
-      {
+      for (int i = 1; i < movements.size(); i++) {
         long delta = movements.get(i).getTimestamp().getTime() - prevMove.
             getTimestamp().getTime();
-        if (delta > SLEEP_TRIGGER_INTERVAL)
-        {
+        if (delta > SLEEP_TRIGGER_INTERVAL) {
           sleepStart = new Date(prevMove.getTimestamp().getTime()
               + SLEEP_START_DELAY);
-          return sleepStart;
+          return new Date(sleepStart.getTime());
         }
         prevMove = movements.get(i);
       }
     }
-    return sleepStart;
+    return new Date(sleepStart.getTime());
   }
 
-  public long calculateDuration()
-  {
-    if (calculateSleepStart() != null && wakeupTime != null)
-    {
-      return wakeupTime.getTime() - sleepStart.getTime();
+  /**
+   * Calculate the end of the wake interval. The wake interval may be extended
+   * by using i-Snooze.
+   *
+   * @return the end of the wake interval or null, if there is no wake interval
+   * in this record
+   */
+  public Date calculateWakeIntervalEnd() {
+    if (wakeIntervalEnd == null) {
+      if (getWakeIntervalStart() != null) {
+        wakeIntervalEnd = new Date(getWakeIntervalStart().getTime()
+            + getWakeInterval().getTime());
+        for (final MovementData movement : getMovements()) {
+          if (movement.getMovementsZ() == MovementData.SNOOZE) {
+            wakeIntervalEnd = new Date(movement.getTimestamp().getTime()
+                + getWakeInterval().getTime());
+          }
+        }
+      }
     }
-    else
-    {
+    return wakeIntervalEnd;
+  }
+
+  /**
+   * Calculates the sleep duration for this data set. If possible the wake up
+   * time is used for the calculation.
+   *
+   * @return the duration of the sleep in msec
+   */
+  public long calculateDuration() {
+    if (calculateSleepStart() != null && wakeupTime != null) {
+      return wakeupTime.getTime() - calculateSleepStart().getTime();
+    } else {
       return calculateEndTime().getTime() - calculateStartTime().getTime();
     }
   }
 
-  public long calculateLatency()
-  {
+  /**
+   * Calculates the time between applying the sensor and falling asleep.
+   *
+   * @return the time in msec
+   */
+  public long calculateLatency() {
     return calculateSleepStart().getTime() - calculateStartTime().getTime();
   }
 
-  public int calculateMovementCount()
-  {
+  /**
+   * Calculates the sum of all movements of this sleep record.
+   *
+   * @return the movements sum
+   */
+  public int calculateMovementCount() {
     int count = 0;
-    for (MovementData move : movements)
-    {
+    for (MovementData move : movements) {
       count += move.getMovementsX() + move.getMovementsY()
           + move.getMovementsZ();
     }
     return count;
   }
 
-  public double calculateMovementsPerHour()
-  {
+  /**
+   * Calculates the average movement count per hour.
+   *
+   * @return the movement count
+   */
+  public double calculateMovementsPerHour() {
     long duration = calculateDuration();
-    if (duration != UNSET && duration != 0)
-    {
-      double durationInHours = (double) calculateDuration() / (60 * 60 * 1000);
+    if (duration > 0) {
+      double durationInHours = (double) duration / (60 * 60 * 1000);
       return (double) calculateMovementCount() / durationInHours;
     }
     return 0;
   }
 
-  public long calculateTimeSaving()
-  {
-    if (wakeIntervalStart == null || wakeupTime == null)
-    {
-      return UNSET;
+  /**
+   * Calculates the time saving. The saving is the difference between the actual
+   * wake up time and the latest wake up time.
+   *
+   * @return the timesaving in msec or zero, if it can not be calculated
+   */
+  public long calculateTimeSaving() {
+    if (wakeIntervalStart == null || wakeupTime == null) {
+      return 0;
     }
-
-    long timesaving = wakeIntervalStart.getTime() + WAKE_INTERVAL - wakeupTime.
-        getTime();
-
-    if (timesaving < 0)
-    {
-      return UNSET;
-    }
-    return timesaving;
+    return Math.max(0, wakeIntervalStart.getTime() + getWakeInterval().getTime()
+        - wakeupTime.getTime());
   }
 
+  /**
+   * Finds the last movement or key press in this sleep data record.
+   *
+   * @return the last movement or null
+   */
+  public MovementData findLastMovement() {
+    for (int i = movements.size() - 1; i > -1; i--) {
+      final MovementData movement = movements.get(i);
+      if (movement.isMovement())
+        return movement;
+    }
+    return null;  
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public String toString()
-  {
+  public String toString() {
     String s = "";
-    try
-    {
+    try {
       s = "{" + this.getClass() + ", " + this.getId() + ", " + this.getName()
           + ", " + this.calculateStartTime() + ", " + this.getWakeupTime()
           + ", " + this.getWakeIntervalStart() + ", " + this.calculateEndTime()
-          + ", " + this.getDeviceType() + ", " + this.getComment() + ", " + this.
-          isPowerNap() + ", " + this.getWakeType() + ", " + this.
+          + ", " + this.getDeviceType() + ", " + this.getComment() + ", " + this
+          .isPowerNap() + ", " + this.getWakeType() + ", " + this.
           getFirmwareVersion() + "}";
-    }
-    catch (Exception ex)
-    {
-      log.error(ex);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
     }
     return s;
   }
 
-  public String getId()
-  {
+  public String getId() {
     return id;
   }
 
-  public void setId(String id)
-  {
+  public void setId(String id) {
     this.id = id;
   }
 
-  public String getName()
-  {
+  public String getName() {
     return name;
   }
 
-  public void setName(String name)
-  {
+  public void setName(String name) {
     this.name = name;
   }
 
-  public Date getWakeupTime()
-  {
-    return wakeupTime;
+  public Date getWakeupTime() {
+    return wakeupTime != null ? new Date(wakeupTime.getTime()) : null;
   }
 
-  public void setWakeupTime(Date wakeupTime)
-  {
-    this.wakeupTime = wakeupTime;
+  public void setWakeupTime(Date wakeupTime) {
+    this.wakeupTime = new Date(wakeupTime.getTime());
   }
 
-  public List<MovementData> getMovements()
-  {
+  public List<MovementData> getMovements() {
     return movements;
   }
 
-  public void setMovements(List<MovementData> movements)
-  {
-    List<MovementData> oldMovements = movements;
+  public void setMovements(List<MovementData> movements) {
     this.movements = movements;
-    propertyChangeSupport.firePropertyChange("movements", oldMovements,
-        movements);
   }
 
-  public MovementData getMovement(int index)
-  {
+  public MovementData getMovement(int index) {
     return movements.get(index);
   }
 
-  public void setMovements(int index, MovementData movement)
-  {
-    MovementData oldMovement = movements.get(index);
+  public void setMovements(int index, MovementData movement) {
     movements.set(index, movement);
-    propertyChangeSupport.fireIndexedPropertyChange("movements", index,
-        oldMovement, movement);
   }
 
-  public int addMovement(MovementData movement)
-  {
+  public int addMovement(MovementData movement) {
     int index = movements.size();
     movements.add(movement);
-    propertyChangeSupport.fireIndexedPropertyChange("movements", index,
-        null, movement);
     return index;
   }
 
-  public DeviceType getDeviceType()
-  {
+  public DeviceType getDeviceType() {
     return deviceType;
   }
 
-  public void setDeviceType(DeviceType deviceType)
-  {
+  public void setDeviceType(DeviceType deviceType) {
     this.deviceType = deviceType;
   }
 
-  public void setDataFile(File dataFile)
-  {
+  public void setDataFile(File dataFile) {
     this.dataFile = dataFile;
   }
 
-  public File getDataFile()
-  {
+  public File getDataFile() {
     return dataFile;
   }
 
-  public void addPropertyChangeListener(PropertyChangeListener listener)
-  {
-    propertyChangeSupport.addPropertyChangeListener(listener);
+  public Date getWakeIntervalStart() {
+    return wakeIntervalStart != null ? new Date(wakeIntervalStart.getTime())
+        : null;
   }
 
-  public void removePropertyChangeListener(PropertyChangeListener listener)
-  {
-    propertyChangeSupport.removePropertyChangeListener(listener);
+  public void setWakeIntervalStart(Date wakeIntervalStart) {
+    this.wakeIntervalStart = new Date(wakeIntervalStart.getTime());
   }
 
-  public Date getWakeIntervalStart()
-  {
-    return wakeIntervalStart;
+  public WakeInterval getWakeInterval() {
+    if (wakeInterval == null) {
+      wakeInterval = WakeInterval.LONG;
+    }
+    return wakeInterval;
   }
 
-  public void setWakeIntervalStart(Date wakeIntervalStart)
-  {
-    this.wakeIntervalStart = wakeIntervalStart;
+  public void setWakeInterval(WakeInterval wakeInterval) {
+    this.wakeInterval = wakeInterval;
   }
 
-  public String getComment()
-  {
+  public String getComment() {
     return comment == null ? "" : comment;
   }
 
-  public void setComment(String comment)
-  {
+  public void setComment(String comment) {
     this.comment = comment;
   }
 
-  public boolean isPowerNap()
-  {
+  public boolean isPowerNap() {
     return powerNap;
   }
 
-  public void setPowerNap(boolean powerNap)
-  {
+  public void setPowerNap(boolean powerNap) {
     this.powerNap = powerNap;
   }
 
-  public WakeType getWakeType()
-  {
+  public WakeType getWakeType() {
     return wakeType;
   }
 
-  public void setWakeType(WakeType wakeType)
-  {
+  public void setWakeType(WakeType wakeType) {
     this.wakeType = wakeType;
   }
 
-  public int getStartHour()
-  {
-    if (startHour == (int) UNSET)
-    {
-      startHour = calculateStartHour();
-    }
-    return startHour;
+  public int getCompareStartHour() {
+    return compareStartHour;
   }
 
-  public void setStartHour(int startHour)
-  {
-    this.startHour = startHour;
+  public void setCompareStartHour(int compareStartHour) {
+    this.compareStartHour = compareStartHour;
   }
 
-  public String getFirmwareVersion()
-  {
+  public String getFirmwareVersion() {
     return firmwareVersion;
   }
 
-  public void setFirmwareVersion(String firmwareVersion)
-  {
+  public void setFirmwareVersion(String firmwareVersion) {
     this.firmwareVersion = firmwareVersion;
   }
 
-  public String getSleepDataFilename()
-  {
+  public String getSleepDataFilename() {
     return getName().replaceAll(" ", "_") + "_" + new SimpleDateFormat(
         "yyyy_MM_dd_HH_mm").format(new Date(
-        calculateStartTime().getTime())) + SLEEP_DATA_FILE_EXT1;
+        calculateStartTime().getTime())) + SLEEP_DATA_FILE_EXT;
   }
 
   @Override
-  public boolean equals(Object obj)
-  {
-    if (obj == null)
-    {
+  public boolean equals(Object obj) {
+    if (obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass())
-    {
+    if (getClass() != obj.getClass()) {
       return false;
     }
     final SleepData other = (SleepData) obj;
     final Date thisSleepStart = calculateStartTime();
     final Date otherSleepStart = other.calculateStartTime();
-    if (!thisSleepStart.equals(otherSleepStart))
-    {
+    if (!thisSleepStart.equals(otherSleepStart)) {
       return false;
     }
     final long thisDuration = calculateDuration();
     final long otherDuration = other.calculateDuration();
-    if (thisDuration != otherDuration)
-    {
+    if (thisDuration != otherDuration) {
       return false;
     }
     final int thisMovementCount = calculateMovementCount();
     final int otherMovementCount = other.calculateMovementCount();
-    if (thisMovementCount != otherMovementCount)
-    {
+    if (thisMovementCount != otherMovementCount) {
       return false;
     }
     return true;
   }
 
   @Override
-  public int hashCode()
-  {
+  public int hashCode() {
     int hash = 7;
     hash = 83 * hash + calculateSleepStart().hashCode();
     hash = 83 * hash + (int) calculateDuration();

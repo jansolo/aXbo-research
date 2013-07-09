@@ -1,13 +1,10 @@
-/*
- * © 2008 3kraft
- * $Id: AxboFrame.java,v 1.54 2010-12-17 10:11:40 illetsch Exp $
- */
 package com.dreikraft.axbo.gui;
 
 import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.events.ApplicationExit;
 import com.dreikraft.events.ApplicationMessageEvent;
 import com.dreikraft.axbo.Axbo;
+import com.dreikraft.axbo.OS;
 import com.dreikraft.axbo.data.SleepData;
 import com.dreikraft.axbo.events.AxboClear;
 import com.dreikraft.axbo.events.AxboDisconnect;
@@ -22,10 +19,10 @@ import com.dreikraft.axbo.events.SleepDataCompare;
 import com.dreikraft.axbo.events.SleepDataDelete;
 import com.dreikraft.axbo.events.SleepDataImport;
 import com.dreikraft.axbo.events.SleepDataOpen;
+import com.dreikraft.axbo.events.SoundPackageUpload;
 import com.dreikraft.axbo.model.MetaDataTableModel;
 import com.dreikraft.axbo.util.BundleUtil;
 import com.dreikraft.swing.SplashScreen;
-import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -42,53 +39,38 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.logging.*;
 
 /**
- * $Id: AxboFrame.java,v 1.54 2010-12-17 10:11:40 illetsch Exp $
- * 
- * @author 3kraft - $Author: illetsch $
- * @version $Revision: 1.54 $
+ * AxboFrame
+ *
+ * @author jan.illetschko@3kraft.com
  */
-public class AxboFrame extends JFrame
-{
+public class AxboFrame extends JFrame {
 
-  private static final String DATA_CARD_NAME = "data";
-  private static final String SOUND_CARD_NAME = "sound";
   private static Log log = LogFactory.getLog(AxboFrame.class);
   private SplashScreen splashScreen;
 
-  public void init()
-  {
+  public void init() {
     initComponents();
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     modifyColumnWidths();
   }
 
-  public void setSelectView(String view)
-  {
-    ((CardLayout) mainPanel.getLayout()).show(mainPanel, view);
-    ((CardLayout) mainToolbar.getLayout()).show(mainToolbar, view);
-  }
-
-  public void jumpToDataView(final DataFrame dataView)
-  {
+  public void jumpToDataView(final DataFrame dataView) {
     dataViewsPanel.revalidate();
-    SwingUtilities.invokeLater(new Runnable()
-    {
-
+    SwingUtilities.invokeLater(new Runnable() {
       @Override
-      public void run()
-      {
+      public void run() {
         final double dataViewPosY = dataView.getLocation().getY();
         int scrollPosY = (int) dataViewPosY;
         final int dataViewsHeight = dataViewsPanel.getHeight();
         final int viewportHeight = dataScrollPane.getViewport().getHeight();
-        if (dataViewsHeight < viewportHeight + dataViewPosY)
-        {
+        if (dataViewsHeight < viewportHeight + dataViewPosY) {
           scrollPosY = dataViewsHeight - viewportHeight;
         }
         dataScrollPane.getViewport().setViewPosition(new Point(0, scrollPosY));
@@ -96,18 +78,15 @@ public class AxboFrame extends JFrame
     });
   }
 
-  public List<DataFrame> getDataViews()
-  {
+  public List<DataFrame> getDataViews() {
     final List<DataFrame> dataViews = new ArrayList<DataFrame>();
-    for (final Component component : dataViewsPanel.getComponents())
-    {
+    for (final Component component : dataViewsPanel.getComponents()) {
       dataViews.add((DataFrame) component);
     }
     return dataViews;
   }
 
-  public void addDataView(final DataFrame view)
-  {
+  public void addDataView(final DataFrame view) {
     final GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 0;
     gbc.gridy = GridBagConstraints.RELATIVE;
@@ -124,14 +103,12 @@ public class AxboFrame extends JFrame
     dataViewsPanel.add(view, gbc);
   }
 
-  public void updateDataViewsPanel()
-  {
+  public void updateDataViewsPanel() {
     dataViewsPanel.revalidate();
     dataViewsPanel.repaint();
   }
 
-  private void modifyColumnWidths()
-  {
+  private void modifyColumnWidths() {
     metaDataTable.getColumnModel().getColumn(0).setPreferredWidth(85);
     metaDataTable.getColumnModel().getColumn(0).setMaxWidth(85);
     metaDataTable.getColumnModel().getColumn(0).setMinWidth(85);
@@ -145,155 +122,90 @@ public class AxboFrame extends JFrame
     metaDataTable.getColumnModel().getColumn(2).setPreferredWidth(70);
   }
 
-  public void showMessage(final String msg, final boolean isErrorMsg)
-  {
+  public void showMessage(final String msg, final boolean isErrorMsg) {
     JOptionPane.showMessageDialog(this, msg, isErrorMsg ? BundleUtil.getMessage(
         "errorMessageBox.title") : BundleUtil.getMessage("infoMessageBox.title"),
         isErrorMsg ? JOptionPane.ERROR_MESSAGE : JOptionPane.INFORMATION_MESSAGE);
   }
 
-  public int showOptionMessage(String msg, String title)
-  {
+  public int showOptionMessage(String msg, String title) {
     return JOptionPane.showConfirmDialog(this, msg, title,
         JOptionPane.OK_CANCEL_OPTION);
   }
 
-  public MetaDataTableModel getMetaDataTableModel()
-  {
+  public MetaDataTableModel getMetaDataTableModel() {
     return (MetaDataTableModel) metaDataTable.getModel();
   }
 
-  public void showDeviceEnabled()
-  {
+  public void showDeviceEnabled() {
     this.statusTextLabel.setIcon(new javax.swing.ImageIcon(
-        getClass().getResource("/resources/images/connect.png")));
+        getClass().getResource("/resources/images/link-16.png")));
     this.statusTextLabel.setToolTipText(BundleUtil.getMessage(
         "toolTip.deviceEnabled"));
   }
 
-  public void showDeviceDisabled()
-  {
+  public void showDeviceDisabled() {
     this.statusTextLabel.setIcon(new javax.swing.ImageIcon(
-        getClass().getResource("/resources/images/disconnect.png")));
+        getClass().getResource("/resources/images/link-broken-16.png")));
     this.statusTextLabel.setToolTipText(BundleUtil.getMessage(
         "toolTip.deviceDisabled"));
   }
 
-  public void setMetaDataTableModel(final MetaDataTableModel model)
-  {
+  public void setMetaDataTableModel(final MetaDataTableModel model) {
     metaDataTable.setModel(model);
     modifyColumnWidths();
   }
 
-  public void showStatusMessage(final String text)
-  {
+  public void showStatusMessage(final String text) {
     statusTextLabel.setText(text);
   }
 
-  public File[] showSoundFileChooser(String dir)
-  {
-    File[] selectedFiles = null;
-
-    final FileFilter filter = new FileFilter()
-    {
-
-      @Override
-      public boolean accept(File f)
-      {
-        if (f.getName().toLowerCase().indexOf(Axbo.SOUND_DATA_FILE_EXT.
-            toLowerCase()) > 0 || f.isDirectory())
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-
-      @Override
-      public String getDescription()
-      {
-        return "Axbo Sound Package Files";
-      }
-    };
-
-    // open file chooser for directory with sleep data files
-    JFileChooser chooser = new JFileChooser(dir);
-    chooser.setFileFilter(filter);
-    chooser.setMultiSelectionEnabled(true);
-    chooser.setAcceptAllFileFilterUsed(false);
-    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-
-    // repaint the main window before event processing finishes
-    //this.contentPanel.paintImmediately(
-    //    new Rectangle(this.contentPanel.getSize()));
-
-    int returnVal = chooser.showOpenDialog(this);
-
-    // process selected directory
-    if (returnVal == JFileChooser.APPROVE_OPTION)
-    {
-      selectedFiles = chooser.getSelectedFiles();
-    }
-
-//    this.contentPanel.paintImmediately(
-//        new Rectangle(this.contentPanel.getSize()));
-
-    return selectedFiles;
-  }
-
-  public void setStatusProgressBarLength(int len)
-  {
+  public void setStatusProgressBarLength(int len) {
     statusProgressBar.setMaximum(len);
   }
 
-  public void setStatusProgressBarValue(int val)
-  {
+  public void setStatusProgressBarStringPainted(boolean painted) {
+    statusProgressBar.setStringPainted(painted);
+  }
+
+  public void setStatusProgressBarValue(int val) {
     statusProgressBar.setValue(val);
   }
 
-  public void setStatusProgressBarIndeterminate(boolean b)
-  {
+  public void setStatusProgressBarIndeterminate(boolean b) {
     statusProgressBar.setIndeterminate(b);
   }
 
-  public void showSplashScreen()
-  {
-    try
-    {
+  public void showSplashScreen() {
+    try {
       this.splashScreen = new SplashScreen();
       this.splashScreen.setImageURL(this.getClass().getResource(
           "/resources/images/SplashScreen-11_07.gif"));
       this.splashScreen.setVisible(true);
-      if (!this.isVisible())
-      {
+      if (!this.isVisible()) {
         Rectangle screenRect = this.getGraphicsConfiguration().getBounds();
         splashScreen.setLocation(
             screenRect.x + screenRect.width / 2 - splashScreen.getBounds().width
             / 2,
-            screenRect.y + screenRect.height / 2 - splashScreen.getBounds().height
+            screenRect.y + screenRect.height / 2
+            - splashScreen.getBounds().height
             / 2);
-      }
-      else
-      {
+      } else {
         Rectangle screenRect = this.getBounds();
         splashScreen.setLocation(
             screenRect.x + screenRect.width / 2 - splashScreen.getBounds().width
             / 2,
-            screenRect.y + screenRect.height / 2 - splashScreen.getBounds().height
+            screenRect.y + screenRect.height / 2
+            - splashScreen.getBounds().height
             / 2);
       }
 
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       log.error(ex.getMessage(), ex);
     }
   }
 
-  public void hideSplashScreen()
-  {
+  public void hideSplashScreen() {
     this.setVisible(true);
     this.splashScreen.setVisible(false);
     this.splashScreen = null;
@@ -302,12 +214,10 @@ public class AxboFrame extends JFrame
 
   public void showSummary(final long sumDuration, final long avgDuration,
       final long minDuration, final long maxDuration, final long timeSaving,
-      final int count)
-  {
+      final int count, final int countOpen) {
+    
     legendPanel.setVisible(getDataViews().size() > 0);
-
-    if (sumDuration != 0)
-    {
+    if (sumDuration != 0) {
       summaryPanel.setVisible(true);
 
       final Calendar cal = Calendar.getInstance(
@@ -323,17 +233,16 @@ public class AxboFrame extends JFrame
       lblTimeSavingsValue.setText(String.format("%tR", cal));
 
       lblCountSelecetedVal.setText(String.format("%-2d", count));
-    }
-    else
-    {
+      lblCountOpenVal.setText(String.format("%-2d", countOpen));
+    } else {
       summaryPanel.setVisible(false);
     }
   }
 
-  /** This method is called from within the constructor to
-   * initialize the form.
-   * WARNING: Do NOT modify this code. The content of this method is
-   * always regenerated by the Form Editor.
+  /**
+   * This method is called from within the constructor to initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is always
+   * regenerated by the Form Editor.
    */
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
@@ -342,9 +251,6 @@ public class AxboFrame extends JFrame
     sleepDataPopupMenu = new javax.swing.JPopupMenu();
     viewPopupMenuItem = new javax.swing.JMenuItem();
     deletePopupMenuItem = new javax.swing.JMenuItem();
-    soundsPopupMenu = new javax.swing.JPopupMenu();
-    openSoundPkgPopupMenuItem = new javax.swing.JMenuItem();
-    deleteSoungPkgPopupMenuItem = new javax.swing.JMenuItem();
     toolbarPanel = new javax.swing.JPanel();
     navToolbarPanel = new javax.swing.JPanel();
     jLabel1 = new javax.swing.JLabel();
@@ -355,8 +261,6 @@ public class AxboFrame extends JFrame
     btnCompare = new javax.swing.JButton();
     btnPrint = new javax.swing.JButton();
     btnCloseAll = new javax.swing.JButton();
-    soundToolbarPanel = new javax.swing.JPanel();
-    btnSoundPkgImport = new javax.swing.JButton();
     mainPanel = new javax.swing.JPanel();
     dataPanel = new javax.swing.JPanel();
     dataListPanel = new javax.swing.JPanel();
@@ -375,30 +279,37 @@ public class AxboFrame extends JFrame
     dataViewsPanel = new com.dreikraft.swing.BackgroundImagePanel();
     infoPanel = new javax.swing.JPanel();
     summaryPanel = new javax.swing.JPanel();
+    lblCountOpen = new javax.swing.JLabel();
+    lblCountOpenVal = new javax.swing.JLabel();
+    lblSpacer4 = new javax.swing.JLabel();
+    lblCountSelected = new javax.swing.JLabel();
+    lblCountSelecetedVal = new javax.swing.JLabel();
+    lblSpacer = new javax.swing.JLabel();
     lblSleepDuration = new javax.swing.JLabel();
     lblSleepDurationMin = new javax.swing.JLabel();
     lblSleepDurationMinValue = new javax.swing.JLabel();
+    lblSpacer1 = new javax.swing.JLabel();
     lblSleepDurationMax = new javax.swing.JLabel();
     lblSleepDurationMaxValue = new javax.swing.JLabel();
+    lblSpacer3 = new javax.swing.JLabel();
     lblSleepDurationAvg = new javax.swing.JLabel();
     lblSleepDurationAvgValue = new javax.swing.JLabel();
+    lblSpacer2 = new javax.swing.JLabel();
     lblTimeSavings = new javax.swing.JLabel();
     lblTimeSavingsValue = new javax.swing.JLabel();
-    lblCountSelected = new javax.swing.JLabel();
-    lblCountSelecetedVal = new javax.swing.JLabel();
     legendPanel = new javax.swing.JPanel();
-    lblLegendMovementColor = new javax.swing.JLabel();
-    lblLegendMovement = new javax.swing.JLabel();
-    lblLegendKeyColor = new javax.swing.JLabel();
-    lblLegendKey = new javax.swing.JLabel();
     lblLegendSleepStartColor = new javax.swing.JLabel();
     lblLegendSleepStart = new javax.swing.JLabel();
     lblLegendWakeTimeColor = new javax.swing.JLabel();
     lblLegendWakeTime = new javax.swing.JLabel();
-    lblLegendSnoozeColor = new javax.swing.JLabel();
-    lblLegendSnooze = new javax.swing.JLabel();
     lblLegendWakeIntervalColor = new javax.swing.JLabel();
     lblLegendWakeInterval = new javax.swing.JLabel();
+    lblLegendKeyColor = new javax.swing.JLabel();
+    lblLegendKey = new javax.swing.JLabel();
+    lblLegendSnoozeColor = new javax.swing.JLabel();
+    lblLegendSnooze = new javax.swing.JLabel();
+    lblLegendMovementColor = new javax.swing.JLabel();
+    lblLegendMovement = new javax.swing.JLabel();
     statusTextPanel = new javax.swing.JPanel();
     statusTextLabel = new javax.swing.JLabel();
     statusProgressBar = new javax.swing.JProgressBar();
@@ -406,8 +317,7 @@ public class AxboFrame extends JFrame
     fileMenu = new javax.swing.JMenu();
     viewMenuItem = new javax.swing.JMenuItem();
     deleteMenuItem = new javax.swing.JMenuItem();
-    deleteSoungPkgMenuItem = new javax.swing.JMenuItem();
-    miImportSound = new javax.swing.JMenuItem();
+    uploadSoundPackageMenuItem = new javax.swing.JMenuItem();
     jSeparator1 = new javax.swing.JSeparator();
     prefsMenuItem = new javax.swing.JMenuItem();
     jSeparator3 = new javax.swing.JSeparator();
@@ -419,7 +329,7 @@ public class AxboFrame extends JFrame
     readStatusMenuItem = new javax.swing.JMenuItem();
     resetClockMenuItem = new javax.swing.JMenuItem();
 
-    viewPopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart_bar.png"))); // NOI18N
+    viewPopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart-bar-16.png"))); // NOI18N
     java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/default"); // NOI18N
     viewPopupMenuItem.setText(bundle.getString("menu.file.view")); // NOI18N
     viewPopupMenuItem.setDoubleBuffered(true);
@@ -430,7 +340,7 @@ public class AxboFrame extends JFrame
     });
     sleepDataPopupMenu.add(viewPopupMenuItem);
 
-    deletePopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
+    deletePopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin-16.png"))); // NOI18N
     deletePopupMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
     deletePopupMenuItem.setDoubleBuffered(true);
     deletePopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -439,24 +349,6 @@ public class AxboFrame extends JFrame
       }
     });
     sleepDataPopupMenu.add(deletePopupMenuItem);
-
-    openSoundPkgPopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/folder_go.png"))); // NOI18N
-    openSoundPkgPopupMenuItem.setText(bundle.getString("menu.file.open")); // NOI18N
-    openSoundPkgPopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        openSoundPkgPopupMenuItemActionPerformed(evt);
-      }
-    });
-    soundsPopupMenu.add(openSoundPkgPopupMenuItem);
-
-    deleteSoungPkgPopupMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
-    deleteSoungPkgPopupMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
-    deleteSoungPkgPopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        deleteSoungPkgPopupMenuItemActionPerformed(evt);
-      }
-    });
-    soundsPopupMenu.add(deleteSoungPkgPopupMenuItem);
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle(bundle.getString("mdiframe.title")); // NOI18N
@@ -475,17 +367,19 @@ public class AxboFrame extends JFrame
     navToolbarPanel.setLayout(new java.awt.GridBagLayout());
 
     jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/aXbo-logo-software-small.png"))); // NOI18N
-    navToolbarPanel.add(jLabel1, new java.awt.GridBagConstraints());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.insets = new java.awt.Insets(0, 21, 0, 0);
+    navToolbarPanel.add(jLabel1, gridBagConstraints);
 
     org.jdesktop.layout.GroupLayout spacerPanelLayout = new org.jdesktop.layout.GroupLayout(spacerPanel);
     spacerPanel.setLayout(spacerPanelLayout);
     spacerPanelLayout.setHorizontalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 260, Short.MAX_VALUE)
+      .add(0, 239, Short.MAX_VALUE)
     );
     spacerPanelLayout.setVerticalGroup(
       spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 46, Short.MAX_VALUE)
+      .add(0, 47, Short.MAX_VALUE)
     );
 
     gridBagConstraints = new java.awt.GridBagConstraints();
@@ -496,21 +390,27 @@ public class AxboFrame extends JFrame
 
     toolbarPanel.add(navToolbarPanel, java.awt.BorderLayout.WEST);
 
-    mainToolbar.setLayout(new java.awt.CardLayout());
+    mainToolbar.setLayout(new java.awt.BorderLayout());
 
-    dataToolbarPanel.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagLayout dataToolbarPanelLayout = new java.awt.GridBagLayout();
+    dataToolbarPanelLayout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0};
+    dataToolbarPanelLayout.rowHeights = new int[] {0};
+    dataToolbarPanel.setLayout(dataToolbarPanelLayout);
 
-    loadDataButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/redo.png"))); // NOI18N
-    loadDataButton.setText(bundle.getString("menu.device.readStoredData")); // NOI18N
+    loadDataButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/inbox-32.png"))); // NOI18N
+    loadDataButton.setText(bundle.getString("button.loadData")); // NOI18N
     loadDataButton.setToolTipText(bundle.getString("button.loadData.tooltip")); // NOI18N
     loadDataButton.setBorderPainted(false);
+    loadDataButton.setContentAreaFilled(false);
     loadDataButton.setFocusable(false);
     loadDataButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     loadDataButton.setIconTextGap(2);
-    loadDataButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    loadDataButton.setMaximumSize(new java.awt.Dimension(120, 80));
+    loadDataButton.setMinimumSize(new java.awt.Dimension(120, 80));
     loadDataButton.setMultiClickThreshhold(1000L);
+    loadDataButton.setPreferredSize(new java.awt.Dimension(120, 80));
     loadDataButton.setRequestFocusEnabled(false);
-    loadDataButton.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    loadDataButton.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     loadDataButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     loadDataButton.putClientProperty("JButton.buttonType", "segmentedTextured");
     loadDataButton.putClientProperty("JButton.segmentPosition", "middle");
@@ -520,19 +420,26 @@ public class AxboFrame extends JFrame
       }
     });
     gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+    gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
     dataToolbarPanel.add(loadDataButton, gridBagConstraints);
 
-    btnCompare.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/shape_align_left.png"))); // NOI18N
-    btnCompare.setText(bundle.getString("compareMenuItem.text")); // NOI18N
+    btnCompare.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/ruler-32.png"))); // NOI18N
+    btnCompare.setText(bundle.getString("button.compare")); // NOI18N
+    btnCompare.setToolTipText(bundle.getString("button.compare.tooltip")); // NOI18N
     btnCompare.setBorderPainted(false);
+    btnCompare.setContentAreaFilled(false);
     btnCompare.setFocusable(false);
     btnCompare.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnCompare.setIconTextGap(2);
-    btnCompare.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    btnCompare.setMaximumSize(new java.awt.Dimension(120, 80));
+    btnCompare.setMinimumSize(new java.awt.Dimension(120, 80));
     btnCompare.setMultiClickThreshhold(1000L);
+    btnCompare.setPreferredSize(new java.awt.Dimension(120, 80));
     btnCompare.setRequestFocusEnabled(false);
-    btnCompare.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    btnCompare.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     btnCompare.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     btnCompare.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -540,19 +447,25 @@ public class AxboFrame extends JFrame
       }
     });
     gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 2;
+    gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnCompare, gridBagConstraints);
 
-    btnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/printer.png"))); // NOI18N
-    btnPrint.setText(bundle.getString("menu.file.print")); // NOI18N
+    btnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/printer-32.png"))); // NOI18N
+    btnPrint.setText(bundle.getString("button.print")); // NOI18N
+    btnPrint.setToolTipText(bundle.getString("button.print.tooltip")); // NOI18N
     btnPrint.setBorderPainted(false);
+    btnPrint.setContentAreaFilled(false);
     btnPrint.setFocusable(false);
     btnPrint.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnPrint.setIconTextGap(2);
-    btnPrint.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    btnPrint.setMaximumSize(new java.awt.Dimension(120, 80));
+    btnPrint.setMinimumSize(new java.awt.Dimension(120, 80));
     btnPrint.setMultiClickThreshhold(1000L);
+    btnPrint.setPreferredSize(new java.awt.Dimension(120, 80));
     btnPrint.setRequestFocusEnabled(false);
-    btnPrint.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    btnPrint.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     btnPrint.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     btnPrint.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -560,19 +473,25 @@ public class AxboFrame extends JFrame
       }
     });
     gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 4;
+    gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnPrint, gridBagConstraints);
 
-    btnCloseAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/application_form_delete.png"))); // NOI18N
-    btnCloseAll.setText(bundle.getString("menu.file.closeAll")); // NOI18N
+    btnCloseAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-cross-32.png"))); // NOI18N
+    btnCloseAll.setText(bundle.getString("button.closeAll")); // NOI18N
+    btnCloseAll.setToolTipText(bundle.getString("button.closeAll.tooltip")); // NOI18N
     btnCloseAll.setBorderPainted(false);
+    btnCloseAll.setContentAreaFilled(false);
     btnCloseAll.setFocusable(false);
     btnCloseAll.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
     btnCloseAll.setIconTextGap(2);
-    btnCloseAll.setMargin(new java.awt.Insets(0, 0, 0, 0));
+    btnCloseAll.setMaximumSize(new java.awt.Dimension(120, 80));
+    btnCloseAll.setMinimumSize(new java.awt.Dimension(120, 80));
     btnCloseAll.setMultiClickThreshhold(1000L);
+    btnCloseAll.setPreferredSize(new java.awt.Dimension(120, 80));
     btnCloseAll.setRequestFocusEnabled(false);
-    btnCloseAll.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+    btnCloseAll.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     btnCloseAll.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
     btnCloseAll.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -580,53 +499,31 @@ public class AxboFrame extends JFrame
       }
     });
     gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 6;
+    gridBagConstraints.gridy = 0;
     gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
     dataToolbarPanel.add(btnCloseAll, gridBagConstraints);
 
-    mainToolbar.add(dataToolbarPanel, "data");
-
-    soundToolbarPanel.setLayout(new java.awt.GridBagLayout());
-
-    btnSoundPkgImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/sound_add.png"))); // NOI18N
-    btnSoundPkgImport.setText(bundle.getString("btnSoundPkgImport.text")); // NOI18N
-    btnSoundPkgImport.setToolTipText(bundle.getString("btnSoundPkgImport.tooltip")); // NOI18N
-    btnSoundPkgImport.setBorderPainted(false);
-    btnSoundPkgImport.setFocusable(false);
-    btnSoundPkgImport.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-    btnSoundPkgImport.setIconTextGap(2);
-    btnSoundPkgImport.setMultiClickThreshhold(1000L);
-    btnSoundPkgImport.setRequestFocusEnabled(false);
-    btnSoundPkgImport.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
-    btnSoundPkgImport.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-    btnSoundPkgImport.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        btnSoundPkgImportActionPerformed(evt);
-      }
-    });
-    gridBagConstraints = new java.awt.GridBagConstraints();
-    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
-    soundToolbarPanel.add(btnSoundPkgImport, gridBagConstraints);
-
-    mainToolbar.add(soundToolbarPanel, "sound");
+    mainToolbar.add(dataToolbarPanel, java.awt.BorderLayout.WEST);
 
     toolbarPanel.add(mainToolbar, java.awt.BorderLayout.CENTER);
 
     getContentPane().add(toolbarPanel, java.awt.BorderLayout.NORTH);
 
     mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-    mainPanel.setLayout(new java.awt.CardLayout());
+    mainPanel.setLayout(new java.awt.BorderLayout());
 
     dataPanel.setLayout(new java.awt.BorderLayout(4, 0));
 
+    dataListPanel.setMinimumSize(new java.awt.Dimension(350, 84));
     dataListPanel.setPreferredSize(new java.awt.Dimension(350, 10));
     dataListPanel.setLayout(new java.awt.GridBagLayout());
 
     tableScrollPane.setAutoscrolls(true);
     tableScrollPane.setFocusable(false);
 
-    metaDataTable.setModel(new MetaDataTableModel());
     metaDataTable.setAutoCreateRowSorter(true);
+    metaDataTable.setModel(new MetaDataTableModel());
     metaDataTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
     metaDataTable.setComponentPopupMenu(sleepDataPopupMenu);
     metaDataTable.setFocusable(false);
@@ -652,6 +549,7 @@ public class AxboFrame extends JFrame
     searchNameLabel.setLabelFor(searchNameTextField);
     searchNameLabel.setText(bundle.getString("search.label.name")); // NOI18N
     searchNameLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 3, 1, 1));
+    searchNameLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 0;
@@ -677,16 +575,21 @@ public class AxboFrame extends JFrame
     searchDateFromLabel.setLabelFor(searchDateFromTextField);
     searchDateFromLabel.setText(bundle.getString("search.label.dateFrom")); // NOI18N
     searchDateFromLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 3, 1, 1));
+    searchDateFromLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
     gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
     searchTermsPanel.add(searchDateFromLabel, gridBagConstraints);
+
+    searchDateFromTextField.setMinimumSize(new java.awt.Dimension(120, 28));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 1;
     gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.weightx = 1.0;
     searchTermsPanel.add(searchDateFromTextField, gridBagConstraints);
 
     searchDateToLabel.setLabelFor(searchDateToTextField);
@@ -698,13 +601,18 @@ public class AxboFrame extends JFrame
     gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
     gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
     searchTermsPanel.add(searchDateToLabel, gridBagConstraints);
+
+    searchDateToTextField.setMaximumSize(new java.awt.Dimension(300, 28));
+    searchDateToTextField.setMinimumSize(new java.awt.Dimension(120, 28));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 3;
     gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.weightx = 1.0;
     searchTermsPanel.add(searchDateToTextField, gridBagConstraints);
 
-    searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/glass.png"))); // NOI18N
+    searchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/search-16.png"))); // NOI18N
     searchButton.setToolTipText(bundle.getString("button.search.tooltip")); // NOI18N
     searchButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
     searchButton.putClientProperty("JButton.buttonType", "textured");
@@ -734,298 +642,350 @@ public class AxboFrame extends JFrame
 
     dataScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    java.awt.image.BufferedImage bgImg = null;
-    try
-    {
-      bgImg = javax.imageio.ImageIO.read(getClass().getResource("/resources/images/background_dark"
-        + ".png"));
-  }
-  catch (java.io.IOException ex)
-  {
-    log.error("can not load background image", ex);
-  }
-  dataViewsPanel.setBackgroundImage(bgImg);
-  dataViewsPanel.setLayout(new java.awt.GridBagLayout());
-  dataScrollPane.setViewportView(dataViewsPanel);
+    dataViewsPanel.setLayout(new java.awt.GridBagLayout());
+    dataScrollPane.setViewportView(dataViewsPanel);
 
-  dataContainerPanel.add(dataScrollPane, java.awt.BorderLayout.CENTER);
+    dataContainerPanel.add(dataScrollPane, java.awt.BorderLayout.CENTER);
 
-  infoPanel.setLayout(new java.awt.BorderLayout());
+    infoPanel.setLayout(new java.awt.BorderLayout());
 
-  summaryPanel.setVisible(false);
-  summaryPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-  summaryPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+    summaryPanel.setVisible(false);
+    summaryPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+    summaryPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 2, 0));
 
-  lblSleepDuration.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDuration.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-  lblSleepDuration.setText(bundle.getString("lblSleepDuration")); // NOI18N
-  summaryPanel.add(lblSleepDuration);
+    lblCountOpen.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblCountOpen.setForeground(DataFrame.AXIS_COLOR);
+    lblCountOpen.setText(bundle.getString("lblCountOpen")); // NOI18N
+    summaryPanel.add(lblCountOpen);
 
-  lblSleepDurationMin.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationMin.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-  lblSleepDurationMin.setText(bundle.getString("lblSleepDurationMin")); // NOI18N
-  summaryPanel.add(lblSleepDurationMin);
+    lblCountOpenVal.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblCountOpenVal.setForeground(DataFrame.AXIS_COLOR);
+    lblCountOpenVal.setText("--");
+    summaryPanel.add(lblCountOpenVal);
 
-  lblSleepDurationMinValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationMinValue.setText("--:--:--");
-  summaryPanel.add(lblSleepDurationMinValue);
+    lblSpacer4.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacer4.setForeground(DataFrame.AXIS_COLOR);
+    lblSpacer4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacer4.setText("|");
+    lblSpacer4.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacer4.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacer4.setPreferredSize(new java.awt.Dimension(14, 14));
+    summaryPanel.add(lblSpacer4);
 
-  lblSleepDurationMax.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationMax.setText(bundle.getString("lblSleepDurationMax")); // NOI18N
-  summaryPanel.add(lblSleepDurationMax);
+    lblCountSelected.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblCountSelected.setForeground(DataFrame.AXIS_COLOR);
+    lblCountSelected.setText(bundle.getString("lblCountSelected")); // NOI18N
+    summaryPanel.add(lblCountSelected);
 
-  lblSleepDurationMaxValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationMaxValue.setText("--:--:--");
-  summaryPanel.add(lblSleepDurationMaxValue);
+    lblCountSelecetedVal.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblCountSelecetedVal.setForeground(DataFrame.AXIS_COLOR);
+    lblCountSelecetedVal.setText("--");
+    summaryPanel.add(lblCountSelecetedVal);
 
-  lblSleepDurationAvg.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationAvg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-  lblSleepDurationAvg.setText(bundle.getString("lblSleepDurationAvg")); // NOI18N
-  summaryPanel.add(lblSleepDurationAvg);
+    lblSpacer.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacer.setForeground(DataFrame.AXIS_COLOR);
+    lblSpacer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacer.setText("|");
+    lblSpacer.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacer.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacer.setPreferredSize(new java.awt.Dimension(14, 14));
+    summaryPanel.add(lblSpacer);
 
-  lblSleepDurationAvgValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblSleepDurationAvgValue.setText("--:--:--");
-  summaryPanel.add(lblSleepDurationAvgValue);
+    lblSleepDuration.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDuration.setForeground(DataFrame.SLEEP_DURATION_PAINT);
+    lblSleepDuration.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    lblSleepDuration.setText(bundle.getString("lblSleepDuration")); // NOI18N
+    summaryPanel.add(lblSleepDuration);
 
-  lblTimeSavings.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblTimeSavings.setText(bundle.getString("lblTimeSaving")); // NOI18N
-  summaryPanel.add(lblTimeSavings);
+    lblSleepDurationMin.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationMin.setForeground(DataFrame.SLEEP_DURATION_PAINT);
+    lblSleepDurationMin.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    lblSleepDurationMin.setText(bundle.getString("lblSleepDurationMin")); // NOI18N
+    summaryPanel.add(lblSleepDurationMin);
 
-  lblTimeSavingsValue.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblTimeSavingsValue.setText("--:--");
-  summaryPanel.add(lblTimeSavingsValue);
+    lblSleepDurationMinValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationMinValue.setForeground(DataFrame.SLEEP_DURATION_PAINT);
+    lblSleepDurationMinValue.setText("--:--:--");
+    summaryPanel.add(lblSleepDurationMinValue);
 
-  lblCountSelected.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblCountSelected.setText(bundle.getString("lblCountSelected")); // NOI18N
-  summaryPanel.add(lblCountSelected);
+    lblSpacer1.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacer1.setForeground(DataFrame.SLEEP_DURATION_PAINT);
+    lblSpacer1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacer1.setText("-");
+    lblSpacer1.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacer1.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacer1.setPreferredSize(new java.awt.Dimension(14, 14));
+    summaryPanel.add(lblSpacer1);
 
-  lblCountSelecetedVal.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblCountSelecetedVal.setText("--");
-  summaryPanel.add(lblCountSelecetedVal);
+    lblSleepDurationMax.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationMax.setForeground(DataFrame.SLEEP_DURATION_PAINT);
+    lblSleepDurationMax.setText(bundle.getString("lblSleepDurationMax")); // NOI18N
+    summaryPanel.add(lblSleepDurationMax);
 
-  infoPanel.add(summaryPanel, java.awt.BorderLayout.NORTH);
+    lblSleepDurationMaxValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationMaxValue.setForeground(DataFrame.SLEEP_DURATION_PAINT);
+    lblSleepDurationMaxValue.setText("--:--:--");
+    summaryPanel.add(lblSleepDurationMaxValue);
 
-  legendPanel.setVisible(false);
-  legendPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-  legendPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+    lblSpacer3.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacer3.setForeground(DataFrame.SLEEP_DURATION_PAINT);
+    lblSpacer3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacer3.setText("/");
+    lblSpacer3.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacer3.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacer3.setPreferredSize(new java.awt.Dimension(14, 14));
+    summaryPanel.add(lblSpacer3);
 
-  lblLegendMovementColor.setBackground(DataFrame.BAR_COLOR);
-  lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendMovementColor.setText("  ");
-  lblLegendMovementColor.setOpaque(true);
-  legendPanel.add(lblLegendMovementColor);
+    lblSleepDurationAvg.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationAvg.setForeground(DataFrame.SLEEP_DURATION_PAINT);
+    lblSleepDurationAvg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    lblSleepDurationAvg.setText(bundle.getString("lblSleepDurationAvg")); // NOI18N
+    summaryPanel.add(lblSleepDurationAvg);
 
-  lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendMovement.setText(bundle.getString("lblLegendMovements")); // NOI18N
-  legendPanel.add(lblLegendMovement);
+    lblSleepDurationAvgValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSleepDurationAvgValue.setForeground(DataFrame.SLEEP_DURATION_PAINT);
+    lblSleepDurationAvgValue.setText("--:--:--");
+    summaryPanel.add(lblSleepDurationAvgValue);
 
-  lblLegendKeyColor.setBackground(DataFrame.KEY_PAINT);
-  lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendKeyColor.setText("  ");
-  lblLegendKeyColor.setOpaque(true);
-  legendPanel.add(lblLegendKeyColor);
+    lblSpacer2.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblSpacer2.setForeground(DataFrame.AXIS_COLOR);
+    lblSpacer2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    lblSpacer2.setText("|");
+    lblSpacer2.setMaximumSize(new java.awt.Dimension(14, 14));
+    lblSpacer2.setMinimumSize(new java.awt.Dimension(14, 14));
+    lblSpacer2.setPreferredSize(new java.awt.Dimension(14, 14));
+    summaryPanel.add(lblSpacer2);
 
-  lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendKey.setText(bundle.getString("lblLegendKeys")); // NOI18N
-  legendPanel.add(lblLegendKey);
+    lblTimeSavings.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblTimeSavings.setForeground(DataFrame.WAKE_PAINT);
+    lblTimeSavings.setText(bundle.getString("lblTimeSaving")); // NOI18N
+    summaryPanel.add(lblTimeSavings);
 
-  lblLegendSleepStartColor.setBackground(DataFrame.SLEEP_MARKER_PAINT);
-  lblLegendSleepStartColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendSleepStartColor.setText("  ");
-  lblLegendSleepStartColor.setOpaque(true);
-  legendPanel.add(lblLegendSleepStartColor);
+    lblTimeSavingsValue.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblTimeSavingsValue.setForeground(DataFrame.WAKE_PAINT);
+    lblTimeSavingsValue.setText("--:--");
+    summaryPanel.add(lblTimeSavingsValue);
 
-  lblLegendSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendSleepStart.setText(bundle.getString("lblLegendSleepStart")); // NOI18N
-  legendPanel.add(lblLegendSleepStart);
+    infoPanel.add(summaryPanel, java.awt.BorderLayout.NORTH);
 
-  lblLegendWakeTimeColor.setBackground(DataFrame.WAKE_PAINT);
-  lblLegendWakeTimeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendWakeTimeColor.setText("  ");
-  lblLegendWakeTimeColor.setOpaque(true);
-  legendPanel.add(lblLegendWakeTimeColor);
+    legendPanel.setVisible(false);
+    legendPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+    legendPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
-  lblLegendWakeTime.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendWakeTime.setText(bundle.getString("lblLegendWakeupTime")); // NOI18N
-  legendPanel.add(lblLegendWakeTime);
+    lblLegendSleepStartColor.setBackground(DataFrame.SLEEP_MARKER_PAINT);
+    lblLegendSleepStartColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendSleepStartColor.setText("  ");
+    lblLegendSleepStartColor.setOpaque(true);
+    legendPanel.add(lblLegendSleepStartColor);
 
-  lblLegendSnoozeColor.setBackground(DataFrame.SNOOZE_PAINT);
-  lblLegendSnoozeColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendSnoozeColor.setText("  ");
-  lblLegendSnoozeColor.setOpaque(true);
-  legendPanel.add(lblLegendSnoozeColor);
+    lblLegendSleepStart.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendSleepStart.setForeground(DataFrame.SLEEP_MARKER_PAINT);
+    lblLegendSleepStart.setText(bundle.getString("lblLegendSleepStart")); // NOI18N
+    legendPanel.add(lblLegendSleepStart);
 
-  lblLegendSnooze.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendSnooze.setText(bundle.getString("lblLegendSnooze")); // NOI18N
-  legendPanel.add(lblLegendSnooze);
+    lblLegendWakeTimeColor.setBackground(DataFrame.WAKE_PAINT);
+    lblLegendWakeTimeColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendWakeTimeColor.setText("  ");
+    lblLegendWakeTimeColor.setOpaque(true);
+    legendPanel.add(lblLegendWakeTimeColor);
 
-  lblLegendWakeIntervalColor.setBackground(DataFrame.WAKE_INTERVALL_PAINT);
-  lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendWakeIntervalColor.setText("  ");
-  lblLegendWakeIntervalColor.setOpaque(true);
-  legendPanel.add(lblLegendWakeIntervalColor);
+    lblLegendWakeTime.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendWakeTime.setForeground(DataFrame.WAKE_PAINT);
+    lblLegendWakeTime.setText(bundle.getString("lblLegendWakeupTime")); // NOI18N
+    legendPanel.add(lblLegendWakeTime);
 
-  lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
-  lblLegendWakeInterval.setText(bundle.getString("lblLegendWakeInterval")); // NOI18N
-  legendPanel.add(lblLegendWakeInterval);
+    lblLegendWakeIntervalColor.setBackground(DataFrame.WAKE_INTERVALL_PAINT);
+    lblLegendWakeIntervalColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendWakeIntervalColor.setText("  ");
+    lblLegendWakeIntervalColor.setOpaque(true);
+    legendPanel.add(lblLegendWakeIntervalColor);
 
-  infoPanel.add(legendPanel, java.awt.BorderLayout.SOUTH);
+    lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendWakeInterval.setForeground(DataFrame.WAKE_INTERVALL_PAINT);
+    lblLegendWakeInterval.setText(bundle.getString("lblLegendWakeInterval")); // NOI18N
+    legendPanel.add(lblLegendWakeInterval);
 
-  dataContainerPanel.add(infoPanel, java.awt.BorderLayout.SOUTH);
+    lblLegendKeyColor.setBackground(DataFrame.KEY_PAINT);
+    lblLegendKeyColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendKeyColor.setText("  ");
+    lblLegendKeyColor.setOpaque(true);
+    legendPanel.add(lblLegendKeyColor);
 
-  dataPanel.add(dataContainerPanel, java.awt.BorderLayout.CENTER);
+    lblLegendKey.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendKey.setForeground(DataFrame.KEY_PAINT);
+    lblLegendKey.setText(bundle.getString("lblLegendKeys")); // NOI18N
+    legendPanel.add(lblLegendKey);
 
-  mainPanel.add(dataPanel, "data");
+    lblLegendSnoozeColor.setBackground(DataFrame.SNOOZE_PAINT);
+    lblLegendSnoozeColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendSnoozeColor.setText("  ");
+    lblLegendSnoozeColor.setOpaque(true);
+    legendPanel.add(lblLegendSnoozeColor);
 
-  getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
+    lblLegendSnooze.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendSnooze.setForeground(DataFrame.SNOOZE_PAINT);
+    lblLegendSnooze.setText(bundle.getString("lblLegendSnooze")); // NOI18N
+    legendPanel.add(lblLegendSnooze);
 
-  statusTextPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 3, 1, 1));
-  statusTextPanel.setLayout(new java.awt.BorderLayout(5, 5));
+    lblLegendMovementColor.setBackground(DataFrame.BAR_COLOR);
+    lblLegendMovementColor.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendMovementColor.setText("  ");
+    lblLegendMovementColor.setOpaque(true);
+    legendPanel.add(lblLegendMovementColor);
 
-  statusTextLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/disconnect.png"))); // NOI18N
-  statusTextPanel.add(statusTextLabel, java.awt.BorderLayout.CENTER);
+    lblLegendMovement.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
+    lblLegendMovement.setForeground(DataFrame.BAR_COLOR);
+    lblLegendMovement.setText(bundle.getString("lblLegendMovements")); // NOI18N
+    legendPanel.add(lblLegendMovement);
 
-  statusProgressBar.setFocusable(false);
-  statusProgressBar.setRequestFocusEnabled(false);
-  statusProgressBar.setString("\n");
-  statusProgressBar.putClientProperty("JProgressBar.style", "circular");
-  statusTextPanel.add(statusProgressBar, java.awt.BorderLayout.EAST);
+    infoPanel.add(legendPanel, java.awt.BorderLayout.SOUTH);
 
-  getContentPane().add(statusTextPanel, java.awt.BorderLayout.SOUTH);
+    dataContainerPanel.add(infoPanel, java.awt.BorderLayout.SOUTH);
 
-  fileMenu.setText(bundle.getString("menu.file")); // NOI18N
+    dataPanel.add(dataContainerPanel, java.awt.BorderLayout.CENTER);
 
-  viewMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart_bar.png"))); // NOI18N
-  viewMenuItem.setText(bundle.getString("menu.file.view")); // NOI18N
-  viewMenuItem.setDoubleBuffered(true);
-  viewMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      viewMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(viewMenuItem);
+    mainPanel.add(dataPanel, java.awt.BorderLayout.CENTER);
 
-  deleteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
-  deleteMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
-  deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      deleteMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(deleteMenuItem);
+    getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
 
-  deleteSoungPkgMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
-  deleteSoungPkgMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
-  deleteSoungPkgMenuItem.setVisible(false);
-  deleteSoungPkgMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      deleteSoungPkgMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(deleteSoungPkgMenuItem);
+    statusTextPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 3, 1, 1));
+    statusTextPanel.setLayout(new java.awt.BorderLayout(5, 5));
 
-  miImportSound.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/sound_add.png"))); // NOI18N
-  miImportSound.setText(bundle.getString("btnSoundPkgImport.text")); // NOI18N
-  miImportSound.setVisible(false);
-  miImportSound.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      miImportSoundActionPerformed(evt);
-    }
-  });
-  fileMenu.add(miImportSound);
+    statusTextLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/link-broken-16.png"))); // NOI18N
+    statusTextPanel.add(statusTextLabel, java.awt.BorderLayout.CENTER);
 
-  if (Axbo.MAC_OS_X)
-  jSeparator1.setVisible(false);
-  fileMenu.add(jSeparator1);
+    statusProgressBar.setFocusable(false);
+    statusProgressBar.setMaximumSize(new java.awt.Dimension(200, 20));
+    statusProgressBar.setMinimumSize(new java.awt.Dimension(20, 20));
+    statusProgressBar.setPreferredSize(new java.awt.Dimension(200, 20));
+    statusProgressBar.setRequestFocusEnabled(false);
+    statusProgressBar.putClientProperty("JProgressBar.style", "circular");
+    statusTextPanel.add(statusProgressBar, java.awt.BorderLayout.EAST);
 
-  if (Axbo.MAC_OS_X)
-  prefsMenuItem.setVisible(false);
-  prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/detailsViewIcon.png"))); // NOI18N
-  prefsMenuItem.setText(bundle.getString("menu.file.prefs")); // NOI18N
-  prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      prefsMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(prefsMenuItem);
+    getContentPane().add(statusTextPanel, java.awt.BorderLayout.SOUTH);
 
-  if (Axbo.MAC_OS_X)
-  jSeparator3.setVisible(false);
-  fileMenu.add(jSeparator3);
+    fileMenu.setText(bundle.getString("menu.file")); // NOI18N
 
-  if (Axbo.MAC_OS_X)
-  exitMenuItem.setVisible(false);
-  exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/cross.png"))); // NOI18N
-  exitMenuItem.setText(bundle.getString("menu.file.exit")); // NOI18N
-  exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      exitMenuItemActionPerformed(evt);
-    }
-  });
-  fileMenu.add(exitMenuItem);
+    viewMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/chart-bar-16.png"))); // NOI18N
+    viewMenuItem.setText(bundle.getString("menu.file.view")); // NOI18N
+    viewMenuItem.setDoubleBuffered(true);
+    viewMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        viewMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(viewMenuItem);
 
-  menuBar.add(fileMenu);
+    deleteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin-16.png"))); // NOI18N
+    deleteMenuItem.setText(bundle.getString("menu.file.delete")); // NOI18N
+    deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        deleteMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(deleteMenuItem);
 
-  deviceMenu.setText(bundle.getString("menu.device")); // NOI18N
+    uploadSoundPackageMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/music-16.png"))); // NOI18N
+    uploadSoundPackageMenuItem.setText(bundle.getString("btnSoundPkgImport.text")); // NOI18N
+    uploadSoundPackageMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        uploadSoundPackageMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(uploadSoundPackageMenuItem);
 
-  readStoredDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/redo.png"))); // NOI18N
-  readStoredDataMenuItem.setText(bundle.getString("menu.device.readStoredData")); // NOI18N
-  readStoredDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      readStoredDataMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(readStoredDataMenuItem);
+    if (OS.Mac.isCurrent())
+    jSeparator1.setVisible(false);
+    fileMenu.add(jSeparator1);
 
-  clearDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin.png"))); // NOI18N
-  clearDataMenuItem.setText(bundle.getString("menu.device.clearData")); // NOI18N
-  clearDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      clearDataMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(clearDataMenuItem);
+    if (OS.Mac.isCurrent())
+    prefsMenuItem.setVisible(false);
+    prefsMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/wrench-16.png"))); // NOI18N
+    prefsMenuItem.setText(bundle.getString("menu.file.prefs")); // NOI18N
+    prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        prefsMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(prefsMenuItem);
 
-  setClockDateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/time.png"))); // NOI18N
-  setClockDateMenuItem.setText(bundle.getString("menu.device.setDate")); // NOI18N
-  setClockDateMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      setClockDateMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(setClockDateMenuItem);
+    if (OS.Mac.isCurrent())
+    jSeparator3.setVisible(false);
+    fileMenu.add(jSeparator3);
 
-  readStatusMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/information.png"))); // NOI18N
-  readStatusMenuItem.setText(bundle.getString("menu.device.readStatus")); // NOI18N
-  readStatusMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      readStatusMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(readStatusMenuItem);
+    if (OS.Mac.isCurrent())
+    exitMenuItem.setVisible(false);
+    exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-power-16.png"))); // NOI18N
+    exitMenuItem.setText(bundle.getString("menu.file.exit")); // NOI18N
+    exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        exitMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(exitMenuItem);
 
-  resetClockMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/undo.png"))); // NOI18N
-  resetClockMenuItem.setText(bundle.getString("menu.device.resetClock")); // NOI18N
-  resetClockMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      resetClockMenuItemActionPerformed(evt);
-    }
-  });
-  deviceMenu.add(resetClockMenuItem);
+    menuBar.add(fileMenu);
 
-  menuBar.add(deviceMenu);
+    deviceMenu.setText(bundle.getString("menu.device")); // NOI18N
 
-  setJMenuBar(menuBar);
+    readStoredDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/inbox-16.png"))); // NOI18N
+    readStoredDataMenuItem.setText(bundle.getString("menu.device.readStoredData")); // NOI18N
+    readStoredDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        readStoredDataMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(readStoredDataMenuItem);
 
-  pack();
+    clearDataMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/bin-16.png"))); // NOI18N
+    clearDataMenuItem.setText(bundle.getString("menu.device.clearData")); // NOI18N
+    clearDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        clearDataMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(clearDataMenuItem);
+
+    setClockDateMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/clock-16.png"))); // NOI18N
+    setClockDateMenuItem.setText(bundle.getString("menu.device.setDate")); // NOI18N
+    setClockDateMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        setClockDateMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(setClockDateMenuItem);
+
+    readStatusMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/information-16.png"))); // NOI18N
+    readStatusMenuItem.setText(bundle.getString("menu.device.readStatus")); // NOI18N
+    readStatusMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        readStatusMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(readStatusMenuItem);
+
+    resetClockMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/images/button-synchronize-16.png"))); // NOI18N
+    resetClockMenuItem.setText(bundle.getString("menu.device.resetClock")); // NOI18N
+    resetClockMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        resetClockMenuItemActionPerformed(evt);
+      }
+    });
+    deviceMenu.add(resetClockMenuItem);
+
+    menuBar.add(deviceMenu);
+
+    setJMenuBar(menuBar);
+
+    pack();
   }// </editor-fold>//GEN-END:initComponents
   private void resetClockMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_resetClockMenuItemActionPerformed
   {//GEN-HEADEREND:event_resetClockMenuItemActionPerformed
-    int result = showOptionMessage(BundleUtil.getMessage("message.confirmReset"),
+    int result =
+        showOptionMessage(BundleUtil.getMessage("message.confirmReset"),
         BundleUtil.getMessage("infoMessageBox.title"));
 
-    if (result == JOptionPane.OK_OPTION)
-    {
+    if (result == JOptionPane.OK_OPTION) {
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new AxboReset(
           this));
     }
@@ -1033,30 +993,25 @@ public class AxboFrame extends JFrame
 
   private void deleteMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_deleteMenuItemActionPerformed
   {//GEN-HEADEREND:event_deleteMenuItemActionPerformed
-    if (metaDataTable.getSelectedRowCount() > 0)
-    {
+    if (metaDataTable.getSelectedRowCount() > 0) {
       int response = showOptionMessage(BundleUtil.getMessage(
           "notification.message.delete"), BundleUtil.getMessage(
           "infoMessageBox.title"));
-      if (response == JOptionPane.OK_OPTION)
-      {
+      if (response == JOptionPane.OK_OPTION) {
         int selectedRows[] = metaDataTable.getSelectedRows();
         ArrayList<SleepData> tmpSleepData =
             new ArrayList<SleepData>(Array.getLength(selectedRows));
-        for (int selectedRowIdx : selectedRows)
-        {
+        for (int selectedRowIdx : selectedRows) {
           tmpSleepData.add(getMetaDataTableModel().getSleepDataAt(
               metaDataTable.convertRowIndexToModel(selectedRowIdx)));
         }
-        for (SleepData sleepData : tmpSleepData)
-        {
-          ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataDelete(
+        for (SleepData sleepData : tmpSleepData) {
+          ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+              new SleepDataDelete(
               this, sleepData));
         }
       }
-    }
-    else
-    {
+    } else {
       showMessage(BundleUtil.getErrorMessage(
           "MetaDataTableModel.nothingSelected"), true);
     }
@@ -1064,13 +1019,15 @@ public class AxboFrame extends JFrame
 
   private void formWindowClosed(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosed
   {//GEN-HEADEREND:event_formWindowClosed
-    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new AxboDisconnect(
+    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+        new AxboDisconnect(
         this));
   }//GEN-LAST:event_formWindowClosed
 
   private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadDataButtonActionPerformed
   {//GEN-HEADEREND:event_loadDataButtonActionPerformed
-    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataImport(
+    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+        new SleepDataImport(
         this));
   }//GEN-LAST:event_loadDataButtonActionPerformed
 
@@ -1082,9 +1039,9 @@ public class AxboFrame extends JFrame
 
   private void closeAllMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_closeAllMenuItemActionPerformed
   {//GEN-HEADEREND:event_closeAllMenuItemActionPerformed
-    for (final Component dataView : dataViewsPanel.getComponents())
-    {
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new DiagramClose(
+    for (final Component dataView : dataViewsPanel.getComponents()) {
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+          new DiagramClose(
           log, (DataFrame) dataView));
     }
   }//GEN-LAST:event_closeAllMenuItemActionPerformed
@@ -1103,7 +1060,8 @@ public class AxboFrame extends JFrame
 
   private void readStoredDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_readStoredDataMenuItemActionPerformed
   {//GEN-HEADEREND:event_readStoredDataMenuItemActionPerformed
-    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataImport(
+    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+        new SleepDataImport(
         this));
   }//GEN-LAST:event_readStoredDataMenuItemActionPerformed
 
@@ -1115,25 +1073,22 @@ public class AxboFrame extends JFrame
 
   private void metaDataTableMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_metaDataTableMouseClicked
   {//GEN-HEADEREND:event_metaDataTableMouseClicked
-    if (evt.getButton() == MouseEvent.BUTTON3)
-    {
+    if (evt.getButton() == MouseEvent.BUTTON3) {
       int row = metaDataTable.rowAtPoint(evt.getPoint());
       metaDataTable.getSelectionModel().addSelectionInterval(row, row);
     }
 
     // is it a double click, open a new internal frame with the selected sleep data
-    if (evt.getClickCount() == 2)
-    {
+    if (evt.getClickCount() == 2) {
       int[] selectedRows = metaDataTable.getSelectedRows();
       final List<SleepData> sleepDataList = new ArrayList<SleepData>();
-      for (int row : selectedRows)
-      {
+      for (int row : selectedRows) {
         sleepDataList.add(getMetaDataTableModel().getSleepDataAt(metaDataTable.
             convertRowIndexToModel(row)));
       }
-      if (sleepDataList.size() > 0)
-      {
-        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataOpen(
+      if (sleepDataList.size() > 0) {
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new SleepDataOpen(
             this, sleepDataList));
       }
     }
@@ -1141,8 +1096,7 @@ public class AxboFrame extends JFrame
 
   private void searchTextFieldsKeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_searchTextFieldsKeyPressed
   {//GEN-HEADEREND:event_searchTextFieldsKeyPressed
-    if (evt.getKeyCode() == KeyEvent.VK_ENTER)
-    {
+    if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new DataSearch(
           this, searchNameTextField.getText(), searchDateFromTextField.getDate(),
           searchDateToTextField.getDate()));
@@ -1157,7 +1111,8 @@ public class AxboFrame extends JFrame
   }//GEN-LAST:event_searchButtonActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ApplicationExit(
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+          new ApplicationExit(
           this));
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
@@ -1169,22 +1124,20 @@ public class AxboFrame extends JFrame
     private void viewMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_viewMenuItemActionPerformed
     {//GEN-HEADEREND:event_viewMenuItemActionPerformed
       int[] selectedRows = metaDataTable.getSelectedRows();
-      if (selectedRows.length < 1)
-      {
+      if (selectedRows.length < 1) {
         showMessage(BundleUtil.getErrorMessage(
             "MetaDataTableModel.nothingSelected"), true);
         return;
       }
       final List<SleepData> sleepDataList = new ArrayList<SleepData>(
           selectedRows.length);
-      for (int selectedRowIdx : selectedRows)
-      {
+      for (int selectedRowIdx : selectedRows) {
         sleepDataList.add(getMetaDataTableModel().getSleepDataAt(metaDataTable.
             convertRowIndexToModel(selectedRowIdx)));
       }
-      if (sleepDataList.size() > 0)
-      {
-        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataOpen(
+      if (sleepDataList.size() > 0) {
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new SleepDataOpen(
             this, sleepDataList));
       }
     }//GEN-LAST:event_viewMenuItemActionPerformed
@@ -1208,66 +1161,48 @@ public class AxboFrame extends JFrame
 //      }
     }//GEN-LAST:event_soundPackagesTableMouseClicked
 
-    private void btnSoundPkgImportActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnSoundPkgImportActionPerformed
-    {//GEN-HEADEREND:event_btnSoundPkgImportActionPerformed
-//      ctrl.importSoundPackage();
-    }//GEN-LAST:event_btnSoundPkgImportActionPerformed
+    private void uploadSoundPackageMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_uploadSoundPackageMenuItemActionPerformed
+    {//GEN-HEADEREND:event_uploadSoundPackageMenuItemActionPerformed
 
-    private void miImportSoundActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_miImportSoundActionPerformed
-    {//GEN-HEADEREND:event_miImportSoundActionPerformed
-//      ctrl.importSoundPackage();
-    }//GEN-LAST:event_miImportSoundActionPerformed
 
-private void deleteSoungPkgMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSoungPkgMenuItemActionPerformed
-//  if (soundPackagesTable.getSelectedRowCount() > 0)
-//  {
-//    int response = showOptionMessage(BundleUtil.getMessage(
-//        "notification.message.delete"), BundleUtil.getMessage(
-//        "infoMessageBox.title"));
-//    if (response == JOptionPane.OK_OPTION)
-//    {
-//      int selectedRows[] = soundPackagesTable.getSelectedRows();
-//      ArrayList<SoundPackage> tmpSndPkgs =
-//          new ArrayList<SoundPackage>(Array.getLength(selectedRows));
-//      for (int i : selectedRows)
-//      {
-//        tmpSndPkgs.add(((SoundPackagesTableModel) soundPackagesTable.getModel()).
-//            getSoundPackageAt(i));
-//      }
-//      for (SoundPackage sndPkg : tmpSndPkgs)
-//      {
-//        ctrl.deleteSoundPackage(sndPkg);
-//      }
-//    }
-//  }
-//  else
-//  {
-//    showMessage(BundleUtil.getErrorMessage("MetaDataTableModel.nothingSelected"),
-//        BundleUtil.getMessage("errorMessageBox.title"), true);
-//  }
-}//GEN-LAST:event_deleteSoungPkgMenuItemActionPerformed
+      final FileFilter filter = new FileFilter() {
+        @Override
+        public boolean accept(File f) {
+          if (!(f.getName().toLowerCase(Locale.ENGLISH).indexOf(
+              Axbo.SOUND_DATA_FILE_EXT.
+              toLowerCase()) < 0) || f.isDirectory()) {
+            return true;
+          } else {
+            return false;
+          }
+        }
 
-private void deleteSoungPkgPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteSoungPkgPopupMenuItemActionPerformed
-  deleteSoungPkgMenuItemActionPerformed(evt);
-}//GEN-LAST:event_deleteSoungPkgPopupMenuItemActionPerformed
+        @Override
+        public String getDescription() {
+          return "Axbo Sound Package Files";
+        }
+      };
 
-private void openSoundPkgPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openSoundPkgPopupMenuItemActionPerformed
-//  if (soundPackagesTable.getSelectedRowCount() > 0)
-//  {
-//    ctrl.openSoundPkg(soundPackagesTable.getSelectedRows()[0]);
-//  }
-//  else
-//  {
-//    showMessage(BundleUtil.getErrorMessage("MetaDataTableModel.nothingSelected"),
-//        BundleUtil.getMessage("errorMessageBox.title"), true);
-//  }
-//
-//
-}//GEN-LAST:event_openSoundPkgPopupMenuItemActionPerformed
+      // open file chooser for directory with sleep data files
+      JFileChooser chooser = new JFileChooser(Axbo.SOUND_PACKAGES_DIR);
+      chooser.setFileFilter(filter);
+      chooser.setMultiSelectionEnabled(false);
+      chooser.setAcceptAllFileFilterUsed(false);
+      chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      int returnVal = chooser.showOpenDialog(this);
+
+      // process selected directory
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new SoundPackageUpload(this, chooser.getSelectedFile()));
+      }
+
+    }//GEN-LAST:event_uploadSoundPackageMenuItemActionPerformed
 
 private void btnCompareActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnCompareActionPerformed
 {//GEN-HEADEREND:event_btnCompareActionPerformed
-  ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataCompare(
+  ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+      new SleepDataCompare(
       this));
 }//GEN-LAST:event_btnCompareActionPerformed
 
@@ -1278,26 +1213,22 @@ private void btnCloseAllActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIR
 
 private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnPrintActionPerformed
 {//GEN-HEADEREND:event_btnPrintActionPerformed
-  if (getDataViews().size() > 0)
-  {
+  if (getDataViews().size() > 0) {
     final PrinterJob job = PrinterJob.getPrinterJob();
-    if (job.printDialog())
-    {
+    if (job.printDialog()) {
       final Book book = new Book();
       job.setPageable(book);
       job.setJobName("aXbo");
       ApplicationEventDispatcher.getInstance().dispatchEvent(new DiagramPrint(
           this, job, book));
-      try
-      {
+      try {
         job.print();
-      }
-      catch (PrinterException ex)
-      {
+      } catch (PrinterException ex) {
         final String msg = BundleUtil.getErrorMessage(
             "globalError.printingFailed");
         log.error(msg, ex);
-        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ApplicationMessageEvent(
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new ApplicationMessageEvent(
             this, msg, true));
       }
     }
@@ -1307,7 +1238,6 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JButton btnCloseAll;
   private javax.swing.JButton btnCompare;
   private javax.swing.JButton btnPrint;
-  private javax.swing.JButton btnSoundPkgImport;
   private javax.swing.JMenuItem clearDataMenuItem;
   private javax.swing.JPanel dataContainerPanel;
   private javax.swing.JPanel dataListPanel;
@@ -1317,8 +1247,6 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private com.dreikraft.swing.BackgroundImagePanel dataViewsPanel;
   private javax.swing.JMenuItem deleteMenuItem;
   private javax.swing.JMenuItem deletePopupMenuItem;
-  private javax.swing.JMenuItem deleteSoungPkgMenuItem;
-  private javax.swing.JMenuItem deleteSoungPkgPopupMenuItem;
   private javax.swing.JMenu deviceMenu;
   private javax.swing.JMenuItem exitMenuItem;
   private javax.swing.JMenu fileMenu;
@@ -1326,6 +1254,8 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JLabel jLabel1;
   private javax.swing.JSeparator jSeparator1;
   private javax.swing.JSeparator jSeparator3;
+  private javax.swing.JLabel lblCountOpen;
+  private javax.swing.JLabel lblCountOpenVal;
   private javax.swing.JLabel lblCountSelecetedVal;
   private javax.swing.JLabel lblCountSelected;
   private javax.swing.JLabel lblLegendKey;
@@ -1347,6 +1277,11 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JLabel lblSleepDurationMaxValue;
   private javax.swing.JLabel lblSleepDurationMin;
   private javax.swing.JLabel lblSleepDurationMinValue;
+  private javax.swing.JLabel lblSpacer;
+  private javax.swing.JLabel lblSpacer1;
+  private javax.swing.JLabel lblSpacer2;
+  private javax.swing.JLabel lblSpacer3;
+  private javax.swing.JLabel lblSpacer4;
   private javax.swing.JLabel lblTimeSavings;
   private javax.swing.JLabel lblTimeSavingsValue;
   private javax.swing.JPanel legendPanel;
@@ -1354,10 +1289,8 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JPanel mainPanel;
   private javax.swing.JPanel mainToolbar;
   private javax.swing.JMenuBar menuBar;
-  javax.swing.JTable metaDataTable;
-  private javax.swing.JMenuItem miImportSound;
+  private javax.swing.JTable metaDataTable;
   private javax.swing.JPanel navToolbarPanel;
-  private javax.swing.JMenuItem openSoundPkgPopupMenuItem;
   private javax.swing.JMenuItem prefsMenuItem;
   private javax.swing.JMenuItem readStatusMenuItem;
   private javax.swing.JMenuItem readStoredDataMenuItem;
@@ -1372,8 +1305,6 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JPanel searchTermsPanel;
   private javax.swing.JMenuItem setClockDateMenuItem;
   private javax.swing.JPopupMenu sleepDataPopupMenu;
-  private javax.swing.JPanel soundToolbarPanel;
-  private javax.swing.JPopupMenu soundsPopupMenu;
   private javax.swing.JPanel spacerPanel;
   private javax.swing.JProgressBar statusProgressBar;
   private javax.swing.JLabel statusTextLabel;
@@ -1381,6 +1312,7 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
   private javax.swing.JPanel summaryPanel;
   private javax.swing.JScrollPane tableScrollPane;
   private javax.swing.JPanel toolbarPanel;
+  private javax.swing.JMenuItem uploadSoundPackageMenuItem;
   private javax.swing.JMenuItem viewMenuItem;
   private javax.swing.JMenuItem viewPopupMenuItem;
   // End of variables declaration//GEN-END:variables

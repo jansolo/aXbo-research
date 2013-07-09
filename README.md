@@ -67,3 +67,20 @@ Architecture
 ------------
 
 TODO
+
+
+Additional Resources
+--------------------
+
+A detailed documentation (german) of the aXbo communication protocol can be found here:
+https://github.com/jansolo/aXbo-research/blob/development/aXbo-research/doc/aXbo%20PC%20Protokol.pdf
+
+
+Contribute
+----------
+
+If you like to contribute, there are some areas of specific interest:
+
+- [ ] A nice GUI for creating custom sound packages. The required utility classes for creating sound packages are already there.
+- [ ] Uploading firmware updates to aXbo. The current firmware update tool supports Windows only.
+- [ ] Rewrite/Rethink the AxboCommandUtil class. This is old and very ugly code. I did not come up with a better solution yet.

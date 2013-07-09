@@ -1,18 +1,12 @@
-/*
- * $Id: ApplicationEvent.java,v 1.2 2010-11-29 15:42:24 illetsch Exp $
- * © 3kraft GmbH & Co KG 2010
- */
 package com.dreikraft.events;
 
 import com.dreikraft.axbo.util.ReflectUtil;
 import java.util.EventObject;
 
 /**
- * Highlevel Events. Do not depend on the GUI.
+ * Represents a high level application event. Does not depend on the GUI.
  *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.2 $
+ * @author jan.illetschko@3kraft.com
  */
 public abstract class ApplicationEvent extends EventObject {
 
@@ -30,6 +24,4 @@ public abstract class ApplicationEvent extends EventObject {
   {
     return ReflectUtil.toString(this);
   }
-
-
 }

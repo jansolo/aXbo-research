@@ -1,13 +1,11 @@
-/*
- * © 2008 3kraft
- * $Id: RXTXSerialDataInterface.java,v 1.21 2010-12-16 23:13:53 illetsch Exp $
- */
 package com.dreikraft.axbo.data;
 
 import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.axbo.Axbo;
+import com.dreikraft.axbo.OS;
 import com.dreikraft.axbo.events.AxboConnected;
 import com.dreikraft.axbo.events.AxboDisconnected;
+import com.dreikraft.axbo.util.ByteUtil;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -22,68 +20,81 @@ import java.util.TooManyListenersException;
 import org.apache.commons.logging.*;
 
 /**
- * $Id: RXTXSerialDataInterface.java,v 1.21 2010-12-16 23:13:53 illetsch Exp $
- * 
- * @author 3kraft - $Author: illetsch $
- * @version $Revision: 1.21 $
+ * The RXTXSerialDataInterface handles serial interface communication via the
+ * RXTX comm port implementation. The class is implemented as an enum singleton
+ * (thread safe singleton).
+ *
+ * @author jan.illetschko@3kraft.com
  */
-public enum RXTXSerialDataInterface implements DataInterface
-{
-  INSTANCE;
+public enum RXTXSerialDataInterface implements DataInterface {
 
+  /**
+   * Singleton instance.
+   */
+  INSTANCE;
+  /**
+   * Logger.
+   */
   public static final Log log =
       LogFactory.getLog(RXTXSerialDataInterface.class);
+  /**
+   * Serial port owner name.
+   */
   public static final String PORT_OWNER = "axbo";
 
-  private class DataMonitor
-  {
+  /**
+   * Serial interface data recipient thread monitor.
+   */
+  static private class DataMonitor {
+
     private boolean dataReceived = false;
 
-    public boolean isDataReceived()
-    {
+    /**
+     * Retrieves Data received flag.
+     *
+     * @return true if data was received.
+     */
+    public boolean isDataReceived() {
       return dataReceived;
     }
 
-    public void setDataReceived(boolean dataReceived)
-    {
+    /**
+     * Sets data received flag.
+     *
+     * @param dataReceived true if data was received.
+     */
+    public void setDataReceived(boolean dataReceived) {
       this.dataReceived = dataReceived;
     }
   }
-
   private SerialPort serialPort;
-  private ProtocolHandler protocolHandler;
   private final DataMonitor dataMonitor = new DataMonitor();
 
+  /**
+   * Starts the serial interface if it has not been already started.
+   *
+   * @param portName the name of the serial interface.
+   * @throws DataInterfaceException if aXbo can not be connected.
+   */
   @Override
   public void start(final String portName)
-      throws DataInterfaceException
-  {
-    if (log.isDebugEnabled())
-    {
-      log.debug("lookup serial port: " + portName);
-    }
-    CommPortIdentifier portId = getCommPortIdentifier(portName);
+      throws DataInterfaceException {
 
-    if (isStarted(portName))
-    {
-      if (log.isDebugEnabled())
-      {
-        log.debug("serial port " + portId.getName() + " is started by " +
-            portId.getCurrentOwner());
-      }
+    CommPortIdentifier portId = getCommPortIdentifier(portName);
+    // the port has been started already and can be reused
+    if (isStarted(portName)) {
       return;
     }
 
-    // set the serial protocol handler
-    if (log.isDebugEnabled())
-    {
-      log.debug("protocol handler: " + protocolHandler);
-    }
+    // configure a new conection
+    try {
+      if (log.isDebugEnabled()) {
+        log.debug("lookup serial port: " + portName);
+      }
 
-    try
-    {
+      // get the default serial device data
       final DeviceType deviceType = DeviceContext.getDeviceType();
-      // open the serial port, wait for x seconds
+      // try to open the serial port, wait for x seconds
       serialPort = (SerialPort) portId.open(PORT_OWNER, deviceType.getTimeout());
 
       // set connection parameters
@@ -96,124 +107,147 @@ public enum RXTXSerialDataInterface implements DataInterface
       serialPort.addEventListener(this);
       serialPort.notifyOnDataAvailable(true);
 
+      // notify gui about successful connection
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new AxboConnected(
           this, true));
-    }
-    catch (PortInUseException ex)
-    {
+    } catch (PortInUseException ex) {
       serialPort.close();
       throw new DataInterfaceException(ex.getMessage(), ex);
-    }
-    catch (UnsupportedCommOperationException ex)
-    {
+    } catch (UnsupportedCommOperationException ex) {
       serialPort.close();
       throw new DataInterfaceException(ex.getMessage(), ex);
-    }
-    catch (TooManyListenersException ex)
-    {
+    } catch (TooManyListenersException ex) {
       serialPort.close();
       throw new DataInterfaceException(ex.getMessage(), ex);
     }
   }
 
+  /**
+   * Stops and releases the serial port.
+   */
   @Override
-  public void stop()
-  {
-    if (serialPort != null)
-    {
-      if (log.isDebugEnabled())
-      {
+  public void stop() {
+    if (serialPort != null) {
+      if (log.isDebugEnabled()) {
         log.debug("closing serial port " + serialPort.getName());
       }
       serialPort.close();
+
+      // send gui notification
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new AxboDisconnected(
           this, true));
     }
   }
 
+  /**
+   * Checks if the serial port with the given name has already been started.
+   *
+   * @param portName the name of the serial port
+   * @return true, if the port has been started.
+   * @throws DataInterfaceException if the serial port fails
+   */
   @Override
   public boolean isStarted(final String portName)
-      throws DataInterfaceException
-  {
+      throws DataInterfaceException {
     CommPortIdentifier testedPortId = getCommPortIdentifier(portName);
-    return testedPortId != null && testedPortId.isCurrentlyOwned() &&
-        PORT_OWNER.equals(testedPortId.getCurrentOwner());
+    return testedPortId != null && testedPortId.isCurrentlyOwned()
+        && PORT_OWNER.equals(testedPortId.getCurrentOwner());
   }
 
+  /**
+   * Writes data to a connected serial port. Waits for confirmation of receipt
+   * from aXbo (which is processed in a different thread). If confirmation
+   * misses within a configured time on the interface, it will try to rewrite
+   * the data.
+   *
+   * @param portName the name of the serial port.
+   * @param data the data bytes to write
+   * @param retries number of retries, if the writing fails.
+   *
+   * @throws DataInterfaceException if data cannot be written successfully onto
+   * the serial interface or no data recipient confirmation was received from
+   * aXbo
+   */
   @Override
   public void writeData(final String portName, final byte[] data, int retries)
-      throws DataInterfaceException
-  {
-    dataMonitor.setDataReceived(false);
+      throws DataInterfaceException {
+    if (log.isDebugEnabled()) {
+      log.debug("write data: " + ByteUtil.dumpByteArray(data));
+    }
+
+    // try to start serial port always
     start(portName);
-    int retryCount = 0;
-    try
-    {
-      synchronized (dataMonitor)
-      {
-        while (!dataMonitor.isDataReceived() && retryCount < retries)
-        {
+    try {
+      // serialize data writes 
+      synchronized (dataMonitor) {
+        int retryCount = 0;
+        // reset the data monitor
+        dataMonitor.setDataReceived(false);
+        // try to write the data onto the connected interface
+        while (!dataMonitor.isDataReceived() && retryCount < retries) {
           serialPort.setOutputBufferSize(data.length);
           serialPort.getOutputStream().write(data, 0, data.length);
+          // wait for confirmation from aXbo in different thread
           dataMonitor.wait(DeviceContext.getDeviceType().getTimeout());
           retryCount++;
         }
       }
-    }
-    catch (InterruptedException ex)
-    {
+    } catch (InterruptedException ex) {
+      log.error(ex.getMessage(), ex);
+    } catch (IOException ex) {
       log.error(ex.getMessage(), ex);
     }
-    catch (IOException ex)
-    {
-      log.error(ex.getMessage(), ex);
-    }
-    if (!dataMonitor.isDataReceived())
-    {
+
+    // no confirmation has been received
+    if (!dataMonitor.isDataReceived()) {
       throw new DataInterfaceException("no data");
     }
-    dataMonitor.setDataReceived(false);
   }
 
+  /**
+   * Process incoming data from aXbo asynchronous (thread).
+   *
+   * @param e a data event from the serial interface.
+   */
   @Override
-  public void serialEvent(SerialPortEvent e)
-  {
-    // Determine type of event.
-    if (e.getEventType() == SerialPortEvent.DATA_AVAILABLE)
-    {
-      int newDataLength = 0;
-      try
-      {
-        while ((newDataLength = serialPort.getInputStream().available()) > 0)
-        {
+  public void serialEvent(SerialPortEvent e) {
+
+    if (e.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+      // new data is available
+      int newDataLength;
+      try {
+        // read data from serial port into a byte array buffer
+        while ((newDataLength = serialPort.getInputStream().available()) > 0) {
           byte[] data = new byte[newDataLength];
-          serialPort.getInputStream().read(data, 0, newDataLength);
-          DeviceContext.getDeviceType().getProtocolHandler().parse(data);
+          if (serialPort.getInputStream().read(data, 0, newDataLength) > 0) {
+            // send byte array to singleton parser for further processing
+            DeviceContext.getDeviceType().getProtocolHandler().parse(data);
+          }
         }
-      }
-      catch (Exception ex)
-      {
+      } catch (Exception ex) {
         log.error(ex.getMessage(), ex);
       }
     }
   }
 
+  /**
+   * Retrieve available COM ports from operating system.
+   *
+   * @return the List of COM ports.
+   */
   @Override
-  public List<String> getCommPortNames()
-  {
+  public List<String> getCommPortNames() {
+
     final List<String> commPortNames = new ArrayList<String>();
-    if (Axbo.MAC_OS_X)
-    {
+    if (OS.Mac.isCurrent()) {
+      // on mac os there is only this device
       commPortNames.add("/dev/tty.SLAB_USBtoUART");
-    }
-    else
-    {
+    } else {
+      // on windows and linux search available comm ports
       for (Enumeration<?> e = CommPortIdentifier.getPortIdentifiers();
-          e.hasMoreElements();)
-      {
+          e.hasMoreElements();) {
         CommPortIdentifier port = (CommPortIdentifier) e.nextElement();
-        if (port.getPortType() == CommPortIdentifier.PORT_SERIAL)
-        {
+        if (port.getPortType() == CommPortIdentifier.PORT_SERIAL) {
           commPortNames.add(port.getName());
         }
       }
@@ -222,31 +256,28 @@ public enum RXTXSerialDataInterface implements DataInterface
   }
 
   private CommPortIdentifier getCommPortIdentifier(String portName)
-      throws DataInterfaceException
-  {
-    try
-    {
+      throws DataInterfaceException {
+    try {
       return CommPortIdentifier.getPortIdentifier(portName);
-    }
-    catch (NoSuchPortException ex)
-    {
+    } catch (NoSuchPortException ex) {
       throw new DataInterfaceException(ex.getMessage(), ex);
     }
   }
 
+  /**
+   * Notifies that the interface received data and is ready to write new data.
+   */
   @Override
-  public void dataReceived()
-  {
-    try
-    {
-      synchronized (dataMonitor)
-      {
-        dataMonitor.setDataReceived(true);
-        dataMonitor.notifyAll();
+  public void dataReceived() {
+    try {
+      synchronized (dataMonitor) {
+        if (!dataMonitor.isDataReceived()) {
+          dataMonitor.setDataReceived(true);
+          // notify waiting writer thread
+          dataMonitor.notifyAll();
+        }
       }
-    }
-    catch (Throwable t)
-    {
+    } catch (Throwable t) {
       log.error(t.getMessage(), t);
     }
   }

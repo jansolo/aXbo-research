@@ -1,31 +1,27 @@
-/*
- * $Id: AxboFind.java,v 1.1 2010-11-29 15:42:23 illetsch Exp $
- * © 3kraft GmbH & Co KG 2010
- */
 package com.dreikraft.axbo.events;
 
 import com.dreikraft.events.ApplicationEvent;
 import javax.swing.SwingWorker;
 
 /**
- * AxboConnect
+ * AxboFind
  *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.1 $
+ * @author jan.illetschko@3kraft.com
  */
-public final class AxboFind extends ApplicationEvent
-{
-  private final SwingWorker<?,?> followUpTask;
+public final class AxboFind extends ApplicationEvent {
 
-  public AxboFind(final Object source, final SwingWorker<?,?> followUpTask)
-  {
+  /**
+   * SerialVersionUID.
+   */
+  public static final long serialVersionUID = 1L;
+  transient private final SwingWorker<?, ?> followUpTask;
+
+  public AxboFind(final Object source, final SwingWorker<?, ?> followUpTask) {
     super(source);
     this.followUpTask = followUpTask;
   }
 
-  public SwingWorker<?,?> getFollowUpTask()
-  {
+  public SwingWorker<?, ?> getFollowUpTask() {
     return followUpTask;
   }
 }

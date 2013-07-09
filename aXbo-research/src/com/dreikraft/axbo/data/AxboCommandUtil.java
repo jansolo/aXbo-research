@@ -1,72 +1,76 @@
-/*
- * © 2008 3kraft
- * $Id: AxboCommandUtil.java,v 1.18 2009-07-20 11:26:15 illetsch Exp $
- */
 package com.dreikraft.axbo.data;
 
-import com.dreikraft.axbo.model.UploadDialogModel;
 import com.dreikraft.axbo.sound.Sound;
 import com.dreikraft.axbo.sound.SoundPackage;
-import com.dreikraft.axbo.sound.SoundPackageException;
-import com.dreikraft.axbo.sound.SoundPackageUtil;
-import com.dreikraft.axbo.util.BundleUtil;
 import com.dreikraft.axbo.util.ByteUtil;
 import com.dreikraft.axbo.util.StringUtil;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Calendar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * $Id: AxboCommandUtil.java,v 1.18 2009-07-20 11:26:15 illetsch Exp $
- * 
- * @author 3kraft - $Author: illetsch $
- * @version $Revision: 1.18 $
+ * Utility functions to create and execute aXbo serial interface commands. The
+ * aXbo protocol definition can be found here:
+ * https://docs.google.com/document/d/1rQkp8XcMFh0PPenZfhWqaGXDfi2gdxutdeXtu-T6OTo/pub
+ *
+ * @author jan.illetschko@3kraft.com
  */
-public class AxboCommandUtil
-{
+public class AxboCommandUtil {
 
+  /**
+   * The logger.
+   */
   public static final Log log = LogFactory.getLog(AxboCommandUtil.class);
-  private static final int BUF_SIZE = 1024;
-  private static final int FRAME_SIZE = 66;
-  private static final int PAGE_SIZE = 66 * 4;
+  /**
+   * The default buffer size.
+   */
+  public static final int BUF_SIZE = 1024;
+  /**
+   * The size of an aXbo memory frame in bytes.
+   */
+  public static final int FRAME_SIZE = 66;
+  /**
+   * The size of an aXbo memory page in bytes.
+   */
+  public static final int PAGE_SIZE = 66 * 4;
 
-  public static void sleep(int milliSecs)
-  {
-    try
-    {
+  /**
+   * Sleeps the current thread.
+   *
+   * @param milliSecs sleep time in msec.
+   */
+  public static void sleep(int milliSecs) {
+    try {
       Thread.sleep(milliSecs);
-    }
-    catch (InterruptedException ex)
-    {
+    } catch (InterruptedException ex) {
       log.warn(ex.getMessage(), ex);
     }
   }
 
-  public static byte[] getDateCmd()
-  {
+  /**
+   * Creates the command to update the date on the aXbo.
+   *
+   * @return the command bytes.
+   */
+  public static byte[] getDateCmd() {
     Calendar cal = Calendar.getInstance();
     log.info("setting alarm clock date " + cal);
 
-    byte[] cmd =
-    {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0xC8, // set date command
-      (byte) (Math.floor((cal.get(Calendar.YEAR) - 2000) / 10)), // year 1. digit
+      (byte) ((cal.get(Calendar.YEAR) - 2000) / 10), // year 1. digit
       (byte) ((cal.get(Calendar.YEAR) - 2000) % 10), // year 2. digit
-      (byte) (Math.floor((cal.get(Calendar.MONTH) + 1) / 10)), // month 1. digit
+      (byte) ((cal.get(Calendar.MONTH) + 1) / 10), // month 1. digit
       (byte) ((cal.get(Calendar.MONTH) + 1) % 10), // month 2. digit
-      (byte) (Math.floor(cal.get(Calendar.DAY_OF_MONTH) / 10)), // day 1.digit
+      (byte) (cal.get(Calendar.DAY_OF_MONTH) / 10), // day 1.digit
       (byte) (cal.get(Calendar.DAY_OF_MONTH) % 10), // day 2.digit
-      (byte) (Math.floor(cal.get(Calendar.HOUR_OF_DAY) / 10)), // hour 1.digit
+      (byte) (cal.get(Calendar.HOUR_OF_DAY) / 10), // hour 1.digit
       (byte) (cal.get(Calendar.HOUR_OF_DAY) % 10), // hour 2.digit
-      (byte) (Math.floor(cal.get(Calendar.MINUTE) / 10)), // minute 1.digit
+      (byte) (cal.get(Calendar.MINUTE) / 10), // minute 1.digit
       (byte) (cal.get(Calendar.MINUTE) % 10), // minute 2.digit
       (byte) 0x00, (byte) 0x00, // second
       (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0x00 // protocal end + checksum
@@ -75,141 +79,182 @@ public class AxboCommandUtil
     int checksum = ByteUtil.calcChecksum(cmd, 3, 16);
     cmd[cmd.length - 2] = (byte) (checksum >> 8 & 0x000000FF);
     cmd[cmd.length - 1] = (byte) (checksum & 0x000000FF);
-    if (log.isDebugEnabled())
-    {
-      log.debug("data: " + cmd);
+    if (log.isDebugEnabled()) {
+      log.debug("data: " + Arrays.toString(cmd));
     }
 
     return escapeDLE(cmd);
   }
 
+  /**
+   * Executes a date/time update on aXbo
+   *
+   * @param portName the name of the serial interface.
+   * @throws DataInterfaceException the update failed
+   */
   public static void runSetClockDate(final String portName) throws
-      DataInterfaceException
-  {
+      DataInterfaceException {
+    // sync communication first
     syncInterface(portName);
+    // execute command
     getDataInterface().writeData(portName, AxboCommandUtil.getDateCmd(), 1);
   }
 
-  public static byte[] getLogDataCmd()
-  {
+  /**
+   * Creates the command to retrieve all movement data from aXbo.
+   *
+   * @return
+   */
+  public static byte[] getLogDataCmd() {
     log.info("retrieving log data");
 
-    byte[] cmd =
-    {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0xCD, // get log command
-      (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0xCE      // protocal end + checksum
+      (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0xCE // protocal end + checksum
     };
     return cmd;
   }
 
+  /**
+   * Executes the command to retrieve movement data from aXbo
+   *
+   * @param portName the name of the serial interface
+   * @throws DataInterfaceException if movement data retrieval fails.
+   */
   public static void runLogDataCmd(final String portName) throws
-      DataInterfaceException
-  {
+      DataInterfaceException {
+    // sync communication first
     syncInterface(portName);
     getDataInterface().writeData(portName,
         AxboCommandUtil.getLogDataCmd(), 1);
   }
 
-  public static byte[] getClearLogDataCmd()
-  {
+  /**
+   * Creates a command to clear the movement data memory on aXbo.
+   *
+   * @return the command bytes
+   */
+  public static byte[] getClearLogDataCmd() {
     log.info("clear log data");
 
-    byte[] cmd =
-    {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0xCE, // clear log command
-      (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0xCF    // protocal end + checksum
+      (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0xCF // protocal end + checksum
     };
     return cmd;
   }
 
+  /**
+   * Executes the command to clear the movement data on aXbo.
+   *
+   * @param portName the name of the serial interface.
+   * @throws DataInterfaceException the command failed.
+   */
   public static void runClearClockData(final String portName) throws
-      DataInterfaceException
-  {
+      DataInterfaceException {
+    // sync communication first
     syncInterface(portName);
     getDataInterface().writeData(portName,
         AxboCommandUtil.getClearLogDataCmd(), 1);
   }
 
-  public static byte[] getStatusCmd()
-  {
+  /**
+   * Creates a command to retrieve the version info from aXbo.
+   *
+   * @return the command bytes
+   */
+  public static byte[] getStatusCmd() {
     log.info("reading status");
 
-    byte[] cmd =
-    {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0x36, // get status command
-      (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0x37  // protocal end + checksum
+      (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0x37 // protocal end + checksum
     };
     return cmd;
   }
 
-  public static void runReadStatus(final String portName) throws DataInterfaceException
-  {
+  /**
+   * Executes the status command.
+   *
+   * @param portName the serial interface name.
+   * @throws DataInterfaceException status retrieval failed.
+   */
+  public static void runReadStatus(final String portName)
+      throws DataInterfaceException {
+    // sync communication first
     syncInterface(portName);
     getDataInterface().writeData(portName,
         AxboCommandUtil.getStatusCmd(), 1);
   }
 
-  public static byte[] getDummyCmd(boolean toggleBit)
-  {
-    byte[] cmd =
-    {
+  /**
+   * Creates a dummy command required for syncing the communication with aXbo.
+   *
+   * @param toggleBit toogle bit enabled/disabled
+   * @return the command bytes
+   */
+  public static byte[] getDummyCmd(boolean toggleBit) {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, // protocol start
       (toggleBit ? (byte) 0x81 : (byte) 0x01), // toggle bit
       (byte) 0x39, // dummy command
       (byte) 0x10, (byte) 0x03, (byte) 0x00,
-      (byte) (0x39 + (toggleBit ? 0x81 : 0x01))  // protocal end + checksum
+      (byte) (0x39 + (toggleBit ? 0x81 : 0x01)) // protocal end + checksum
     };
     return cmd;
   }
 
-  public static void runDummyCmd(final String portName) throws DataInterfaceException
-  {
-    getDataInterface().writeData(portName, AxboCommandUtil.getDummyCmd(
-        false), 1);
-    getDataInterface().writeData(portName, AxboCommandUtil.getDummyCmd(
-        true), 1);
-  }
-
-  public static byte[] getCheckCmd()
-  {
+  /**
+   * Creates the aXbo check command.
+   *
+   * @return the command bytes.
+   */
+  public static byte[] getCheckCmd() {
     log.info("reading status");
 
-    byte[] cmd =
-    {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0xCB, // get check command
-      (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0xCC  // protocal end + checksum
+      (byte) 0x10, (byte) 0x03, (byte) 0x00, (byte) 0xCC // protocal end + checksum
     };
     return cmd;
   }
 
-  public static void runCheckCmd(final String portName) throws DataInterfaceException
-  {
+  /**
+   * Executes the check command.
+   *
+   * @param portName the serial port name.
+   * @throws DataInterfaceException chack command failed.
+   */
+  public static void runCheckCmd(final String portName)
+      throws DataInterfaceException {
+    // sync communication first
     syncInterface(portName);
     getDataInterface().writeData(portName,
         AxboCommandUtil.getCheckCmd(), 1);
   }
 
-  public static void runMobileStart(final String portName) throws DataInterfaceException
-  {
-    sleep(3000);
-    byte[] startCmd =
-    {
-      (byte) '1'
-    };
-    getDataInterface().writeData(portName, startCmd, 1);
-  }
-
-  public static byte[] getTestCmd(final byte commandId)
-  {
+  /**
+   * Create a aXbo test command.
+   *
+   * @param commandId the command id. Possible values are:
+   * <ul>
+   * <li>Test Mode: 0x00
+   * <li>Start Alarm: 0x01
+   * <li>RTC Kalibration: 0x02
+   * <li>Clear Active: 0x04
+   * <li>Software Reset: 0x08
+   * </ul>
+   * @return the test command bytes
+   */
+  public static byte[] getTestCmd(final byte commandId) {
     log.info("running test command");
     byte checksum = ((byte) 0xCB);
     checksum += commandId;
-    byte[] cmd =
-    {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0xC0, commandId, (byte) 0x0A, // get test command
       (byte) 0x10, (byte) 0x03, (byte) 0x00, checksum // protocal end + checksum
@@ -217,32 +262,48 @@ public class AxboCommandUtil
     return cmd;
   }
 
+  /**
+   * Executes the test command
+   *
+   * @param portName the serial port name.
+   * @param commandId the command id. Possible values are:
+   * <ul>
+   * <li>Test Mode: 0x00
+   * <li>Start Alarm: 0x01
+   * <li>RTC Kalibration: 0x02
+   * <li>Clear Active: 0x04
+   * <li>Software Reset: 0x08
+   * </ul>
+   * @throws DataInterfaceException test command failed.
+   */
   public static void runTestCmd(final String portName, final byte commandId)
-      throws DataInterfaceException
-  {
+      throws DataInterfaceException {
+    // sync communication first
     syncInterface(portName);
     getDataInterface().writeData(portName, AxboCommandUtil.getTestCmd(
         commandId), 1);
   }
 
-  public static byte[] getSetSerialNumberCmd(String serialNumber)
-  {
+  /**
+   * Creates anAxbo command to set the serial number of the aXbo.
+   *
+   * @param serialNumber the serial number (8 digits, [0-9]{8})
+   * @return the command
+   */
+  public static byte[] getSetSerialNumberCmd(String serialNumber) {
     log.info("setting serial number: " + serialNumber);
-    if (serialNumber.length() != 8)
-    {
+    if (serialNumber.length() != 8) {
       throw new IllegalArgumentException("invalid length: " + serialNumber.
           length());
     }
     char[] digits = new char[8];
     int i = 0;
-    for (char digit : serialNumber.toCharArray())
-    {
+    for (char digit : serialNumber.toCharArray()) {
       digits[i] = (char) (digit < 48 ? digit + 48 : digit);
       //digits[i] = (char)(digit - 48);
       i++;
     }
-    byte[] cmd =
-    {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0xC5, // get set serial number command
       (byte) digits[0],
@@ -266,26 +327,30 @@ public class AxboCommandUtil
     return cmd;
   }
 
-  public static void runSetSerialNumberCmd(final String portName, final String serialNumber)
-      throws DataInterfaceException
-  {
+  /**
+   * Executes the setting of the serial number.
+   *
+   * @param portName the serial port name.
+   * @param serialNumber the serial number (8 digits, [0-9]{8})
+   * @throws DataInterfaceException setting of the serial number failed.
+   */
+  public static void runSetSerialNumberCmd(final String portName,
+      final String serialNumber)
+      throws DataInterfaceException {
+    // sync communication first
     syncInterface(portName);
-
-    try
-    {
-      getDataInterface().writeData(portName, AxboCommandUtil.getSetSerialNumberCmd(serialNumber), 1);
-    }
-    catch (Exception ex)
-    {
-      log.error(ex.getMessage(), ex);
-    }
+    getDataInterface().writeData(portName,
+        AxboCommandUtil.getSetSerialNumberCmd(serialNumber), 1);
   }
 
-  public static byte[] getClearSerialNumberCmd()
-  {
+  /**
+   * Creates the command to clear the serial number.
+   *
+   * @return the command.
+   */
+  public static byte[] getClearSerialNumberCmd() {
     log.info("clearing serial number");
-    byte[] cmd =
-    {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0xC5, // get set serial number command
       (byte) 0xFF,
@@ -308,211 +373,57 @@ public class AxboCommandUtil
     return cmd;
   }
 
+  /**
+   * Clears the serial number of aXbo.
+   *
+   * @param portName the serial port name.
+   * @throws DataInterfaceException clearing failed.
+   */
   public static void runClearSerialNumberCmd(final String portName)
-      throws DataInterfaceException
-  {
+      throws DataInterfaceException {
+    // sync communication first
     syncInterface(portName);
-
-    try
-    {
-      getDataInterface().writeData(portName, AxboCommandUtil.getClearSerialNumberCmd(), 1);
-    }
-    catch (Exception ex)
-    {
-      log.error(ex.getMessage(), ex);
-    }
+    // clear serial number
+    getDataInterface().writeData(portName, AxboCommandUtil.getClearSerialNumberCmd(), 1);
   }
 
-  public static byte[] getFlashPageToBuffer()
-  {
-    byte[] cmd =
-    {
-      (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
-      (byte) 0xBB, // get set serial number command
-      (byte) 0x00, (byte) 0x00, // page address
-      (byte) 0x10, // protocol end
-      (byte) 0x03,
-      (byte) 0x00, // checksum
-      (byte) 0x00 // checksum
-    };
-    int checksum = ByteUtil.calcChecksum(cmd, 3, 7);
-    cmd[cmd.length - 2] = ByteUtil.highByte(checksum);
-    cmd[cmd.length - 1] = ByteUtil.lowByte(checksum);
-    return cmd;
-  }
-
-  public static byte[] getBufferRead(int start)
-  {
-    byte[] cmd =
-    {
-      (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
-      (byte) 0x3E, // get set serial number command
-      (byte) 0x00, (byte) start, // byte address
-      (byte) FRAME_SIZE, // number of bytes
-      (byte) 0x10, // protocol end
-      (byte) 0x03,
-      (byte) 0x00, // checksum
-      (byte) 0x00 // checksum
-    };
-    int checksum = ByteUtil.calcChecksum(cmd, 3, 8);
-    cmd[cmd.length - 2] = ByteUtil.highByte(checksum);
-    cmd[cmd.length - 1] = ByteUtil.lowByte(checksum);
-    return cmd;
-  }
-
-  public static void runReadFlash(final String portName, int start) throws DataInterfaceException
-  {
-    syncInterface(portName);
-    getDataInterface().writeData(portName, AxboCommandUtil.getFlashPageToBuffer(), 1);
-    getDataInterface().writeData(portName, AxboCommandUtil.getBufferRead(start), 1);
-  }
-
-  public static void runWriteSoundPackage(final String portName, final SoundPackage soundPackage,
-      final UploadDialogModel uploadModel)
-      throws DataInterfaceException
-  {
-    // synchronize state between axbo and PC
-    syncInterface(portName);
-
-    uploadModel.reset();
-    uploadModel.setOverallMsg(soundPackage.getName());
-
-    clearHeader(portName);
-
-    int startPage = 1;
-    int overallProgress = 0;
-    for (Sound sound : soundPackage.getSounds())
-    {
-      InputStream soundIn = null;
-      ByteArrayOutputStream byteOut = null;
-      ByteArrayOutputStream headerOut = null;
-      try
-      {
-        uploadModel.setOverallValue(overallProgress);
-        // open soundfile
-        soundIn =
-            new BufferedInputStream(SoundPackageUtil.getPackageEntryStream(
-            soundPackage.getPackageFile(),
-            SoundPackageUtil.SOUNDS_PATH_PREFIX + SoundPackageUtil.SL + sound.
-            getAxboFile().getPath()), BUF_SIZE);
-
-        // write sound file to byte array
-        byteOut = new ByteArrayOutputStream();
-        headerOut = new ByteArrayOutputStream();
-        int pos = 0;
-        int b = 0;
-        int dataLen = Integer.MAX_VALUE;
-        boolean isData = false;
-        // skip tail
-        while (((b = soundIn.read()) != -1) && pos < dataLen)
-        {
-          // only write data
-          if (isData)
-          {
-            byteOut.write(b);
-            pos++;
-          }
-          else if (containsDataKeyword(headerOut))
-          {
-            // get sound data length
-            dataLen = b + soundIn.read() * 256 + soundIn.read() * 256 * 256 + soundIn.
-                read() * 256 * 256 * 256;
-            isData = true;
-          }
-          else
-          {
-            // skip header
-            headerOut.write(b);
-          }
-        }
-        byteOut.flush();
-
-        // fill the last page with 0xFF
-        int pageCount = pos / PAGE_SIZE;
-        final int rest = pos - (pageCount * PAGE_SIZE);
-        if (rest > 0)
-        {
-          byte[] fillBytes = new byte[PAGE_SIZE - rest];
-          Arrays.fill(fillBytes, (byte) 0xFF);
-          byteOut.write(fillBytes);
-          pageCount++;
-        }
-
-        // write sound data
-        byte[] soundData = byteOut.toByteArray();
-        sound.setData(soundData);
-        sound.setStartPage(startPage);
-        sound.setPageCount(pageCount);
-        uploadModel.setDetailMsg(sound.getName());
-        uploadModel.setDetailSize(pageCount - 1);
-        uploadModel.setDetailValue(0);
-        writeSoundData(portName, sound, uploadModel);
-
-        // new startFrame
-        startPage += pageCount;
-        overallProgress++;
-      }
-      catch (IOException ex)
-      {
-        throw new DataInterfaceException(ex.getMessage(), ex);
-      }
-      catch (SoundPackageException ex)
-      {
-        throw new DataInterfaceException(ex.getMessage(), ex);
-      }
-      finally
-      {
-        try
-        {
-          soundIn.close();
-        }
-        catch (IOException ex)
-        {
-          log.warn(ex.getMessage(), ex);
-        }
-      }
-    }
-
-    // write the sounds header table into the first axbo memory page
-    writeHeader(portName, soundPackage, uploadModel);
-  }
-
-  private static boolean containsDataKeyword(ByteArrayOutputStream headerOut)
-      throws UnsupportedEncodingException, IOException
-  {
-    headerOut.flush();
-    return headerOut.toString("US-ASCII").indexOf("data") > -1;
-  }
-
-  private static void syncInterface(final String portName)
-  {
-    try
-    {
+  /**
+   * Synchronizes the data interface. The data interface to aXbo must be in
+   * sync, before successful issuing of commands is possible.
+   *
+   * @param portName the name of the serial interface.
+   */
+  public static void syncInterface(final String portName) {
+    // send dummy command with toggle bit off
+    try {
       getDataInterface().writeData(portName, AxboCommandUtil.getDummyCmd(false),
           1);
+    } catch (DataInterfaceException ex) {
+      if (log.isDebugEnabled())
+        log.debug(ex.getMessage(), ex);
     }
-    catch (DataInterfaceException ex)
-    {
-    }
-    try
-    {
+    // send dummy command with toogle bit on
+    try {
       getDataInterface().writeData(portName, AxboCommandUtil.getDummyCmd(true),
           1);
-    }
-    catch (DataInterfaceException ex)
-    {
+    } catch (DataInterfaceException ex) {
+      if (log.isDebugEnabled())
+        log.debug(ex.getMessage(), ex);
     }
   }
 
-  private static void clearHeader(final String portName)
-      throws DataInterfaceException
-  {
+  /**
+   * Clears the data header memory segment in aXbo flash memory.
+   *
+   * @param portName the name of the serial interface.
+   * @throws DataInterfaceException the clearing failed.
+   */
+  public static void clearHeader(final String portName)
+      throws DataInterfaceException {
     int bufferPos = 0;
     boolean toggleBit = false;
-    for (int i = 0; i < 16; i++)
-    {
-      final byte[] protocol =
-      {
+    for (int i = 0; i < 16; i++) {
+      final byte[] protocol = {
         (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) (toggleBit ? 0x81 : 0x01), // protocol start
         (byte) 0xBC, // write buffer
         (byte) 0x00, // buffer pos high byte
@@ -549,19 +460,24 @@ public class AxboCommandUtil
     writeBufferToPage(portName, 0);
   }
 
-  private static void writeHeader(final String portName, final SoundPackage soundPackage,
-      final UploadDialogModel uploadModel)
-      throws DataInterfaceException
-  {
-    uploadModel.setDetailMsg(BundleUtil.getMessage(
-        "uploadDialog.msg.writeHeader"));
+  /**
+   * Writes a new sound data header to aXbo flash memory. It contains the
+   * pointers to the memory area of each sound data. The header is in the first
+   * page of the flash memory.
+   *
+   * @param portName the name of the serial interface
+   * @param soundPackage the currently uploaded sound package
+   * @throws DataInterfaceException if writing of the header fails
+   */
+  public static void writeHeader(final String portName,
+      final SoundPackage soundPackage)
+      throws DataInterfaceException {
+
     int bufferPos = 16;
     boolean toggleBit = false;
-    for (final Sound sound : soundPackage.getSounds())
-    {
+    for (final Sound sound : soundPackage.getSounds()) {
       int endPage = sound.getStartPage() + sound.getPageCount() - 1;
-      final byte[] protocol =
-      {
+      final byte[] protocol = {
         (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) (toggleBit ? 0x81 : 0x01), // protocol start
         (byte) 0xBC, // write buffer
         (byte) 0x00, // buffer pos high byte
@@ -583,8 +499,7 @@ public class AxboCommandUtil
 
       // write name
       char[] nameChars = StringUtil.rpad(sound.getName(), ' ', 10).toCharArray();
-      for (int i = 0; i < nameChars.length; i++)
-      {
+      for (int i = 0; i < nameChars.length; i++) {
         protocol[i + 14] = (byte) nameChars[i];
       }
       // checksum
@@ -602,42 +517,23 @@ public class AxboCommandUtil
 
     // write buffer to first page
     writeBufferToPage(portName, 0);
-    uploadModel.setOverallValue(11);
   }
 
-  private static void writeSoundData(final String portName, final Sound sound,
-      final UploadDialogModel uploadModel)
-      throws DataInterfaceException
-  {
-    // calculate frame count (use half sized frames, bacause of extra info bytes)
-    boolean bufferToggle = true;
-    for (int page = 0; page < sound.getPageCount(); page++)
-    {
-      uploadModel.setDetailValue(page);
-      if (log.isDebugEnabled())
-      {
-        log.debug("writing sound: " + sound.getName() + ", page: " + (sound.
-            getStartPage() + page));
-      }
-      // write complete page into buffer
-      writePage(portName, sound.getData(), page, bufferToggle);
-      // write buffer to flash page
-      writeBufferToPage(portName, sound.getStartPage() + page);
-
-      // switch buffer
-      bufferToggle = !bufferToggle;
-    }
-  }
-
-  private static void writePage(final String portName, final byte[] soundData, final int page,
-      final boolean bufferToggle) throws DataInterfaceException
-  {
+  /**
+   * Writes sound data to buffer memory.
+   *
+   * @param portName the serial port name.
+   * @param soundData the sound date bytes.
+   * @param page the memory page number.
+   * @throws DataInterfaceException writing of data failed.
+   */
+  public static void writePage(final String portName, final byte[] soundData,
+      final int page) throws DataInterfaceException {
     //final byte highByte = bufferToggle ? (byte)0x00 : (byte)0x80;
     final byte highByte = (byte) 0x00;
     boolean protocolToggle = true;
     // write frames to page buffer
-    for (int frame = 0; frame < PAGE_SIZE / FRAME_SIZE; frame++)
-    {
+    for (int frame = 0; frame < PAGE_SIZE / FRAME_SIZE; frame++) {
       final int framePos = frame * FRAME_SIZE;
       // protocol len = prefix len + frame len + suffix len
       byte[] protocol = new byte[8 + FRAME_SIZE + 4];
@@ -668,14 +564,19 @@ public class AxboCommandUtil
     }
   }
 
-  private static void writeBufferToPage(String portName, int page)
-      throws DataInterfaceException
-  {
+  /**
+   * Writing the buffer memory to flash memory page.
+   *
+   * @param portName the serial port name.
+   * @param page the number of the memory page.
+   * @throws DataInterfaceException writing failed
+   */
+  public static void writeBufferToPage(String portName, int page)
+      throws DataInterfaceException {
     byte pageHighByte = ByteUtil.highByte(page);
     byte pageLowByte = ByteUtil.lowByte(page);
 
-    byte[] cmd =
-    {
+    byte[] cmd = {
       (byte) 0x00, (byte) 0x10, (byte) 0x02, (byte) 0x01, // protocol start
       (byte) 0xBD, // get set serial number command
       pageHighByte, pageLowByte, // page address
@@ -694,16 +595,20 @@ public class AxboCommandUtil
     getDataInterface().writeData(portName, getDummyCmd(true), 3);
   }
 
-  public static byte[] escapeDLE(byte[] data)
-  {
+  /**
+   * Escapes data link escape characters in the byte array.
+   *
+   * @param data the data array
+   * @return the data array with escaped DLEs
+   */
+  public static byte[] escapeDLE(byte[] data) {
     ByteArrayInputStream in = new ByteArrayInputStream(data);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
+    @SuppressWarnings("UnusedAssignment")
     int b = 0;
     int pos = 0;
-    while ((b = in.read()) != -1)
-    {
-      if (b == 0x10 && pos > 4 && pos < data.length - 4)
-      {
+    while ((b = in.read()) != -1) {
+      if (b == 0x10 && pos > 4 && pos < data.length - 4) {
         out.write(b);
       }
       out.write(b);
@@ -712,8 +617,12 @@ public class AxboCommandUtil
     return out.toByteArray();
   }
 
-  private static DataInterface getDataInterface()
-  {
+  /**
+   * Retrieve the data interface.
+   *
+   * @return the data interface of the current device type.
+   */
+  private static DataInterface getDataInterface() {
     return DeviceContext.getDeviceType().getDataInterface();
   }
 }

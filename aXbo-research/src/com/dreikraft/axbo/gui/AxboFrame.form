@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.5" maxVersion="1.5" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.8" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Container class="javax.swing.JPopupMenu" name="sleepDataPopupMenu">
 
@@ -11,7 +11,7 @@
         <MenuItem class="javax.swing.JMenuItem" name="viewPopupMenuItem">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/images/chart_bar.png"/>
+              <Image iconType="3" name="/resources/images/chart-bar-16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="resources/default.properties" key="menu.file.view" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -25,7 +25,7 @@
         <MenuItem class="javax.swing.JMenuItem" name="deletePopupMenuItem">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/images/bin.png"/>
+              <Image iconType="3" name="/resources/images/bin-16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="resources/default.properties" key="menu.file.delete" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -34,40 +34,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deletePopupMenuItemActionPerformed"/>
-          </Events>
-        </MenuItem>
-      </SubComponents>
-    </Container>
-    <Container class="javax.swing.JPopupMenu" name="soundsPopupMenu">
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-        <Property name="useNullLayout" type="boolean" value="true"/>
-      </Layout>
-      <SubComponents>
-        <MenuItem class="javax.swing.JMenuItem" name="openSoundPkgPopupMenuItem">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/images/folder_go.png"/>
-            </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="resources/default.properties" key="menu.file.open" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openSoundPkgPopupMenuItemActionPerformed"/>
-          </Events>
-        </MenuItem>
-        <MenuItem class="javax.swing.JMenuItem" name="deleteSoungPkgPopupMenuItem">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/images/bin.png"/>
-            </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="resources/default.properties" key="menu.file.delete" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteSoungPkgPopupMenuItemActionPerformed"/>
           </Events>
         </MenuItem>
       </SubComponents>
@@ -84,7 +50,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="viewMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/chart_bar.png"/>
+                  <Image iconType="3" name="/resources/images/chart-bar-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.file.view" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -98,7 +64,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="deleteMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/bin.png"/>
+                  <Image iconType="3" name="/resources/images/bin-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.file.delete" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -108,47 +74,28 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="deleteSoungPkgMenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="uploadSoundPackageMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/bin.png"/>
-                </Property>
-                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="resources/default.properties" key="menu.file.delete" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteSoungPkgMenuItemActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="deleteSoungPkgMenuItem.setVisible(false);"/>
-              </AuxValues>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="miImportSound">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/sound_add.png"/>
+                  <Image iconType="3" name="/resources/images/music-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="btnSoundPkgImport.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miImportSoundActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadSoundPackageMenuItemActionPerformed"/>
               </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="miImportSound.setVisible(false);"/>
-              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator1">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="if (Axbo.MAC_OS_X)&#xa;  jSeparator1.setVisible(false);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="if (OS.Mac.isCurrent())&#xa;  jSeparator1.setVisible(false);"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="prefsMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/detailsViewIcon.png"/>
+                  <Image iconType="3" name="/resources/images/wrench-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.file.prefs" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -158,18 +105,18 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="prefsMenuItemActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (Axbo.MAC_OS_X)&#xa;  prefsMenuItem.setVisible(false);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (OS.Mac.isCurrent())&#xa;  prefsMenuItem.setVisible(false);"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="if (Axbo.MAC_OS_X)&#xa;  jSeparator3.setVisible(false);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="if (OS.Mac.isCurrent())&#xa;  jSeparator3.setVisible(false);"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/cross.png"/>
+                  <Image iconType="3" name="/resources/images/button-power-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.file.exit" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -179,7 +126,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exitMenuItemActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (Axbo.MAC_OS_X)&#xa;  exitMenuItem.setVisible(false);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if (OS.Mac.isCurrent())&#xa;  exitMenuItem.setVisible(false);"/>
               </AuxValues>
             </MenuItem>
           </SubComponents>
@@ -194,7 +141,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="readStoredDataMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/redo.png"/>
+                  <Image iconType="3" name="/resources/images/inbox-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.readStoredData" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -207,7 +154,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="clearDataMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/bin.png"/>
+                  <Image iconType="3" name="/resources/images/bin-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.clearData" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -220,7 +167,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="setClockDateMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/time.png"/>
+                  <Image iconType="3" name="/resources/images/clock-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.setDate" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -233,7 +180,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="readStatusMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/information.png"/>
+                  <Image iconType="3" name="/resources/images/information-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.readStatus" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -246,7 +193,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="resetClockMenuItem">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/resources/images/undo.png"/>
+                  <Image iconType="3" name="/resources/images/button-synchronize-16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="resources/default.properties" key="menu.device.resetClock" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -288,7 +235,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-55,0,0,4,110"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-55,0,0,4,115"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout">
@@ -326,7 +273,7 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                  <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                  <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="21" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                 </Constraint>
               </Constraints>
             </Component>
@@ -340,12 +287,12 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="260" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="239" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="46" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="47" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -359,38 +306,43 @@
             </Constraint>
           </Constraints>
 
-          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
           <SubComponents>
             <Container class="javax.swing.JPanel" name="dataToolbarPanel">
               <Constraints>
-                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-                  <CardConstraints cardName="data"/>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                  <BorderConstraints direction="West"/>
                 </Constraint>
               </Constraints>
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
               <SubComponents>
                 <Component class="javax.swing.JButton" name="loadDataButton">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/resources/images/redo.png"/>
+                      <Image iconType="3" name="/resources/images/inbox-32.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="resources/default.properties" key="menu.device.readStoredData" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="resources/default.properties" key="button.loadData" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="resources/default.properties" key="button.loadData.tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="borderPainted" type="boolean" value="false"/>
+                    <Property name="contentAreaFilled" type="boolean" value="false"/>
                     <Property name="focusable" type="boolean" value="false"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="iconTextGap" type="int" value="2"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 0, 0, 0]"/>
+                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
+                    </Property>
+                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
                     </Property>
                     <Property name="multiClickThreshhold" type="long" value="1000"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
+                    </Property>
                     <Property name="requestFocusEnabled" type="boolean" value="false"/>
-                    <Property name="verticalAlignment" type="int" value="3"/>
+                    <Property name="verticalAlignment" type="int" value="1"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
                   <Events>
@@ -401,28 +353,38 @@
                   </AuxValues>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                      <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="3" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                      <GridBagConstraints gridX="0" gridY="0" gridWidth="1" gridHeight="1" fill="3" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="5" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                     </Constraint>
                   </Constraints>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnCompare">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/resources/images/shape_align_left.png"/>
+                      <Image iconType="3" name="/resources/images/ruler-32.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="resources/default.properties" key="compareMenuItem.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="resources/default.properties" key="button.compare" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="resources/default.properties" key="button.compare.tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="borderPainted" type="boolean" value="false"/>
+                    <Property name="contentAreaFilled" type="boolean" value="false"/>
                     <Property name="focusable" type="boolean" value="false"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="iconTextGap" type="int" value="2"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 0, 0, 0]"/>
+                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
+                    </Property>
+                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
                     </Property>
                     <Property name="multiClickThreshhold" type="long" value="1000"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
+                    </Property>
                     <Property name="requestFocusEnabled" type="boolean" value="false"/>
-                    <Property name="verticalAlignment" type="int" value="3"/>
+                    <Property name="verticalAlignment" type="int" value="1"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
                   <Events>
@@ -430,28 +392,38 @@
                   </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                      <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="3" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                      <GridBagConstraints gridX="2" gridY="0" gridWidth="1" gridHeight="1" fill="3" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                     </Constraint>
                   </Constraints>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnPrint">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/resources/images/printer.png"/>
+                      <Image iconType="3" name="/resources/images/printer-32.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="resources/default.properties" key="menu.file.print" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="resources/default.properties" key="button.print" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="resources/default.properties" key="button.print.tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="borderPainted" type="boolean" value="false"/>
+                    <Property name="contentAreaFilled" type="boolean" value="false"/>
                     <Property name="focusable" type="boolean" value="false"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="iconTextGap" type="int" value="2"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 0, 0, 0]"/>
+                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
+                    </Property>
+                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
                     </Property>
                     <Property name="multiClickThreshhold" type="long" value="1000"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
+                    </Property>
                     <Property name="requestFocusEnabled" type="boolean" value="false"/>
-                    <Property name="verticalAlignment" type="int" value="3"/>
+                    <Property name="verticalAlignment" type="int" value="1"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
                   <Events>
@@ -459,28 +431,38 @@
                   </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                      <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="3" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                      <GridBagConstraints gridX="4" gridY="0" gridWidth="1" gridHeight="1" fill="3" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                     </Constraint>
                   </Constraints>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnCloseAll">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/resources/images/application_form_delete.png"/>
+                      <Image iconType="3" name="/resources/images/button-cross-32.png"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="resources/default.properties" key="menu.file.closeAll" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                      <ResourceString bundle="resources/default.properties" key="button.closeAll" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="resources/default.properties" key="button.closeAll.tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="borderPainted" type="boolean" value="false"/>
+                    <Property name="contentAreaFilled" type="boolean" value="false"/>
                     <Property name="focusable" type="boolean" value="false"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
                     <Property name="iconTextGap" type="int" value="2"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 0, 0, 0]"/>
+                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
+                    </Property>
+                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
                     </Property>
                     <Property name="multiClickThreshhold" type="long" value="1000"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[120, 80]"/>
+                    </Property>
                     <Property name="requestFocusEnabled" type="boolean" value="false"/>
-                    <Property name="verticalAlignment" type="int" value="3"/>
+                    <Property name="verticalAlignment" type="int" value="1"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
                   <Events>
@@ -488,51 +470,363 @@
                   </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                      <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="3" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+                      <GridBagConstraints gridX="6" gridY="0" gridWidth="1" gridHeight="1" fill="3" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
                     </Constraint>
                   </Constraints>
                 </Component>
               </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="soundToolbarPanel">
-              <Constraints>
-                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-                  <CardConstraints cardName="sound"/>
-                </Constraint>
-              </Constraints>
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
-              <SubComponents>
-                <Component class="javax.swing.JButton" name="btnSoundPkgImport">
-                  <Properties>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/resources/images/sound_add.png"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="resources/default.properties" key="btnSoundPkgImport.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                    </Property>
-                    <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="resources/default.properties" key="btnSoundPkgImport.tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                    </Property>
-                    <Property name="borderPainted" type="boolean" value="false"/>
-                    <Property name="focusable" type="boolean" value="false"/>
-                    <Property name="horizontalTextPosition" type="int" value="0"/>
-                    <Property name="iconTextGap" type="int" value="2"/>
-                    <Property name="multiClickThreshhold" type="long" value="1000"/>
-                    <Property name="requestFocusEnabled" type="boolean" value="false"/>
-                    <Property name="verticalAlignment" type="int" value="3"/>
-                    <Property name="verticalTextPosition" type="int" value="3"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSoundPkgImportActionPerformed"/>
-                  </Events>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                      <GridBagConstraints gridX="-1" gridY="-1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="15" weightX="0.0" weightY="0.0"/>
-                    </Constraint>
-                  </Constraints>
-                </Component>
-              </SubComponents>
+              <LayoutCode>
+                <CodeStatement>
+                  <CodeExpression id="1_dataToolbarPanelLayout">
+                    <CodeVariable name="dataToolbarPanelLayout" type="4096" declaredType="java.awt.GridBagLayout"/>
+                    <ExpressionOrigin>
+                      <ExpressionProvider type="CodeConstructor">
+                        <CodeConstructor class="java.awt.GridBagLayout" parameterTypes=""/>
+                      </ExpressionProvider>
+                    </ExpressionOrigin>
+                  </CodeExpression>
+                  <StatementProvider type="CodeExpression">
+                    <CodeExpression id="1_dataToolbarPanelLayout"/>
+                  </StatementProvider>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="1_dataToolbarPanelLayout"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="columnWidths" class="java.awt.GridBagLayout"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="2">
+                      <ExpressionOrigin>
+                        <Value type="[I" editor="org.netbeans.modules.form.layoutsupport.delegates.GridBagLayoutSupport$IntArrayPropertyEditor">
+                          <PropertyValue value="[0, 5, 0, 5, 0, 5, 0]"/>
+                        </Value>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="1_dataToolbarPanelLayout"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="rowHeights" class="java.awt.GridBagLayout"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="3">
+                      <ExpressionOrigin>
+                        <Value type="[I" editor="org.netbeans.modules.form.layoutsupport.delegates.GridBagLayoutSupport$IntArrayPropertyEditor">
+                          <PropertyValue value="[0]"/>
+                        </Value>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="4_dataToolbarPanel">
+                    <CodeVariable name="dataToolbarPanel" type="8194" declaredType="javax.swing.JPanel"/>
+                    <ExpressionOrigin>
+                      <ExpressionProvider type="ComponentRef">
+                        <ComponentRef name="dataToolbarPanel"/>
+                      </ExpressionProvider>
+                    </ExpressionOrigin>
+                  </CodeExpression>
+                  <StatementProvider type="CodeMethod">
+                    <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="1_dataToolbarPanelLayout"/>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="5_gridBagConstraints">
+                    <CodeVariable name="gridBagConstraints" type="20480" declaredType="java.awt.GridBagConstraints"/>
+                    <ExpressionOrigin>
+                      <ExpressionProvider type="CodeConstructor">
+                        <CodeConstructor class="java.awt.GridBagConstraints" parameterTypes=""/>
+                      </ExpressionProvider>
+                    </ExpressionOrigin>
+                  </CodeExpression>
+                  <StatementProvider type="CodeExpression">
+                    <CodeExpression id="5_gridBagConstraints"/>
+                  </StatementProvider>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="5_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="gridx" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="6">
+                      <ExpressionOrigin>
+                        <Value type="int" value="0"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="5_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="gridy" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="7">
+                      <ExpressionOrigin>
+                        <Value type="int" value="0"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="5_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="fill" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="8">
+                      <ExpressionOrigin>
+                        <Value type="int" value="3"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="5_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="insets" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="9">
+                      <ExpressionOrigin>
+                        <Value type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[0, 5, 0, 0]"/>
+                        </Value>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="4_dataToolbarPanel"/>
+                  <StatementProvider type="CodeMethod">
+                    <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component, java.lang.Object"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="10_loadDataButton">
+                      <CodeVariable name="loadDataButton" type="8194" declaredType="javax.swing.JButton"/>
+                      <ExpressionOrigin>
+                        <ExpressionProvider type="ComponentRef">
+                          <ComponentRef name="loadDataButton"/>
+                        </ExpressionProvider>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                    <CodeExpression id="5_gridBagConstraints"/>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="11_gridBagConstraints">
+                    <CodeVariable name="gridBagConstraints"/>
+                    <ExpressionOrigin>
+                      <ExpressionProvider type="CodeConstructor">
+                        <CodeConstructor class="java.awt.GridBagConstraints" parameterTypes=""/>
+                      </ExpressionProvider>
+                    </ExpressionOrigin>
+                  </CodeExpression>
+                  <StatementProvider type="CodeExpression">
+                    <CodeExpression id="11_gridBagConstraints"/>
+                  </StatementProvider>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="11_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="gridx" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="12">
+                      <ExpressionOrigin>
+                        <Value type="int" value="2"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="11_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="gridy" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="13">
+                      <ExpressionOrigin>
+                        <Value type="int" value="0"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="11_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="fill" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="14">
+                      <ExpressionOrigin>
+                        <Value type="int" value="3"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="4_dataToolbarPanel"/>
+                  <StatementProvider type="CodeMethod">
+                    <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component, java.lang.Object"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="15_btnCompare">
+                      <CodeVariable name="btnCompare" type="8194" declaredType="javax.swing.JButton"/>
+                      <ExpressionOrigin>
+                        <ExpressionProvider type="ComponentRef">
+                          <ComponentRef name="btnCompare"/>
+                        </ExpressionProvider>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                    <CodeExpression id="11_gridBagConstraints"/>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="16_gridBagConstraints">
+                    <CodeVariable name="gridBagConstraints"/>
+                    <ExpressionOrigin>
+                      <ExpressionProvider type="CodeConstructor">
+                        <CodeConstructor class="java.awt.GridBagConstraints" parameterTypes=""/>
+                      </ExpressionProvider>
+                    </ExpressionOrigin>
+                  </CodeExpression>
+                  <StatementProvider type="CodeExpression">
+                    <CodeExpression id="16_gridBagConstraints"/>
+                  </StatementProvider>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="16_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="gridx" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="17">
+                      <ExpressionOrigin>
+                        <Value type="int" value="4"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="16_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="gridy" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="18">
+                      <ExpressionOrigin>
+                        <Value type="int" value="0"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="16_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="fill" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="19">
+                      <ExpressionOrigin>
+                        <Value type="int" value="3"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="4_dataToolbarPanel"/>
+                  <StatementProvider type="CodeMethod">
+                    <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component, java.lang.Object"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="20_btnPrint">
+                      <CodeVariable name="btnPrint" type="8194" declaredType="javax.swing.JButton"/>
+                      <ExpressionOrigin>
+                        <ExpressionProvider type="ComponentRef">
+                          <ComponentRef name="btnPrint"/>
+                        </ExpressionProvider>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                    <CodeExpression id="16_gridBagConstraints"/>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="21_gridBagConstraints">
+                    <CodeVariable name="gridBagConstraints"/>
+                    <ExpressionOrigin>
+                      <ExpressionProvider type="CodeConstructor">
+                        <CodeConstructor class="java.awt.GridBagConstraints" parameterTypes=""/>
+                      </ExpressionProvider>
+                    </ExpressionOrigin>
+                  </CodeExpression>
+                  <StatementProvider type="CodeExpression">
+                    <CodeExpression id="21_gridBagConstraints"/>
+                  </StatementProvider>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="21_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="gridx" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="22">
+                      <ExpressionOrigin>
+                        <Value type="int" value="6"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="21_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="gridy" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="23">
+                      <ExpressionOrigin>
+                        <Value type="int" value="0"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="21_gridBagConstraints"/>
+                  <StatementProvider type="CodeField">
+                    <CodeField name="fill" class="java.awt.GridBagConstraints"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="24">
+                      <ExpressionOrigin>
+                        <Value type="int" value="3"/>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                  </Parameters>
+                </CodeStatement>
+                <CodeStatement>
+                  <CodeExpression id="4_dataToolbarPanel"/>
+                  <StatementProvider type="CodeMethod">
+                    <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component, java.lang.Object"/>
+                  </StatementProvider>
+                  <Parameters>
+                    <CodeExpression id="25_btnCloseAll">
+                      <CodeVariable name="btnCloseAll" type="8194" declaredType="javax.swing.JButton"/>
+                      <ExpressionOrigin>
+                        <ExpressionProvider type="ComponentRef">
+                          <ComponentRef name="btnCloseAll"/>
+                        </ExpressionProvider>
+                      </ExpressionOrigin>
+                    </CodeExpression>
+                    <CodeExpression id="21_gridBagConstraints"/>
+                  </Parameters>
+                </CodeStatement>
+              </LayoutCode>
             </Container>
           </SubComponents>
         </Container>
@@ -552,12 +846,12 @@
         </Constraint>
       </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="dataPanel">
           <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-              <CardConstraints cardName="data"/>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+              <BorderConstraints direction="Center"/>
             </Constraint>
           </Constraints>
 
@@ -567,6 +861,9 @@
           <SubComponents>
             <Container class="javax.swing.JPanel" name="dataListPanel">
               <Properties>
+                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[350, 84]"/>
+                </Property>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[350, 10]"/>
                 </Property>
@@ -594,10 +891,10 @@
                   <SubComponents>
                     <Component class="javax.swing.JTable" name="metaDataTable">
                       <Properties>
+                        <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                           <Connection code="new MetaDataTableModel()" type="code"/>
                         </Property>
-                        <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                         <Property name="autoResizeMode" type="int" value="3"/>
                         <Property name="componentPopupMenu" type="javax.swing.JPopupMenu" editor="org.netbeans.modules.form.ComponentChooserEditor">
                           <ComponentRef name="sleepDataPopupMenu"/>
@@ -608,9 +905,6 @@
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="metaDataTableMouseClicked"/>
                       </Events>
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -643,6 +937,7 @@
                             <EmptyBorder bottom="1" left="3" right="1" top="1"/>
                           </Border>
                         </Property>
+                        <Property name="horizontalTextPosition" type="int" value="4"/>
                       </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -676,6 +971,7 @@
                             <EmptyBorder bottom="1" left="3" right="1" top="1"/>
                           </Border>
                         </Property>
+                        <Property name="horizontalTextPosition" type="int" value="4"/>
                       </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -684,9 +980,14 @@
                       </Constraints>
                     </Component>
                     <Component class="org.jdesktop.swingx.JXDatePicker" name="searchDateFromTextField">
+                      <Properties>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 28]"/>
+                        </Property>
+                      </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                          <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="17" weightX="0.0" weightY="0.0"/>
+                          <GridBagConstraints gridX="1" gridY="1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="17" weightX="1.0" weightY="0.0"/>
                         </Constraint>
                       </Constraints>
                     </Component>
@@ -711,16 +1012,24 @@
                       </Constraints>
                     </Component>
                     <Component class="org.jdesktop.swingx.JXDatePicker" name="searchDateToTextField">
+                      <Properties>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[300, 28]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 28]"/>
+                        </Property>
+                      </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-                          <GridBagConstraints gridX="3" gridY="1" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="17" weightX="0.0" weightY="0.0"/>
+                          <GridBagConstraints gridX="3" gridY="1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="17" weightX="1.0" weightY="0.0"/>
                         </Constraint>
                       </Constraints>
                     </Component>
                     <Component class="javax.swing.JButton" name="searchButton">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/resources/images/glass.png"/>
+                          <Image iconType="3" name="/resources/images/search-16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="resources/default.properties" key="button.search.tooltip" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -767,9 +1076,6 @@
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
                     <Container class="com.dreikraft.swing.BackgroundImagePanel" name="dataViewsPanel">
-                      <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="java.awt.image.BufferedImage bgImg = null;&#xa;try &#xa;{&#xa;  bgImg = javax.imageio.ImageIO.read(getClass().getResource(&quot;/resources/images/background_dark&quot;&#xa; + &quot;.png&quot;));&#xa;}&#xa;catch (java.io.IOException ex) &#xa;{&#xa;  log.error(&quot;can not load background image&quot;, ex);&#xa;}&#xa;dataViewsPanel.setBackgroundImage(bgImg);"/>
-                      </AuxValues>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
                     </Container>
@@ -802,13 +1108,107 @@
                       </Constraints>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="verticalGap" type="int" value="0"/>
                       </Layout>
                       <SubComponents>
+                        <Component class="javax.swing.JLabel" name="lblCountOpen">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.AXIS_COLOR" type="code"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                              <ResourceString bundle="resources/default.properties" key="lblCountOpen" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblCountOpenVal">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.AXIS_COLOR" type="code"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="--"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblSpacer4">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.AXIS_COLOR" type="code"/>
+                            </Property>
+                            <Property name="horizontalAlignment" type="int" value="0"/>
+                            <Property name="text" type="java.lang.String" value="|"/>
+                            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblCountSelected">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.AXIS_COLOR" type="code"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                              <ResourceString bundle="resources/default.properties" key="lblCountSelected" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblCountSelecetedVal">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.AXIS_COLOR" type="code"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="--"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblSpacer">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.AXIS_COLOR" type="code"/>
+                            </Property>
+                            <Property name="horizontalAlignment" type="int" value="0"/>
+                            <Property name="text" type="java.lang.String" value="|"/>
+                            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
                         <Component class="javax.swing.JLabel" name="lblSleepDuration">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_DURATION_PAINT" type="code"/>
                             </Property>
                             <Property name="horizontalAlignment" type="int" value="2"/>
                             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -819,7 +1219,10 @@
                         <Component class="javax.swing.JLabel" name="lblSleepDurationMin">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_DURATION_PAINT" type="code"/>
                             </Property>
                             <Property name="horizontalAlignment" type="int" value="2"/>
                             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -830,15 +1233,42 @@
                         <Component class="javax.swing.JLabel" name="lblSleepDurationMinValue">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_DURATION_PAINT" type="code"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="--:--:--"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblSpacer1">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_DURATION_PAINT" type="code"/>
+                            </Property>
+                            <Property name="horizontalAlignment" type="int" value="0"/>
+                            <Property name="text" type="java.lang.String" value="-"/>
+                            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="lblSleepDurationMax">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_DURATION_PAINT" type="code"/>
                             </Property>
                             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                               <ResourceString bundle="resources/default.properties" key="lblSleepDurationMax" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -848,15 +1278,42 @@
                         <Component class="javax.swing.JLabel" name="lblSleepDurationMaxValue">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_DURATION_PAINT" type="code"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="--:--:--"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblSpacer3">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_DURATION_PAINT" type="code"/>
+                            </Property>
+                            <Property name="horizontalAlignment" type="int" value="0"/>
+                            <Property name="text" type="java.lang.String" value="/"/>
+                            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="lblSleepDurationAvg">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_DURATION_PAINT" type="code"/>
                             </Property>
                             <Property name="horizontalAlignment" type="int" value="2"/>
                             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -867,15 +1324,42 @@
                         <Component class="javax.swing.JLabel" name="lblSleepDurationAvgValue">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_DURATION_PAINT" type="code"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="--:--:--"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblSpacer2">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.AXIS_COLOR" type="code"/>
+                            </Property>
+                            <Property name="horizontalAlignment" type="int" value="0"/>
+                            <Property name="text" type="java.lang.String" value="|"/>
+                            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[14, 14]"/>
+                            </Property>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="lblTimeSavings">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.WAKE_PAINT" type="code"/>
                             </Property>
                             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                               <ResourceString bundle="resources/default.properties" key="lblTimeSaving" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -885,27 +1369,12 @@
                         <Component class="javax.swing.JLabel" name="lblTimeSavingsValue">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.WAKE_PAINT" type="code"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="--:--"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="lblCountSelected">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                              <ResourceString bundle="resources/default.properties" key="lblCountSelected" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="lblCountSelecetedVal">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="--"/>
                           </Properties>
                         </Component>
                       </SubComponents>
@@ -931,57 +1400,13 @@
                         <Property name="verticalGap" type="int" value="0"/>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="lblLegendMovementColor">
-                          <Properties>
-                            <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                              <Connection code="DataFrame.BAR_COLOR" type="code"/>
-                            </Property>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="  "/>
-                            <Property name="opaque" type="boolean" value="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="lblLegendMovement">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                              <ResourceString bundle="resources/default.properties" key="lblLegendMovements" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="lblLegendKeyColor">
-                          <Properties>
-                            <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                              <Connection code="DataFrame.KEY_PAINT" type="code"/>
-                            </Property>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="  "/>
-                            <Property name="opaque" type="boolean" value="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="lblLegendKey">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                              <ResourceString bundle="resources/default.properties" key="lblLegendKeys" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                            </Property>
-                          </Properties>
-                        </Component>
                         <Component class="javax.swing.JLabel" name="lblLegendSleepStartColor">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                               <Connection code="DataFrame.SLEEP_MARKER_PAINT" type="code"/>
                             </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="  "/>
                             <Property name="opaque" type="boolean" value="true"/>
@@ -990,7 +1415,10 @@
                         <Component class="javax.swing.JLabel" name="lblLegendSleepStart">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SLEEP_MARKER_PAINT" type="code"/>
                             </Property>
                             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                               <ResourceString bundle="resources/default.properties" key="lblLegendSleepStart" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -1003,7 +1431,7 @@
                               <Connection code="DataFrame.WAKE_PAINT" type="code"/>
                             </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="  "/>
                             <Property name="opaque" type="boolean" value="true"/>
@@ -1012,32 +1440,13 @@
                         <Component class="javax.swing.JLabel" name="lblLegendWakeTime">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.WAKE_PAINT" type="code"/>
                             </Property>
                             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                               <ResourceString bundle="resources/default.properties" key="lblLegendWakeupTime" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="lblLegendSnoozeColor">
-                          <Properties>
-                            <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                              <Connection code="DataFrame.SNOOZE_PAINT" type="code"/>
-                            </Property>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="  "/>
-                            <Property name="opaque" type="boolean" value="true"/>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="lblLegendSnooze">
-                          <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                              <ResourceString bundle="resources/default.properties" key="lblLegendSnooze" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1047,7 +1456,7 @@
                               <Connection code="DataFrame.WAKE_INTERVALL_PAINT" type="code"/>
                             </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="  "/>
                             <Property name="opaque" type="boolean" value="true"/>
@@ -1056,10 +1465,88 @@
                         <Component class="javax.swing.JLabel" name="lblLegendWakeInterval">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Lucida Grande" size="9" style="0"/>
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.WAKE_INTERVALL_PAINT" type="code"/>
                             </Property>
                             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                               <ResourceString bundle="resources/default.properties" key="lblLegendWakeInterval" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblLegendKeyColor">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.KEY_PAINT" type="code"/>
+                            </Property>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="  "/>
+                            <Property name="opaque" type="boolean" value="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblLegendKey">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.KEY_PAINT" type="code"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                              <ResourceString bundle="resources/default.properties" key="lblLegendKeys" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblLegendSnoozeColor">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SNOOZE_PAINT" type="code"/>
+                            </Property>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="  "/>
+                            <Property name="opaque" type="boolean" value="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblLegendSnooze">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.SNOOZE_PAINT" type="code"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                              <ResourceString bundle="resources/default.properties" key="lblLegendSnooze" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblLegendMovementColor">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.BAR_COLOR" type="code"/>
+                            </Property>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="  "/>
+                            <Property name="opaque" type="boolean" value="true"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="lblLegendMovement">
+                          <Properties>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Lucida Grande" size="11" style="0"/>
+                            </Property>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                              <Connection code="DataFrame.BAR_COLOR" type="code"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                              <ResourceString bundle="resources/default.properties" key="lblLegendMovements" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1095,7 +1582,7 @@
         <Component class="javax.swing.JLabel" name="statusTextLabel">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/resources/images/disconnect.png"/>
+              <Image iconType="3" name="/resources/images/link-broken-16.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -1107,8 +1594,16 @@
         <Component class="javax.swing.JProgressBar" name="statusProgressBar">
           <Properties>
             <Property name="focusable" type="boolean" value="false"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[200, 20]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[20, 20]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[200, 20]"/>
+            </Property>
             <Property name="requestFocusEnabled" type="boolean" value="false"/>
-            <Property name="string" type="java.lang.String" value="&#xa;"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="statusProgressBar.putClientProperty(&quot;JProgressBar.style&quot;, &quot;circular&quot;);"/>

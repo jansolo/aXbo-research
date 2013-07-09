@@ -1,7 +1,3 @@
-/*
- * $Id: SleepDataImportTask.java,v 1.5 2010-12-16 23:13:53 illetsch Exp $
- * © 3kraft GmbH & Co KG 2010
- */
 package com.dreikraft.axbo.task;
 
 import com.dreikraft.events.ApplicationEventDispatcher;
@@ -15,6 +11,7 @@ import com.dreikraft.axbo.data.DeviceType;
 import com.dreikraft.axbo.data.MovementData;
 import com.dreikraft.axbo.data.SensorID;
 import com.dreikraft.axbo.data.SleepData;
+import com.dreikraft.axbo.data.WakeInterval;
 import com.dreikraft.axbo.data.WakeType;
 import com.dreikraft.axbo.events.MovementEvent;
 import com.dreikraft.axbo.events.SleepDataAdded;
@@ -34,13 +31,10 @@ import org.apache.commons.logging.LogFactory;
 /**
  * SleepDataImportTask
  *
- * @author jan_solo
- * @author $Author: illetsch $
- * @version $Revision: 1.5 $
+ * @author jan.illetschko@3kraft.com
  */
 public class SleepDataImportTask extends AxboTask<Integer, Integer>
-    implements ApplicationEventEnabled
-{
+    implements ApplicationEventEnabled {
 
   private static final Log log = LogFactory.getLog(SleepDataImportTask.class);
   private List<MovementEvent> movementEventsP1;
@@ -49,8 +43,7 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
   private int dataCount = 0;
   private int newSleepDataCount = 0;
 
-  public SleepDataImportTask(final List<SleepData> sleepDates)
-  {
+  public SleepDataImportTask(final List<SleepData> sleepDates) {
     super();
     this.sleepDates = sleepDates;
     movementEventsP1 = new ArrayList<MovementEvent>();
@@ -58,35 +51,29 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
   }
 
   @Override
-  protected Integer doInBackground() throws Exception
-  {
+  protected Integer doInBackground() throws Exception {
     log.info("performing task" + getClass().getSimpleName() + " ...");
 
     ApplicationEventDispatcher.getInstance().registerApplicationEventHandler(
         MovementEvent.class, this);
-    final DeviceType deviceType = DeviceContext.getDeviceType();
 
     // run the command
     AxboCommandUtil.runLogDataCmd(Axbo.getPortName());
 
+    // read data until no more data is send
     int oldDataCount = -1;
-    try
-    {
-      synchronized (this)
-      {
-        while (dataCount > oldDataCount)
-        {
+    try {
+      synchronized (this) {
+        while (dataCount > oldDataCount) {
           oldDataCount = dataCount;
-          wait(deviceType.getTimeout());
+          wait(1000);
         }
       }
-    }
-    catch (InterruptedException ex)
-    {
+    } catch (InterruptedException ex) {
       log.error(ex.getMessage(), ex);
     }
 
-    // store data
+    // store data ffrom aXbo to file
     processLogData(movementEventsP1);
     processLogData(movementEventsP2);
 
@@ -94,65 +81,58 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
   }
 
   @Override
-  protected void done()
-  {
-    try
-    {
+  protected void done() {
+    try {
       final Integer newCount = get();
       log.info("task " + getClass().getSimpleName() + " performed successfully");
+
       setResult(Result.SUCCESS);
 
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataImported(
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+          new SleepDataImported(
           this, newCount));
-    }
-    catch (InterruptedException ex)
-    {
+    } catch (InterruptedException ex) {
       log.error("task " + getClass().getSimpleName() + " interrupted", ex);
       setResult(Result.INTERRUPTED);
-    }
-    catch (ExecutionException ex)
-    {
+    } catch (ExecutionException ex) {
       log.error("task " + getClass().getSimpleName() + " failed", ex.getCause());
       setResult(Result.FAILED);
-    }
-    finally
-    {
+    } finally {
       DeviceContext.getDeviceType().getDataInterface().stop();
-      ApplicationEventDispatcher.getInstance().deregisterApplicationEventHandler(
+      ApplicationEventDispatcher.getInstance()
+          .deregisterApplicationEventHandler(
           MovementEvent.class, this);
     }
   }
 
-  public void handle(final MovementEvent movementEvent)
-  {
-    synchronized (this)
-    {
-      dataCount++;
-      notify();
+  /**
+   * Process movement records.
+   *
+   * @param movementEvent
+   */
+  public void handle(final MovementEvent movementEvent) {
+
+    // notify swingworker about data
+    synchronized (this) {
+      dataCount = AxboResponseProtocol.END.getLetterAsString().equals(
+          movementEvent.getCmd()) ? 0 : dataCount + 1;
+      notifyAll();
     }
-    if (AxboResponseProtocol.END.getLetterAsString().equals(
-        movementEvent.getCmd()))
-    {
-      dataCount = 0;
-    }
-    else if (movementEvent.getId().equals(SensorID.P1.toString()))
-    {
+
+    // add movement record to corresponding person
+    if (movementEvent.getId().equals(SensorID.P1.toString())) {
       movementEventsP1.add(movementEvent);
-    }
-    else if (movementEvent.getId().equals(SensorID.P2.toString()))
-    {
+    } else if (movementEvent.getId().equals(SensorID.P2.toString())) {
       movementEventsP2.add(movementEvent);
     }
   }
 
   @SuppressWarnings("fallthrough")
-  private void processLogData(final List<MovementEvent> movementEvents)
-  {
+  private void processLogData(final List<MovementEvent> movementEvents) {
     // sort movements
     Collections.sort(movementEvents);
 
-    if (movementEvents.size() > 0)
-    {
+    if (movementEvents.size() > 0) {
       // get sensor
       final SensorID sensorId = SensorID.valueOf(movementEvents.get(0).getId());
       final String name = Axbo.getApplicationPreferences().get(
@@ -161,11 +141,10 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
       // create initial sleep data object
       SleepData sleepData = new SleepData(sensorId.toString(), name,
           DeviceType.AXBO, "");
-      long currentWakeIntervalEnd = Long.MAX_VALUE;
+      long currentSleepEnd = Long.MAX_VALUE;
 
       // iterate over all movements for current sensor id
-      for (int i = 0; i < movementEvents.size(); i++)
-      {
+      for (int i = 0; i < movementEvents.size(); i++) {
         // get current movement
         final MovementData movement = movementEvents.get(i).getMovementData();
         // retrieve protocol type of movement data
@@ -174,32 +153,39 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
 
         // calculate the time difference between previous and current movement
         long delta = 0;
-        if (i > 0)
-        {
-          delta = movement.getTimestamp().getTime() - movementEvents.get(i - 1).
-              getMovementData().getTimestamp().getTime();
-        }
+        final MovementData prevMovement = sleepData.findLastMovement();
+        if (prevMovement != null && movement.isMovement())
+          delta = movement.getTimestamp().getTime() - prevMovement
+              .getTimestamp().getTime();
 
-        if (currentWakeIntervalEnd < movement.getTimestamp().getTime() || delta
-            > Axbo.CLEANER_INTERVAL_DEFAULT)
-        {
+        if (currentSleepEnd < movement.getTimestamp().getTime() || delta
+            > Axbo.CLEANER_INTERVAL_DEFAULT) {
           // store current sleepdata
           storeSleepData(sleepData);
           sleepData = new SleepData(sensorId.toString(), name,
               DeviceType.AXBO, "");
-          currentWakeIntervalEnd = Long.MAX_VALUE;
+          currentSleepEnd = Long.MAX_VALUE;
         }
 
         // handle different protocols
-        switch (protocolType)
-        {
-          // begin and next movement
+        switch (protocolType) {
+          case BEGIN:
+          case NEXT:
+          case END:
+            if (movement.getMovementsX() > 0)
+              sleepData.addMovement(movement);
+            break;
+
           case KEY:
             movement.setMovementsZ(MovementData.KEY);
+            sleepData.addMovement(movement);
             break;
 
           case SNOOZE:
             movement.setMovementsZ(MovementData.SNOOZE);
+            sleepData.addMovement(movement);
+            currentSleepEnd = movement.getTimestamp().getTime()
+                + sleepData.getWakeInterval().getTime();
             break;
 
           case RANDOM_WAKE:
@@ -207,12 +193,16 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
             // set wake time and mark sleep data for saving
             sleepData.setWakeupTime(movement.getTimestamp());
             sleepData.setWakeType(WakeType.GOOD);
+            currentSleepEnd = movement.getTimestamp().getTime()
+                + SleepData.SNOOZE_WAIT_INTERVAL;
             break;
 
           case WAKE:
             // set wake time and mark sleepdata for saving
             sleepData.setWakeupTime(movement.getTimestamp());
             sleepData.setWakeType(WakeType.NONE);
+            currentSleepEnd = movement.getTimestamp().getTime()
+                + SleepData.SNOOZE_WAIT_INTERVAL;
             break;
 
           case POWER_NAPPING:
@@ -224,26 +214,29 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
             sleepData.setWakeIntervalStart(movement.getTimestamp());
             break;
 
-          case WAKE_INTERVALL_START:
-            if (sleepData.getWakeIntervalStart() == null)
-            {
+          case WAKE_INTERVAL_START:
+          case WAKE_INTERVAL_SHORT:
+            if (sleepData.getWakeIntervalStart() == null) {
               sleepData.setWakeIntervalStart(movement.getTimestamp());
+              sleepData.setWakeInterval(WakeInterval
+                  .getWakeIntervalFromProtocol(protocolType));
             }
-            currentWakeIntervalEnd = movement.getTimestamp().getTime()
-                + SleepData.WAKE_INTERVAL;
+            currentSleepEnd = movement.getTimestamp().getTime()
+                + sleepData.getWakeInterval().getTime();
+            break;
+          default:
+            if (log.isDebugEnabled())
+              log.debug("unprocessed protocol type: " + protocolType);
             break;
         }
-        sleepData.addMovement(movement);
       }
       // store last sleepData Object
       storeSleepData(sleepData);
     }
   }
 
-  private void storeSleepData(final SleepData sleepData)
-  {
-    if (sleepData.getMovements().size() < 2)
-    {
+  private void storeSleepData(final SleepData sleepData) {
+    if (sleepData.getMovements().size() < 2) {
       return;
     }
 
@@ -251,23 +244,20 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
         < Axbo.MINIMUM_SLEEP_DURATION || sleepData.calculateMovementCount()
         < Axbo.MINIMUM_MOVEMENTS || sleepData.calculateMovementsPerHour()
         < Axbo.AVERAGE_MOVEMENTS_THRESHOLD
-        || (sleepData.getWakeupTime() == null && sleepData.getWakeIntervalStart()
-        == null)))
-    {
+        || (sleepData.getWakeupTime() == null && sleepData
+        .getWakeIntervalStart()
+        == null))) {
       return;
     }
 
-    if (sleepDates.contains(sleepData))
-    {
+    if (sleepDates.contains(sleepData)) {
       return;
     }
 
     final File dir = new File(Axbo.PROJECT_DIR_DEFAULT);
     final File f = new File(dir, sleepData.getSleepDataFilename());
-    try
-    {
-      if (f.exists())
-      {
+    try {
+      if (f.exists()) {
         return;
       }
 
@@ -282,19 +272,20 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
 
       newSleepDataCount++;
 
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataAdded(
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+          new SleepDataAdded(
           this, sleepData));
       final String statusMsg = BundleUtil.getMessage(
           "statusLabel.fileSaved", f.getName(), dir.getAbsolutePath());
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ApplicationMessageEvent(
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+          new ApplicationMessageEvent(
           this, statusMsg, false));
-    }
-    catch (Exception ex)
-    {
-      final String msg = BundleUtil.getMessage("sleepData.saveFailed",
+    } catch (Exception ex) {
+      final String msg = BundleUtil.getErrorMessage("sleepData.saveFailed",
           f.getName(), dir.getAbsolutePath());
       log.error(ex.getMessage(), ex);
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new ApplicationMessageEvent(
+      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+          new ApplicationMessageEvent(
           this, msg, true));
     }
   }

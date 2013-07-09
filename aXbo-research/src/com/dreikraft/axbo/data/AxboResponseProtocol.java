@@ -1,48 +1,38 @@
-/*
- * © 2008 3kraft
- * $Id: AxboResponseProtocol.java,v 1.4 2010-12-14 14:41:29 illetsch Exp $
- */
 package com.dreikraft.axbo.data;
 
 /**
- * $Id: AxboResponseProtocol.java,v 1.4 2010-12-14 14:41:29 illetsch Exp $
- * 
- * @author 3kraft - $Author: illetsch $
- * @version $Revision: 1.4 $
+ * AxboResponseProtocol. Defines the possible protokol types in a data record
+ * returned from aXbo.
+ *
+ * @author jan.illetschko@3kraft.com
  */
-public enum AxboResponseProtocol
-{
+public enum AxboResponseProtocol {
+
   KEY('T'), BEGIN('B'), NEXT('N'), PERSON_CHANGE('P'), SENSOR_SLEEP('S'),
   WAKE('W'), DEFAULT('D'), GOOD_WAKE('G'), RANDOM_WAKE('R'),
-  WAKE_INTERVALL_START('Z'), CHILLOUT('C'), SOUNDFILE('F'), POWER_NAPPING('K'),
+  WAKE_INTERVAL_START('Z'), WAKE_INTERVAL_SHORT('z'), CHILLOUT('C'),
+  SOUNDFILE('F'), POWER_NAPPING('K'),
   END('X'), SNOOZE('I');
-  
   private char letter;
-  
-  private AxboResponseProtocol(char letter) 
-  {
+
+  private AxboResponseProtocol(char letter) {
     this.letter = letter;
   }
-  
-  public char getLetter()
-  {
+
+  public char getLetter() {
     return letter;
   }
 
-  public int getLetterAsInt()
-  {
-    return (int)letter;
+  public int getLetterAsInt() {
+    return (int) letter;
   }
 
-  public String getLetterAsString()
-  {
+  public String getLetterAsString() {
     return String.valueOf(letter);
   }
-  
-  public static AxboResponseProtocol valueOfLetter(String letter)
-  {
-    for (AxboResponseProtocol arp: AxboResponseProtocol.values())
-    {
+
+  public static AxboResponseProtocol valueOfLetter(String letter) {
+    for (AxboResponseProtocol arp : AxboResponseProtocol.values()) {
       if (arp.getLetterAsString().equals(letter))
         return arp;
     }

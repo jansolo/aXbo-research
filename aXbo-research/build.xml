@@ -67,23 +67,96 @@
     properties which you can use, check the target you are overriding in the
     nbproject/build-impl.xml file.
 
-    -->
-    <target name="-post-init">
-      <property file="nbproject/infactory.properties"/>
-    </target>
+  -->
+  <target name="-post-init">
+    <property file="nbproject/infactory.properties"/>
+  </target>
     
-    <target name="-post-jar">
-      <j2seproject:jar manifest="${manifest.file}" xmlns:j2seproject="http://www.netbeans.org/ns/j2se-project/1">
-          <manifest xmlns="http://www.netbeans.org/ns/j2se-project/1">
-              <attribute j2seproject:name="Main-Class" value="${main.class}"/>
-              <attribute j2seproject:name="Class-Path" value="${manifest.classpath}"/>
-          </manifest>
-      </j2seproject:jar>
-      <copy todir="${dist.dir}" >
-        <fileset dir="${resource.dir}/native" includes="*.dll,*.jnilib,*.so"/>
-      </copy>
-    </target>
-    
+  <target name="-post-jar">
+    <j2seproject:jar manifest="${manifest.file}" xmlns:j2seproject="http://www.netbeans.org/ns/j2se-project/1">
+      <manifest xmlns="http://www.netbeans.org/ns/j2se-project/1">
+        <attribute j2seproject:name="Main-Class" value="${main.class}"/>
+        <attribute j2seproject:name="Class-Path" value="${manifest.classpath}"/>
+      </manifest>
+    </j2seproject:jar>
+    <copy todir="${dist.dir}" >
+      <fileset dir="${resource.dir}/native" includes="*.dll,*.jnilib,*.so"/>
+    </copy>
+  </target>
+
+  <taskdef name="bundleapp"
+             classname="com.oracle.appbundler.AppBundlerTask"   
+             classpath="lib/appbundler-1.0.jar" />
+
+  <target name="bundle-aXbo-research">
+    <bundleapp outputdirectory="dist"
+                   name="aXbo research"
+                   displayname="aXbo research"
+                   identifier="com.dreikraft.axbo.Axbo"
+                   mainclassname="com/dreikraft/axbo/Axbo"
+                   icon="src/resources/images/researchicon.icns">
+      <classpath dir="dist/lib">
+        <filename name="*.jar"/>
+      </classpath>
+      <classpath file="dist/axbo.jar" />
+      <librarypath dir="src">
+        <filename name="*.jnilib"/>
+      </librarypath>
+      <runtime dir="${java.home}/.." />
+    </bundleapp>
+  </target>
+  
+  <typedef classname="senselogic.excelbundle.ant.SheetMapping"
+      name="sheetmapping"	classpath="lib/excelbundle.jar"/>
+  <taskdef classname="senselogic.excelbundle.ant.ExportBundles"
+      name="exportbundles" classpath="lib/excelbundle.jar"/>
+  <taskdef classname="senselogic.excelbundle.ant.ImportBundles"
+      name="importbundles" classpath="lib/excelbundle.jar"/>
+
+  <target description="Export aXbo bundles" name="export-axbo-bundles" 
+          depends="init">
+      <delete file="resource/aXbo_translations.xls" />
+      <move file="${src.src.dir}/resources/default.properties" 
+            toFile="${src.src.dir}/resources/default_en.properties" /> 
+      <move file="${src.src.dir}/resources/errors.properties" 
+            toFile="${src.src.dir}/resources/errors_en.properties" /> 
+      <exportbundles
+          root="${src.src.dir}"
+          destfile="resource/aXbo_translations.xls"
+          languages="en,de,fr,ja,ru"
+          reflang="en">
+          <sheetmapping name="default" prefix="/resources/default" />
+          <sheetmapping name="errors" prefix="/resources/errors" />
+      </exportbundles>
+      <move file="${src.src.dir}/resources/default_en.properties" 
+            toFile="${src.src.dir}/resources/default.properties" /> 
+      <move file="${src.src.dir}/resources/errors_en.properties" 
+            toFile="${src.src.dir}/resources/errors.properties" /> 
+  </target>
+	
+  <target description="Import aXbo excel file" name="import-axbo-bundles" 
+          depends="init">
+    <move file="${src.src.dir}/resources/default.properties" 
+          toFile="${src.src.dir}/resources/default_en.properties" /> 
+    <move file="${src.src.dir}/resources/errors.properties" 
+          toFile="${src.src.dir}/resources/errors_en.properties" /> 
+    <importbundles
+      root="${src.src.dir}"
+      languages="en,de,fr,ja,ru"
+      reflang="en"
+      pretend="false">	
+
+      <fileset dir="resource">
+        <include name="aXbo_translations.xls"/>
+      </fileset>
+
+    </importbundles>
+    <move file="${src.src.dir}/resources/default_en.properties" 
+          toFile="${src.src.dir}/resources/default.properties" /> 
+    <move file="${src.src.dir}/resources/errors_en.properties" 
+          toFile="${src.src.dir}/resources/errors.properties" /> 
+  </target>  
+        
 </project>
 
 
