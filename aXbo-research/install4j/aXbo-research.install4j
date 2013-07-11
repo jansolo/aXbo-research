@@ -87,7 +87,7 @@
   </files>
   <launchers>
     <launcher name="aXbo research" id="19" external="false" excludeFromMenu="false" menuName="" icnsFile="./resources/images/researchicon.icns" pngIcon16File="./resources/images/16x16px_researchicon.png" pngIcon32File="./resources/images/32x32px_researchicon.png" macServiceDependencies="" swtApp="false" fileset="">
-      <executable name="aXbo research" type="1" iconSet="true" iconFile="../src/resources/images/researchicon.ico" executableDir="" redirectStderr="true" stderrFile="error.log" stderrMode="overwrite" redirectStdout="true" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="true" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" globalSingleInstance="false">
+      <executable name="aXbo research" type="1" iconSet="true" iconFile="../src/resources/images/researchicon.ico" executableDir="" redirectStderr="true" stderrFile="axbo.log" stderrMode="overwrite" redirectStdout="true" stdoutFile="axbo.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="true" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" globalSingleInstance="false">
         <versionInfo include="true" fileVersion="" fileDescription="aXbo research" legalCopyright="© aXbo Ldt. 2013" internalName="aXbo research" productName="" />
       </executable>
       <splashScreen show="true" autoOff="true" alwaysOnTop="true" width="402" height="282" bitmapFile="./resources/images/Splash_screen_research_aXbo_Limited.png" java6SplashScreen="false">
@@ -1545,7 +1545,7 @@ if (wizardContext != null) {
     </applications>
   </installerGui>
   <mediaSets>
-    <win32 name="Windows" id="22" mediaFileName="" installDir="aXbo" overridePrincipalLanguage="false" requires64bit="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" includedJRE="windows-x86-1.6.0_45" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" directDownload="false" customInstallBaseDir="" createUninstallIcon="true" contentFilesType="1" downloadURL="" runAsAdmin="false">
+    <win32 name="Windows" id="22" mediaFileName="" installDir="aXbo" overridePrincipalLanguage="false" requires64bit="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" includedJRE="windows-x86-1.7.0_25" manualJREEntry="false" bundleType="1" jreURL="" jreFtpURL="" jreShared="false" directDownload="false" customInstallBaseDir="" createUninstallIcon="true" contentFilesType="1" downloadURL="" runAsAdmin="false">
       <excludedLaunchers />
       <excludedComponents />
       <excludedBeans />
