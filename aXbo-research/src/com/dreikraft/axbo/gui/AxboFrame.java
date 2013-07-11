@@ -804,7 +804,7 @@ public class AxboFrame extends JFrame {
     legendPanel.add(lblLegendWakeIntervalColor);
 
     lblLegendWakeInterval.setFont(new java.awt.Font("Lucida Grande", 0, 11)); // NOI18N
-    lblLegendWakeInterval.setForeground(DataFrame.WAKE_INTERVALL_PAINT);
+    lblLegendWakeInterval.setForeground(DataFrame.WAKE_INTERVALL_END_PAINT);
     lblLegendWakeInterval.setText(bundle.getString("lblLegendWakeInterval")); // NOI18N
     legendPanel.add(lblLegendWakeInterval);
 
