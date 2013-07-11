@@ -20,7 +20,8 @@ public class SleepData implements Serializable {
   public static final long serialVersionUID = 1L;
   public static final Log log = LogFactory.getLog(SleepData.class);
   public static final long HOUR = 60 * 60 * 1000;
-  public static final long SNOOZE_WAIT_INTERVAL = 60 * 1000;
+  public static final long SNOOZE_WAIT_INTERVAL = 2 * 60 * 1000;
+  public static final long SNOOZE_RESTART_INTERVAL = 5 * 60 * 1000;
   public static final long SLEEP_TRIGGER_INTERVAL = 8 * 60 * 1000;
   public static final long SLEEP_START_DELAY = 4 * 60 * 1000;
   public static final long DEFAULT_SLEEP_DURATION = 8 * 60 * 60 * 1000;
