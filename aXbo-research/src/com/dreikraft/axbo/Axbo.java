@@ -154,17 +154,6 @@ public final class Axbo implements ApplicationEventEnabled {
     if (log.isDebugEnabled()) {
       log.debug("Current Locale: " + Locale.getDefault());
     }
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    } catch (ClassNotFoundException ex) {
-      log.warn("failed to set system look & feel", ex);
-    } catch (InstantiationException ex) {
-      log.warn("failed to set system look & feel", ex);
-    } catch (IllegalAccessException ex) {
-      log.warn("failed to set system look & feel", ex);
-    } catch (UnsupportedLookAndFeelException ex) {
-      log.warn("failed to set system look & feel", ex);
-    }
 
     // set gui prefs
     String[] li =
@@ -181,6 +170,7 @@ public final class Axbo implements ApplicationEventEnabled {
         "2A159A6D-3F835A94-C035A2D9-36E2718B-0541A9EE");
     SyntheticaLookAndFeel.setLookAndFeel(SyntheticaBlackEyeLookAndFeel.class.
         getName());
+    SyntheticaLookAndFeel.setFont("SansSerif", 11);
     
     // OSX laf 
     System.setProperty("apple.laf.useScreenMenuBar", "true");
