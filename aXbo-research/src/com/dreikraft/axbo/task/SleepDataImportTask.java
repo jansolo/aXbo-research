@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.apache.commons.logging.Log;
@@ -182,10 +183,10 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
             break;
 
           case SNOOZE:
-            movement.setMovementsZ(MovementData.SNOOZE);
             sleepData.addMovement(movement);
             currentSleepEnd = movement.getTimestamp().getTime()
-                + sleepData.getWakeInterval().getTime();
+                + sleepData.getWakeInterval().getTime()
+                + SleepData.SNOOZE_WAIT_INTERVAL;
             break;
 
           case RANDOM_WAKE:
@@ -200,7 +201,7 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
           case WAKE:
             // set wake time and mark sleepdata for saving
             sleepData.setWakeupTime(movement.getTimestamp());
-            sleepData.setWakeType(WakeType.NONE);
+            sleepData.setWakeType(WakeType.LAST);
             currentSleepEnd = movement.getTimestamp().getTime()
                 + SleepData.SNOOZE_WAIT_INTERVAL;
             break;
@@ -216,13 +217,20 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
 
           case WAKE_INTERVAL_START:
           case WAKE_INTERVAL_SHORT:
+            currentSleepEnd = movement.getTimestamp().getTime()
+                + sleepData.getWakeInterval().getTime()
+                + SleepData.SNOOZE_WAIT_INTERVAL;
             if (sleepData.getWakeIntervalStart() == null) {
               sleepData.setWakeIntervalStart(movement.getTimestamp());
               sleepData.setWakeInterval(WakeInterval
                   .getWakeIntervalFromProtocol(protocolType));
+            } else {
+              // reverse calculate snooze times from wake interval restarts
+              movement.setMovementsZ(MovementData.SNOOZE);
+              movement.setTimestamp(new Date(movement.getTimestamp().getTime()
+                  - SleepData.SNOOZE_RESTART_INTERVAL));
+              sleepData.addMovement(movement);
             }
-            currentSleepEnd = movement.getTimestamp().getTime()
-                + sleepData.getWakeInterval().getTime();
             break;
           default:
             if (log.isDebugEnabled())
