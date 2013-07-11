@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="4.2.8" transformSequenceNumber="2">
   <directoryPresets config="../src/resources/images" />
-  <application name="aXbo research" distributionSourceDir="" applicationId="3914-4662-2767-1873" mediaDir="./install4j_output" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" keepModificationTimes="false" missingFilesStrategy="warn" shortName="aXbo" publisher="aXbo Ltd." publisherWeb="http://www.axbo.com" version="3.0.06" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" installerName="" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
+  <application name="aXbo research" distributionSourceDir="" applicationId="3914-4662-2767-1873" mediaDir="./install4j_output" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" keepModificationTimes="false" missingFilesStrategy="warn" shortName="aXbo" publisher="aXbo Ltd." publisherWeb="http://www.axbo.com" version="3.0.07" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" installerName="" javaMinVersion="1.6" javaMaxVersion="" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="true" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="./resources/messages/messages_en.utf8" />
       <additionalLanguages>
+        <language id="fr" customLocalizationFile="./resources/messages/messages_fr.utf8" />
         <language id="de" customLocalizationFile="./resources/messages/messages_de.utf8" />
         <language id="ja" customLocalizationFile="./resources/messages/messages_ja.utf8" />
+        <language id="ru" customLocalizationFile="./resources/messages/messages_ru.utf8" />
       </additionalLanguages>
     </languages>
     <searchSequence>
