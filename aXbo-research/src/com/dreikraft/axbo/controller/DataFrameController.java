@@ -26,6 +26,7 @@ import com.dreikraft.axbo.util.BundleUtil;
 import java.awt.print.PageFormat;
 import org.apache.commons.logging.*;
 import org.jfree.data.time.Minute;
+import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.IntervalXYDataset;
 
@@ -181,14 +182,14 @@ public class DataFrameController implements ApplicationEventEnabled
   private KeyTimeSeries createKeyDataset()
   {
     final KeyTimeSeries keyTimeSeries = new KeyTimeSeries(BundleUtil.getMessage(
-        "chart.keyseries.label"), sleepData, Minute.class, MovementData.KEY);
+        "chart.keyseries.label"), sleepData, Second.class, MovementData.KEY);
     return keyTimeSeries;
   }
 
   private KeyTimeSeries createSnoozeDataset()
   {
     final KeyTimeSeries keyTimeSeries = new KeyTimeSeries(BundleUtil.getMessage(
-        "chart.snoozeseries.label"), sleepData, Minute.class, MovementData.SNOOZE);
+        "chart.snoozeseries.label"), sleepData, Second.class, MovementData.SNOOZE);
     return keyTimeSeries;
   }
 }
