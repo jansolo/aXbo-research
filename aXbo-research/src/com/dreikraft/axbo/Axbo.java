@@ -21,7 +21,6 @@ import java.util.Locale;
 import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.logging.*;
 import java.io.IOException;
 import org.jdesktop.swingx.JXHeader;
