@@ -40,7 +40,6 @@ public class SleepData implements Serializable {
   private String firmwareVersion;
   private transient Date sleepStart;
   private transient Date endTime;
-  private transient Date wakeIntervalEnd;
   private transient File dataFile;
   private transient int compareStartHour;
 
@@ -131,7 +130,8 @@ public class SleepData implements Serializable {
       }
 
       // if the record has a wake interval
-      endTime = calculateWakeIntervalEnd() != null ? calculateWakeIntervalEnd()
+      final Date calculatedWakeIntervalEnd = calculateWakeIntervalEnd();
+      endTime = calculatedWakeIntervalEnd != null ? calculatedWakeIntervalEnd
           : endTime;
 
       // if the record has a wake up time and its after the current calculated time
@@ -183,15 +183,14 @@ public class SleepData implements Serializable {
    * in this record
    */
   public Date calculateWakeIntervalEnd() {
-    if (wakeIntervalEnd == null) {
-      if (getWakeIntervalStart() != null) {
-        wakeIntervalEnd = new Date(getWakeIntervalStart().getTime()
-            + getWakeInterval().getTime());
-        for (final MovementData movement : getMovements()) {
-          if (movement.getMovementsZ() == MovementData.SNOOZE) {
-            wakeIntervalEnd = new Date(movement.getTimestamp().getTime()
-                + getWakeInterval().getTime());
-          }
+    Date wakeIntervalEnd = null;
+    if (getWakeIntervalStart() != null) {
+      wakeIntervalEnd = new Date(getWakeIntervalStart().getTime()
+          + getWakeInterval().getTime());
+      for (final MovementData movement : getMovements()) {
+        if (movement.getMovementsZ() == MovementData.SNOOZE) {
+          wakeIntervalEnd = new Date(movement.getTimestamp().getTime()
+              + getWakeInterval().getTime());
         }
       }
     }
@@ -274,7 +273,7 @@ public class SleepData implements Serializable {
       if (movement.isMovement())
         return movement;
     }
-    return null;  
+    return null;
   }
 
   /**
