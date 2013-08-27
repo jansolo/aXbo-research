@@ -367,15 +367,15 @@ public class AxboFrame extends JFrame {
     gridBagConstraints.insets = new java.awt.Insets(0, 21, 0, 0);
     navToolbarPanel.add(jLabel1, gridBagConstraints);
 
-    org.jdesktop.layout.GroupLayout spacerPanelLayout = new org.jdesktop.layout.GroupLayout(spacerPanel);
+    javax.swing.GroupLayout spacerPanelLayout = new javax.swing.GroupLayout(spacerPanel);
     spacerPanel.setLayout(spacerPanelLayout);
     spacerPanelLayout.setHorizontalGroup(
-      spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 239, Short.MAX_VALUE)
+      spacerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGap(0, 239, Short.MAX_VALUE)
     );
     spacerPanelLayout.setVerticalGroup(
-      spacerPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 47, Short.MAX_VALUE)
+      spacerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGap(0, 47, Short.MAX_VALUE)
     );
 
     gridBagConstraints = new java.awt.GridBagConstraints();
