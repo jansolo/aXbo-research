@@ -64,23 +64,6 @@ public class SleepData implements Serializable {
   }
 
   /**
-   * Creates a new instance of SleepData
-   */
-  public SleepData(final String id, final String name, final Date wakeupTime,
-      final Date wakeIntervalStart, final List<MovementData> movements,
-      final DeviceType deviceType, final String comment,
-      final boolean powerNap) {
-    this.id = id;
-    this.name = name;
-    this.wakeupTime = new Date(wakeupTime.getTime());
-    this.wakeIntervalStart = new Date(wakeIntervalStart.getTime());
-    this.movements = movements;
-    this.deviceType = deviceType;
-    this.comment = comment;
-    this.powerNap = powerNap;
-  }
-
-  /**
    * Calculates the start time of this sleep record.
    *
    * @return if this is sleep record is a recorded power nap, returns the wake
