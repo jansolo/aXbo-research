@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.apache.commons.logging.Log;
@@ -38,17 +37,17 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
     implements ApplicationEventEnabled {
 
   private static final Log log = LogFactory.getLog(SleepDataImportTask.class);
-  private List<MovementEvent> movementEventsP1;
-  private List<MovementEvent> movementEventsP2;
-  private List<SleepData> sleepDates;
+  private final List<MovementEvent> movementEventsP1;
+  private final List<MovementEvent> movementEventsP2;
+  private final List<SleepData> sleepDates;
   private int dataCount = 0;
   private int newSleepDataCount = 0;
 
   public SleepDataImportTask(final List<SleepData> sleepDates) {
     super();
     this.sleepDates = sleepDates;
-    movementEventsP1 = new ArrayList<MovementEvent>();
-    movementEventsP2 = new ArrayList<MovementEvent>();
+    movementEventsP1 = new ArrayList<>();
+    movementEventsP2 = new ArrayList<>();
   }
 
   @Override
@@ -185,9 +184,8 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
             break;
 
           case SNOOZE:
+            movement.setMovementsZ(MovementData.SNOOZE);
             sleepData.addMovement(movement);
-            currentSleepEnd = movement.getTimestamp().getTime()
-                + 3 * sleepData.getWakeInterval().getTime();
             break;
 
           case RANDOM_WAKE:
@@ -195,8 +193,6 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
             // set wake time and mark sleep data for saving
             sleepData.setWakeupTime(movement.getTimestamp());
             sleepData.setWakeType(WakeType.GOOD);
-            currentSleepEnd = movement.getTimestamp().getTime()
-                + SleepData.SNOOZE_WAIT_INTERVAL;
             break;
 
           case WAKE:
@@ -218,20 +214,12 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
 
           case WAKE_INTERVAL_START:
           case WAKE_INTERVAL_SHORT:
-            currentSleepEnd = movement.getTimestamp().getTime()
-                + 3 * sleepData.getWakeInterval().getTime();
+            currentSleepEnd = movement.getTimestamp().getTime() + 
+                sleepData.getWakeInterval().getTime();
             if (sleepData.getWakeIntervalStart() == null) {
               sleepData.setWakeIntervalStart(movement.getTimestamp());
               sleepData.setWakeInterval(WakeInterval
                   .getWakeIntervalFromProtocol(protocolType));
-              currentSleepEnd = movement.getTimestamp().getTime()
-                  + 3 * sleepData.getWakeInterval().getTime();
-            } else {
-              // reverse calculate snooze times from wake interval restarts
-              movement.setMovementsZ(MovementData.SNOOZE);
-              movement.setTimestamp(new Date(movement.getTimestamp().getTime()
-                  - SleepData.SNOOZE_RESTART_INTERVAL));
-              sleepData.addMovement(movement);
             }
             break;
           default:
