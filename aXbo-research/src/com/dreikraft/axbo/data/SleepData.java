@@ -19,6 +19,7 @@ public class SleepData implements Serializable {
 
   public static final long serialVersionUID = 1L;
   public static final Log log = LogFactory.getLog(SleepData.class);
+  public static final long MINUTE = 60 * 1000;
   public static final long HOUR = 60 * 60 * 1000;
   public static final long SNOOZE_WAIT_INTERVAL = 2 * 60 * 1000;
   public static final long SNOOZE_RESTART_INTERVAL = 5 * 60 * 1000;
@@ -48,11 +49,15 @@ public class SleepData implements Serializable {
    */
   public SleepData() {
     this.powerNap = false;
-    movements = new ArrayList<MovementData>();
+    movements = new ArrayList<>();
   }
 
   /**
    * Creates a new instance of SleepData
+   * @param id
+   * @param name
+   * @param deviceType
+   * @param comment
    */
   public SleepData(final String id, final String name,
       final DeviceType deviceType, final String comment) {

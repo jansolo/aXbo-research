@@ -191,7 +191,7 @@ class AxboShutdownHook extends Thread {
 
   @Override
   public void run() {
-    Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+    Preferences prefs = Preferences.userNodeForPackage(this.getClass());
     try {
       System.out.println("cleaning up resources ...");
       prefs.flush();
