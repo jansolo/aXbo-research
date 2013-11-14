@@ -87,10 +87,18 @@ public enum AxboDataParser implements ProtocolHandler {
    * Initial data buffer size.
    */
   public static final int BUFFER_SIZE = 0x20;
-  private AxboDataContext ctx = new AxboDataContext();
+  /**
+   * State machine context for data parsing.
+   */
+  private final AxboDataContext ctx;
 
+  private AxboDataParser() {
+    ctx = new AxboDataContext();  
+  }
+  
   /**
    * {@inheritDoc}
+   * @param data
    */
   @Override
   public void parse(final byte[] data) {
@@ -107,6 +115,11 @@ public enum AxboDataParser implements ProtocolHandler {
       // machine.
       ctx.getState().process(ctx);
     }
+  }
+
+  @Override
+  public void reset() {
+    ctx.setState(AxboDataStates.BEGIN);
   }
 }
 
@@ -456,7 +469,7 @@ enum AxboDataStates implements AxboDataState {
 
           final MovementEvent movementEvent = new MovementEvent(this,
               movementData,
-              sensorId.toString(), "" + (char) data[17]);
+              sensorId.toString(), "" + (char) data[17], data);
           if (AxboDataParser.log.isDebugEnabled()) {
             AxboDataParser.log.debug("movement event: " + movementEvent);
           }

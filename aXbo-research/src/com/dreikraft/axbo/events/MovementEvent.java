@@ -19,13 +19,15 @@ public final class MovementEvent extends ApplicationEvent implements
   private final MovementData movementData;
   private final String id;
   private final String cmd;
+  private final int[] rawData;
 
   public MovementEvent(final Object source, final MovementData movementData,
-      final String id, String cmd) {
+      final String id, final String cmd, final int[] rawData) {
     super(source);
     this.movementData = movementData;
     this.id = id;
     this.cmd = cmd;
+    this.rawData = rawData;
   }
 
   public MovementData getMovementData() {
@@ -38,6 +40,10 @@ public final class MovementEvent extends ApplicationEvent implements
 
   public String getCmd() {
     return cmd;
+  }
+
+  public int[] getRawData() {
+    return rawData;
   }
 
   @Override
