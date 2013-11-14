@@ -180,6 +180,8 @@ public enum RXTXSerialDataInterface implements DataInterface {
     try {
       // serialize data writes 
       synchronized (dataMonitor) {
+        // reset parser state
+        DeviceContext.getDeviceType().getProtocolHandler().reset();
         int retryCount = 0;
         // reset the data monitor
         dataMonitor.setDataReceived(false);

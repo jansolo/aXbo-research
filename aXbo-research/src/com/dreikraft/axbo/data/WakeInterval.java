@@ -7,8 +7,8 @@ package com.dreikraft.axbo.data;
  */
 public enum WakeInterval {
 
-  SHORT(15l * 60 * 1000, AxboResponseProtocol.WAKE_INTERVAL_START),
-  LONG(30l * 60 * 1000, AxboResponseProtocol.WAKE_INTERVAL_SHORT);
+  SHORT(15l * 60 * 1000, AxboResponseProtocol.WAKE_INTERVAL_SHORT),
+  LONG(30l * 60 * 1000, AxboResponseProtocol.WAKE_INTERVAL_START);
   private long time;
   private AxboResponseProtocol protocol;
 

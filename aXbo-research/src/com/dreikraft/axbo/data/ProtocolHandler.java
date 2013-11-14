@@ -13,5 +13,6 @@ package com.dreikraft.axbo.data;
  */
 public interface ProtocolHandler
 {
+  public void reset();
   public void parse(byte[] record);
 }
