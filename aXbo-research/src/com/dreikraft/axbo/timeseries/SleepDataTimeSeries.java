@@ -6,8 +6,6 @@ package com.dreikraft.axbo.timeseries;
 
 import com.dreikraft.axbo.data.MovementData;
 import com.dreikraft.axbo.data.SleepData;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +21,6 @@ import org.jfree.data.time.TimeSeriesDataItem;
  * @version $Revision
  */
 public class SleepDataTimeSeries extends TimeSeries
-    implements PropertyChangeListener
 {
 
   private final TimeZone timeZone;
@@ -40,8 +37,8 @@ public class SleepDataTimeSeries extends TimeSeries
     this.sleepData = sleepData;
     this.maxMovements = maxMovements;
 
-    movementsX = new HashMap<TimePeriod, Integer>();
-    movementsY = new HashMap<TimePeriod, Integer>();
+    movementsX = new HashMap<>();
+    movementsY = new HashMap<>();
 
     // set start and end time
     timeZone = TimeZone.getDefault();
@@ -53,7 +50,7 @@ public class SleepDataTimeSeries extends TimeSeries
     final RegularTimePeriod endTimePeriod = RegularTimePeriod.createInstance(
         timePeriodClass, endTime, timeZone);
     addOrUpdate(endTimePeriod, 0);
-
+    
     for (MovementData movement : sleepData.getMovements())
     {
       addMovementData(movement);
@@ -68,12 +65,6 @@ public class SleepDataTimeSeries extends TimeSeries
   public int getMaxMovements()
   {
     return maxMovements;
-  }
-
-  @Override
-  public void propertyChange(PropertyChangeEvent evt)
-  {
-    addMovementData((MovementData) evt.getNewValue());
   }
 
   private void addMovementData(MovementData data)

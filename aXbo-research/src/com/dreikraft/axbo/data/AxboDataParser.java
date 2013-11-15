@@ -460,12 +460,9 @@ enum AxboDataStates implements AxboDataState {
           movementData.setTimestamp(cal.getTime());
           movementData.setMovementsX(ByteUtil.upperNibble(data[15]) + ByteUtil.
               lowerNibble(data[15]));
-          if (data.length == 18) {
-            movementData.setMovementsY(ByteUtil.upperNibble(data[16]) + ByteUtil
-                .lowerNibble(data[16]));
-          } else {
-            movementData.setMovementsY(0);
-          }
+          movementData.setMovementsY(ByteUtil.upperNibble(data[16]) + ByteUtil
+              .lowerNibble(data[16]));
+          
 
           final MovementEvent movementEvent = new MovementEvent(this,
               movementData,
