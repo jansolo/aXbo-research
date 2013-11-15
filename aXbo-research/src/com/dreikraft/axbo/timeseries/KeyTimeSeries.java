@@ -6,8 +6,6 @@ package com.dreikraft.axbo.timeseries;
 
 import com.dreikraft.axbo.data.MovementData;
 import com.dreikraft.axbo.data.SleepData;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.TimeZone;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
@@ -19,7 +17,6 @@ import org.jfree.data.time.TimeSeriesDataItem;
  * @version $Revision
  */
 public class KeyTimeSeries extends TimeSeries
-    implements PropertyChangeListener
 {
   private final TimeZone timeZone = TimeZone.getDefault();
   private final SleepData sleepData;
@@ -48,12 +45,6 @@ public class KeyTimeSeries extends TimeSeries
   public int getKeyType()
   {
     return keyType;
-  }
-
-  @Override
-  public void propertyChange(final PropertyChangeEvent evt)
-  {
-    addMovementData((MovementData) evt.getNewValue());
   }
 
   private void addMovementData(final MovementData data)

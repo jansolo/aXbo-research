@@ -18,13 +18,13 @@ The master branch will be updated only very infrequently synchronized with the r
 Build
 -----
 
-aXbo research can be build from Netbeans (7.3) or command line. 
+aXbo research can be build from Netbeans (7.4) or command line. 
 
 Netbeans:
-Open the project with Netbeans 7.3. The project is setup to build und run immediatly from Netbeans. No additional dependencies are required
+Open the project with Netbeans 7.4. The project is setup to build und run immediatly from Netbeans. No additional dependencies are required
 
 Command line:
-A build from command line requires JDK 1.6+ and ant. JAVA_HOME must be set. Ant needs to be on the path.
+A build from command line requires JDK 1.7* and ant. JAVA_HOME must be set. Ant needs to be on the path.
 
 	export JAVA_HOME=/path/to/jdk
 	export ANT_HOME=/path/to/ant
@@ -41,7 +41,7 @@ Additionally the build script supports the generation of an app wrapper (``aXbo 
 Run
 ---
 
-aXbo research requires a JRE 1.6+. Both 32-bit and 64-bit JVMs are supported on Mac OSX, Windows and Linux. To run aXbo research from command line:
+aXbo research requires a JRE 1.7*. Both 32-bit and 64-bit JVMs are supported on Mac OSX, Windows and Linux. To run aXbo research from command line:
 
     cd dist
     $JAVA_HOME/bin/java -jar axbo.jar
@@ -60,7 +60,7 @@ On Mac OSX one can simply start "aXbo research.app".
 Development
 -----------
 
-The sources include project files for NetBeans 7.3. Simply open the project with Netbeans 7.3 and start coding. 
+The sources include project files for NetBeans 7.4. Simply open the project with Netbeans 7.4 and start coding. 
 
 
 Architecture

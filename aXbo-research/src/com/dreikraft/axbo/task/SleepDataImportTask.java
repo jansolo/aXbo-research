@@ -184,25 +184,22 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
               8 * SleepData.HOUR;
         }
 
+        sleepData.addMovement(movement);
         // handle different protocols
         switch (protocolType) {
           case BEGIN:
           case NEXT:
           case END:
-            if (movement.getMovementsX() > 0)
-              sleepData.addMovement(movement);
             break;
 
           case KEY:
             if (sleepData.getWakeIntervalStart() == null) {
               movement.setMovementsZ(MovementData.KEY);
-              sleepData.addMovement(movement);
             }
             break;
 
           case SNOOZE:
             movement.setMovementsZ(MovementData.SNOOZE);
-            sleepData.addMovement(movement);
             currentSleepEnd = movement.getTimestamp().getTime()
                   + sleepData.getWakeInterval().getTime();
             break;
