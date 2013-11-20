@@ -71,6 +71,7 @@ public class DataFrame extends JPanel implements Printable {
   public static final Color BAR_COLOR2 = new Color(155, 112, 7, 255);
   public static final GradientPaint BAR_PAINT =
       new GradientPaint(0f, 0f, BAR_COLOR, 0f, 0f, BAR_COLOR2);
+  public static final Color AVG_PAINT = new Color(0xFF, 0xFF, 0xFF, 0x80);
   public static final Color SLEEP_MARKER_PAINT = new Color(0xF0, 0x00, 0XFF,
       0xFF);
   public static final Color WAKE_PAINT = new Color(0x10, 0xCE, 0x15, 0xFF);
@@ -102,7 +103,7 @@ public class DataFrame extends JPanel implements Printable {
       final KeyTimeSeries keys,
       final KeyTimeSeries snoozes) {
     // set sleepData
-    final TimeSeries timeSeries = ((TimeSeriesCollection) dataset).getSeries(0);
+    final TimeSeries timeSeries = ((TimeSeriesCollection) dataset).getSeries(1);
     sleepData = ((SleepDataTimeSeries) timeSeries).getSleepData();
 
     // set title
@@ -148,7 +149,9 @@ public class DataFrame extends JPanel implements Printable {
     final XYBarRenderer renderer = (XYBarRenderer) plot.getRenderer();
     renderer.setShadowVisible(false);
     renderer.setDrawBarOutline(false);
-    renderer.setSeriesPaint(0, BAR_PAINT);
+    renderer.setSeriesPaint(1, BAR_PAINT);
+    renderer.setSeriesPaint(0, AVG_PAINT);
+    log.info(renderer.findRangeBounds(dataset));
 
     // draw sleep start
     final Marker sleepStartMarker = new ValueMarker(sleepStart.getTime());
