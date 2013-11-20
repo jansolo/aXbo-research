@@ -22,6 +22,7 @@ import com.dreikraft.axbo.events.DiagramClosed;
 import com.dreikraft.axbo.events.SleepDataSave;
 import com.dreikraft.axbo.gui.AxboFrame;
 import com.dreikraft.axbo.gui.DataFrame;
+import com.dreikraft.axbo.timeseries.TimeSeriesUtil;
 import com.dreikraft.axbo.util.BundleUtil;
 import java.awt.print.PageFormat;
 import org.apache.commons.logging.*;
@@ -175,6 +176,8 @@ public class DataFrameController implements ApplicationEventEnabled
     final SleepDataTimeSeries sleepDataTimeSeries = new SleepDataTimeSeries(
         BundleUtil.getMessage("chart.timeseries.label"), sleepData,
         Minute.class, Axbo.MAX_MOVEMENTS_DEFAULT);
+    dataset.addSeries(TimeSeriesUtil.createMovingAverage(sleepDataTimeSeries,
+        2, 2));
     dataset.addSeries(sleepDataTimeSeries);
     return dataset;
   }
