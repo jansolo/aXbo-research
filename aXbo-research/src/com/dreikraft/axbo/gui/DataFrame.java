@@ -4,7 +4,6 @@ import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.events.ApplicationMessageEvent;
 import com.dreikraft.axbo.timeseries.KeyTimeSeries;
 import com.dreikraft.axbo.data.SleepData;
-import com.dreikraft.axbo.timeseries.SleepDataTimeSeries;
 import com.dreikraft.axbo.events.DiagramCopy;
 import com.dreikraft.axbo.events.DiagramPrint;
 import com.dreikraft.axbo.events.DiagramSaveAsPNG;
@@ -79,7 +78,6 @@ public class DataFrame extends JPanel implements Printable {
   public static final Color BAR_COLOR2 = new Color(155, 112, 7, 255);
   public static final GradientPaint BAR_PAINT = new GradientPaint(0f, 0f,
       BAR_COLOR, 0f, 0f, BAR_COLOR2);
-  public static final Color AVG_PAINT = new Color(0xFF, 0xFF, 0xFF, 0x80);
   public static final Color SLEEP_MARKER_PAINT = new Color(0xF0, 0x00, 0XFF,
       0xFF);
   public static final Color WAKE_PAINT = new Color(0x10, 0xCE, 0x15, 0xFF);
@@ -105,14 +103,12 @@ public class DataFrame extends JPanel implements Printable {
     initComponents();
   }
 
-  public void createNewChart(final IntervalXYDataset dataset, final Date start,
-      final Date sleepStart, final Date wakeIntervalStart,
-      final Date wakeIntervalEnd, final Date wakeupTime,
-      final KeyTimeSeries keys, final KeyTimeSeries snoozes) {
+  public void createNewChart(final SleepData sleepData) {
+    
+    this.sleepData = sleepData;
 
-    // set sleepData
-    final TimeSeries timeSeries = ((TimeSeriesCollection) dataset).getSeries(1);
-    sleepData = ((SleepDataTimeSeries) timeSeries).getSleepData();
+    final IntervalXYDataset dataset = TimeSeriesUtil.createDataset(sleepData,
+        BundleUtil.getMessage("chart.timeseries.label"));
 
     // set border title
     ((TitledBorder) getBorder()).setTitle(getTitle());
@@ -122,9 +118,14 @@ public class DataFrame extends JPanel implements Printable {
     dateAxis.setTickLabelPaint(AXIS_COLOR);
 
     // create movement plot
-    final XYPlot movementsPlot = createMovementsPlot(dataset, sleepStart,
-        wakeIntervalStart, wakeIntervalEnd, keys, snoozes, wakeupTime,
-        dateAxis);
+    final XYPlot movementsPlot = createMovementsPlot(dataset, 
+        sleepData.calculateStartTime(), sleepData.getWakeIntervalStart(), 
+        sleepData.calculateWakeIntervalEnd(),
+        TimeSeriesUtil.createKeyDataset(sleepData, 
+            BundleUtil.getMessage("chart.keyseries.label")), 
+        TimeSeriesUtil.createSnoozeDataset(sleepData, 
+            BundleUtil.getMessage("chart.snoozeseries.label")), 
+        sleepData.getWakeupTime(), dateAxis);
 
     // create moving average plot
     //final XYPlot distributionPlot = createMovementDistributionPlot(timeSeries, 
@@ -132,8 +133,8 @@ public class DataFrame extends JPanel implements Printable {
 
     // create moving average plot
     final XYPlot mvgAvgPlot = createMovementDistributionPlot(
-        ((TimeSeriesCollection) dataset).getSeries(0), 
-        dateAxis, 4);
+        TimeSeriesUtil.createMovingAverage(
+            ((TimeSeriesCollection) dataset).getSeries(0), 1, 1), dateAxis, 4);
     
     CombinedDomainXYPlot plot = new CombinedDomainXYPlot(dateAxis);
     plot.add(movementsPlot, 15);
@@ -220,8 +221,7 @@ public class DataFrame extends JPanel implements Printable {
     renderer.setBarPainter(new StandardXYBarPainter());
     renderer.setShadowVisible(false);
     renderer.setDrawBarOutline(false);
-    renderer.setSeriesPaint(1, BAR_PAINT);
-    renderer.setSeriesPaint(0, AVG_PAINT);
+    renderer.setSeriesPaint(0, BAR_PAINT);
 
     // tool tips
     final XYToolTipGenerator tooltipGenerator = StandardXYToolTipGenerator.

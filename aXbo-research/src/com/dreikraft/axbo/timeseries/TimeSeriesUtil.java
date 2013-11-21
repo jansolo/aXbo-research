@@ -9,15 +9,20 @@
  */
 package com.dreikraft.axbo.timeseries;
 
+import com.dreikraft.axbo.Axbo;
+import com.dreikraft.axbo.data.MovementData;
+import com.dreikraft.axbo.data.SleepData;
 import java.util.LinkedList;
 import java.util.List;
-import javax.vecmath.Point2d;
-import javax.vecmath.Tuple2d;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jfree.data.time.Minute;
 import org.jfree.data.time.RegularTimePeriod;
+import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.DefaultXYZDataset;
+import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYZDataset;
 
 /**
@@ -78,9 +83,10 @@ public class TimeSeriesUtil {
   }
 
   /**
-   * Create a XYZ dataset from a time series with Y. 
+   * Create a XYZ dataset from a time series with Y.
+   *
    * @param source
-   * @return 
+   * @return
    */
   public static final XYZDataset createXYZTimeSeries(final TimeSeries source) {
 
@@ -104,9 +110,53 @@ public class TimeSeriesUtil {
       t = t.next();
     }
     final DefaultXYZDataset target = new DefaultXYZDataset();
-    target.addSeries(0, new double[][] {xValues, yValues, zValues});
-    
+    target.addSeries(0, new double[][]{xValues, yValues, zValues});
+
     return target;
+  }
+
+  /**
+   * Create a XYIntervalDataset from sleep data.
+   *
+   * @param sleepData the sleep data
+   * @param title the dataset title
+   * @return a dataset
+   */
+  public static final IntervalXYDataset createDataset(final SleepData sleepData,
+      final String title) {
+    final TimeSeriesCollection dataset = new TimeSeriesCollection();
+    final SleepDataTimeSeries sleepDataTimeSeries = new SleepDataTimeSeries(
+        title, sleepData, Minute.class, Axbo.MAX_MOVEMENTS_DEFAULT);
+    dataset.addSeries(sleepDataTimeSeries);
+    return dataset;
+  }
+
+  /**
+   * Create a KeyTimeSeries object from sleep data.
+   *
+   * @param sleepData the sleep data
+   * @param title the dataset title
+   * @return a time series
+   */
+  public static final KeyTimeSeries createKeyDataset(final SleepData sleepData,
+      final String title) {
+    final KeyTimeSeries keyTimeSeries = new KeyTimeSeries(title, sleepData,
+        Second.class, MovementData.KEY);
+    return keyTimeSeries;
+  }
+
+  /**
+   * Create a KeyTimeSeries object from sleep data.
+   *
+   * @param sleepData the sleep data
+   * @param title the dataset title
+   * @return a time series
+   */
+  public static final KeyTimeSeries createSnoozeDataset(final SleepData sleepData,
+      final String title) {
+    final KeyTimeSeries keyTimeSeries = new KeyTimeSeries(title, sleepData,
+        Second.class, MovementData.SNOOZE);
+    return keyTimeSeries;
   }
 
   private static double getValue(final TimeSeries series,
