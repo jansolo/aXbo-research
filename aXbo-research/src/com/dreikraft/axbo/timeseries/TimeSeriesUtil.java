@@ -9,10 +9,16 @@
  */
 package com.dreikraft.axbo.timeseries;
 
+import java.util.LinkedList;
+import java.util.List;
+import javax.vecmath.Point2d;
+import javax.vecmath.Tuple2d;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.TimeSeries;
+import org.jfree.data.xy.DefaultXYZDataset;
+import org.jfree.data.xy.XYZDataset;
 
 /**
  *
@@ -48,7 +54,7 @@ public class TimeSeriesUtil {
 
     // process all timeperiods including empty ones
     RegularTimePeriod t = source.getTimePeriod(0);
-    while (!(t = t.next()).equals(lastTimePeriod)) {
+    while (!(t.getFirstMillisecond() > lastTimePeriod.getFirstMillisecond())) {
 
       // calculate the moving avg value for the current time period
       double value = getValue(source, t);
@@ -65,16 +71,48 @@ public class TimeSeriesUtil {
 
       // add the moving avg value to the included time periods
       result.addOrUpdate(t, value / len);
+      t = t.next();
     }
 
     return result;
   }
 
-  private static double getValue(final TimeSeries series, final RegularTimePeriod t) {
+  /**
+   * Create a XYZ dataset from a time series with Y. 
+   * @param source
+   * @return 
+   */
+  public static final XYZDataset createXYZTimeSeries(final TimeSeries source) {
+
+    final RegularTimePeriod lastTimePeriod = source.getTimePeriod(
+        source.getItemCount() - 1);
+    // process all timeperiods including empty ones
+    RegularTimePeriod t = source.getTimePeriod(0);
+    final List<Double> zValuesList = new LinkedList<>();
+    while (!(t.getFirstMillisecond() > lastTimePeriod.getFirstMillisecond())) {
+      zValuesList.add(getValue(source, t));
+      t = t.next();
+    }
+    final double[] xValues = new double[zValuesList.size()];
+    final double[] yValues = new double[zValuesList.size()];
+    final double[] zValues = new double[zValuesList.size()];
+    t = source.getTimePeriod(0);
+    for (int i = 0; i < zValuesList.size(); i++) {
+      xValues[i] = t.getFirstMillisecond();
+      yValues[i] = 0;
+      zValues[i] = zValuesList.get(i);
+      t = t.next();
+    }
+    final DefaultXYZDataset target = new DefaultXYZDataset();
+    target.addSeries(0, new double[][] {xValues, yValues, zValues});
+    
+    return target;
+  }
+
+  private static double getValue(final TimeSeries series,
+      final RegularTimePeriod t) {
     return series.getDataItem(t) != null && series.getDataItem(t).getValue()
         != null ? series.getDataItem(t).getValue().doubleValue() : 0;
   }
 
 }
-
-

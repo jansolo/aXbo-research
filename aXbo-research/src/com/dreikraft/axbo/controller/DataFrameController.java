@@ -177,7 +177,7 @@ public class DataFrameController implements ApplicationEventEnabled
         BundleUtil.getMessage("chart.timeseries.label"), sleepData,
         Minute.class, Axbo.MAX_MOVEMENTS_DEFAULT);
     dataset.addSeries(TimeSeriesUtil.createMovingAverage(sleepDataTimeSeries,
-        2, 2));
+        2, 1));
     dataset.addSeries(sleepDataTimeSeries);
     return dataset;
   }
