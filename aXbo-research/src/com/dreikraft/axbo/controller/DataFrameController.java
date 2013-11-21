@@ -6,11 +6,7 @@ package com.dreikraft.axbo.controller;
 
 import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.events.ApplicationEventEnabled;
-import com.dreikraft.axbo.Axbo;
-import com.dreikraft.axbo.timeseries.KeyTimeSeries;
-import com.dreikraft.axbo.data.MovementData;
 import com.dreikraft.axbo.data.SleepData;
-import com.dreikraft.axbo.timeseries.SleepDataTimeSeries;
 import com.dreikraft.axbo.events.DiagramCopy;
 import com.dreikraft.axbo.events.DiagramPrint;
 import com.dreikraft.axbo.events.DiagramSaveAsPNG;
@@ -22,14 +18,8 @@ import com.dreikraft.axbo.events.DiagramClosed;
 import com.dreikraft.axbo.events.SleepDataSave;
 import com.dreikraft.axbo.gui.AxboFrame;
 import com.dreikraft.axbo.gui.DataFrame;
-import com.dreikraft.axbo.timeseries.TimeSeriesUtil;
-import com.dreikraft.axbo.util.BundleUtil;
 import java.awt.print.PageFormat;
 import org.apache.commons.logging.*;
-import org.jfree.data.time.Minute;
-import org.jfree.data.time.Second;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.IntervalXYDataset;
 
 /**
  * $Id: DataFrameController.java,v 1.33 2010-12-17 10:11:41 illetsch Exp $
@@ -71,15 +61,7 @@ public class DataFrameController implements ApplicationEventEnabled
         SleepDataSave.class, this);
 
     view.init();
-    view.createNewChart(
-        createDataset(),
-        sleepData.calculateStartTime(),
-        sleepData.calculateSleepStart(),
-        sleepData.getWakeIntervalStart(),
-        sleepData.calculateWakeIntervalEnd(),
-        sleepData.getWakeupTime(),
-        createKeyDataset(),
-        createSnoozeDataset());
+    view.createNewChart(sleepData);
 
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new DiagramStatsUpdate(
         this));
@@ -168,31 +150,5 @@ public class DataFrameController implements ApplicationEventEnabled
     {
       view.updateStats(evt.getSleepData());
     }
-  }
-
-  private IntervalXYDataset createDataset()
-  {
-    final TimeSeriesCollection dataset = new TimeSeriesCollection();
-    final SleepDataTimeSeries sleepDataTimeSeries = new SleepDataTimeSeries(
-        BundleUtil.getMessage("chart.timeseries.label"), sleepData,
-        Minute.class, Axbo.MAX_MOVEMENTS_DEFAULT);
-    dataset.addSeries(TimeSeriesUtil.createMovingAverage(sleepDataTimeSeries,
-        2, 1));
-    dataset.addSeries(sleepDataTimeSeries);
-    return dataset;
-  }
-
-  private KeyTimeSeries createKeyDataset()
-  {
-    final KeyTimeSeries keyTimeSeries = new KeyTimeSeries(BundleUtil.getMessage(
-        "chart.keyseries.label"), sleepData, Second.class, MovementData.KEY);
-    return keyTimeSeries;
-  }
-
-  private KeyTimeSeries createSnoozeDataset()
-  {
-    final KeyTimeSeries keyTimeSeries = new KeyTimeSeries(BundleUtil.getMessage(
-        "chart.snoozeseries.label"), sleepData, Second.class, MovementData.SNOOZE);
-    return keyTimeSeries;
   }
 }
