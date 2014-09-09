@@ -18,10 +18,10 @@ The master branch will be updated only very infrequently synchronized with the r
 Build
 -----
 
-aXbo research can be build from Netbeans (7.4) or command line. 
+aXbo research can be build from Netbeans (8.0) or command line. 
 
 Netbeans:
-Open the project with Netbeans 7.4. The project is setup to build und run immediatly from Netbeans. No additional dependencies are required
+Open the project with Netbeans 8.0. The project is setup to build und run immediatly from Netbeans. No additional dependencies are required
 
 Command line:
 A build from command line requires JDK 1.7* and ant. JAVA_HOME must be set. Ant needs to be on the path.
