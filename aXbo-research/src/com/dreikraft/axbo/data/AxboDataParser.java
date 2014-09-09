@@ -34,31 +34,24 @@ public enum AxboDataParser implements ProtocolHandler {
   /**
    * Status command byte.
    */
-  public static final int STATUS_DATA_BYTE = 0x20;
+  public static final int STATUS_COMMAND_BYTE = 0x20;
   /**
    * Movement command byte
    */
-  public static final int MOVEMENT_DATA_BYTE = 0x26;
+  public static final int MOVEMENT_COMMAND_BYTE = 0x26;
   /**
    * Dummy command byte.
    */
-  public static final int DUMMY_DATA_BYTE = 0xA4;
+  public static final int DUMMY_COMMAND_BYTE = 0xA4;
+  /**
+   * Dummy command byte for aXbo's with 2mb memory (since hardware release
+   * HW12).
+   */
+  public static final int DUMMY_COMMAND_BYTE_HW12 = 0xAC;
   /**
    * Flash buffer read command byte
    */
   public static final int FLASH_BUFFERREAD = 0x00;
-  /**
-   * Data link escape byte.
-   */
-  public static final int DLE = 0x10;
-  /**
-   * Start transaction byte.
-   */
-  public static final int STX = 0x02;
-  /**
-   * End transaction byte.
-   */
-  public static final int ETX = 0x03;
   /**
    * Toggle byte input off.
    */
@@ -76,6 +69,18 @@ public enum AxboDataParser implements ProtocolHandler {
    */
   public static final int TOGGLE_BYTE_OUTPUT_ON = 0x81;
   /**
+   * Data link escape byte.
+   */
+  public static final int DLE = 0x10;
+  /**
+   * Start transaction byte.
+   */
+  public static final int STX = 0x02;
+  /**
+   * End transaction byte.
+   */
+  public static final int ETX = 0x03;
+  /**
    * Acknowledged byte.
    */
   public static final int ACK = 0x06;
@@ -92,12 +97,15 @@ public enum AxboDataParser implements ProtocolHandler {
    */
   private final AxboDataContext ctx;
 
+  private int memSize = 1;
+
   private AxboDataParser() {
-    ctx = new AxboDataContext();  
+    ctx = new AxboDataContext();
   }
-  
+
   /**
    * {@inheritDoc}
+   *
    * @param data
    */
   @Override
@@ -120,6 +128,14 @@ public enum AxboDataParser implements ProtocolHandler {
   @Override
   public void reset() {
     ctx.setState(AxboDataStates.BEGIN);
+  }
+
+  public void setMemSize(int memSize) {
+    this.memSize = memSize;
+  }
+
+  public int getMemSize() {
+    return memSize;
   }
 }
 
@@ -151,6 +167,8 @@ class AxboDataContext {
   private int dataItem;
   private int[] buffer;
   private int bufferPos;
+  private int command;
+  private boolean ignore;
 
   /**
    * Initializes the context in state BEGIN.
@@ -230,6 +248,22 @@ class AxboDataContext {
   public void setBufferPos(int bufferPos) {
     this.bufferPos = bufferPos;
   }
+
+  public int getCommand() {
+    return command;
+  }
+
+  public void setCommand(int command) {
+    this.command = command;
+  }
+
+  public boolean isIgnore() {
+    return ignore;
+  }
+
+  public void setIgnore(boolean ignore) {
+    this.ignore = ignore;
+  }
 }
 
 /**
@@ -243,127 +277,142 @@ enum AxboDataStates implements AxboDataState {
    * State begin.
    */
   BEGIN() {
-    @Override
-    public void process(AxboDataContext ctx) {
-      switch (ctx.getDataItem()) {
-        case AxboDataParser.STX: // STX
-          ctx.setState(AxboDataStates.STX);
-          break;
-        case AxboDataParser.ACK: // ACK
-          ctx.setState(AxboDataStates.ACK);
-          break;
-        case AxboDataParser.NACK: // NACK
-          ctx.setState(AxboDataStates.NACK);
-          break;
-        default:
-      }
-    }
-  },
+        @Override
+        public void process(AxboDataContext ctx) {
+          switch (ctx.getDataItem()) {
+            case AxboDataParser.STX:
+              ctx.setState(AxboDataStates.STX);
+              break;
+            case AxboDataParser.ACK:
+              ctx.setState(AxboDataStates.ACK);
+              break;
+            case AxboDataParser.NACK:
+              ctx.setState(AxboDataStates.NACK);
+              break;
+          }
+        }
+      },
   /**
    * State ACK. Acknowledge received.
    */
   ACK() {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void process(AxboDataContext ctx) {
-      // switch to state begin
-      ctx.setState(AxboDataStates.BEGIN);
-      // notify serial interface implementation about data processed successfully
-      DeviceContext.getDeviceType().getDataInterface().dataReceived();
-    }
-  },
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void process(AxboDataContext ctx) {
+          // switch to state begin
+          ctx.setState(BEGIN);
+          // notify serial interface implementation about data processed successfully
+          DeviceContext.getDeviceType().getDataInterface().dataReceived();
+        }
+      },
   /**
    * State NACK. Not Acknowledge received.
    */
   NACK() {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void process(AxboDataContext ctx) {
-      // switch to state begin
-      ctx.setState(AxboDataStates.BEGIN);
-      // notify serial interface implementation about data processed successfully
-      DeviceContext.getDeviceType().getDataInterface().dataReceived();
-    }
-  },
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void process(AxboDataContext ctx) {
+          // switch to state begin
+          ctx.setState(BEGIN);
+          // notify serial interface implementation about data processed successfully
+          DeviceContext.getDeviceType().getDataInterface().dataReceived();
+        }
+      },
   /**
    * State STX. Start transaction received.
    */
   STX() {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void process(AxboDataContext ctx) {
-      // reset data buffer
-      ctx.setBufferPos(0);
-      ctx.setBuffer(new int[AxboDataParser.BUFFER_SIZE]);
-      // switch to data processing
-      ctx.setState(AxboDataStates.DATA);
-    }
-  },
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void process(AxboDataContext ctx) {
+          // switch to data processing
+          ctx.setIgnore(ctx.getDataItem()
+              == AxboDataParser.TOGGLE_BYTE_OUTPUT_OFF || ctx.getDataItem()
+              == AxboDataParser.TOGGLE_BYTE_OUTPUT_ON);
+          ctx.setState(COMMAND);
+        }
+      },
+  COMMAND() {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void process(AxboDataContext ctx) {
+          // reset data buffer
+          ctx.setCommand(ctx.getDataItem());
+          ctx.setBufferPos(0);
+          ctx.setBuffer(new int[AxboDataParser.BUFFER_SIZE]);
+          ctx.setState(DATA);
+        }
+      },
   /**
    * State DATA. Data processing enabled.
    */
   DATA() {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void process(AxboDataContext ctx) {
-      if (ctx.getDataItem() == AxboDataParser.DLE) { // escape character
-        // process escape character.
-        ctx.setState(AxboDataStates.DATA_ESCAPE);
-      } else {
-        // write data byte to data buffer
-        writeToBuffer(ctx);
-      }
-    }
-  },
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void process(AxboDataContext ctx) {
+          if (ctx.getDataItem() == AxboDataParser.DLE) { // escape character
+            // process escape character.
+            ctx.setState(AxboDataStates.DATA_ESCAPE);
+          } else {
+            // write data byte to data buffer
+            writeToBuffer(ctx);
+          }
+        }
+      },
   /**
    * State DATA_ESCAPE. Handle escape characters in data chunk.
    */
   DATA_ESCAPE() {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void process(AxboDataContext ctx) {
-      if (ctx.getDataItem() == AxboDataParser.ETX) { // ETX 
-        // end transaction reached
-        ctx.setState(AxboDataStates.CHECKSUM);
-      } else {
-        // skip DATA_ESCAPE character and write current byte to buffer
-        writeToBuffer(ctx);
-        ctx.setState(AxboDataStates.DATA);
-      }
-    }
-  },
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void process(AxboDataContext ctx) {
+          if (ctx.getDataItem() == AxboDataParser.ETX) { // ETX 
+            // end transaction reached
+            ctx.setState(AxboDataStates.CHECKSUM);
+          } else {
+            // skip DATA_ESCAPE character and write current byte to buffer
+            writeToBuffer(ctx);
+            ctx.setState(AxboDataStates.DATA);
+          }
+        }
+      },
   /**
    * State CHECKSUM. Process data checksum.
    */
   CHECKSUM() {
-    private int pos = 0;
+        private int pos = 0;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void process(AxboDataContext ctx) {
-      // process 2 checksum bytes
-      if (pos > 0) {
-        pos = 0;
-        ctx.setState(AxboDataStates.BEGIN);
-        // process data buffer
-        handleData(ctx.getBuffer());
-      } else {
-        pos++;
-      }
-    }
-  };
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void process(AxboDataContext ctx) {
+          // process 2 checksum bytes
+          if (pos > 0) {
+            pos = 0;
+            ctx.setState(AxboDataStates.BEGIN);
+            // process data buffer
+            if (!ctx.isIgnore()) {
+              handleData(ctx.getCommand(), ctx.getBuffer());
+            }
+          } else {
+            pos++;
+          }
+        }
+
+      };
 
   /**
    * Writes a data byte to the buffer. Resizes the buffer if required.
@@ -388,34 +437,34 @@ enum AxboDataStates implements AxboDataState {
    *
    * @param data the data buffer
    */
-  void handleData(final int[] data) {
+  void handleData(final int command, final int[] data) {
     try {
       if (AxboDataParser.log.isDebugEnabled()) {
         AxboDataParser.log.debug("Data: " + ByteUtil.dumpByteArray(data));
       }
 
-      switch (data[0]) {
+      switch (command) {
 
-        case AxboDataParser.STATUS_DATA_BYTE:
+        case AxboDataParser.STATUS_COMMAND_BYTE:
 
           // data type is info data
           // extract version info
           char[] version = {
-            (char) data[1], (char) data[2], (char) data[3],
-            (char) data[4], (char) data[5], (char) data[6], (char) data[7],
-            (char) data[8]
+            (char) data[0], (char) data[1], (char) data[2],
+            (char) data[3], (char) data[4], (char) data[5], (char) data[6],
+            (char) data[7]
           };
           // extract hardware info
           char[] hw = {
-            (char) data[10], (char) data[11]
+            (char) data[9], (char) data[10]
           };
           // extract rtc
           int[] rtc = {
-            data[13], data[14], data[15]
+            data[12], data[13], data[14]
           };
           // read serial number if available
           StringBuffer serialNumber = new StringBuffer("");
-          for (int i = 17; i < 17 + 8; i++) {
+          for (int i = 16; i < 16 + 8; i++) {
             if ((data[i] >= 0 && data[i] <= 9) || (data[i] >= 48 && data[i]
                 <= 57)) {
               serialNumber
@@ -436,37 +485,36 @@ enum AxboDataStates implements AxboDataState {
           DeviceContext.getDeviceType().getDataInterface().dataReceived();
           break;
 
-        case AxboDataParser.MOVEMENT_DATA_BYTE:
+        case AxboDataParser.MOVEMENT_COMMAND_BYTE:
 
           // data type is a movment record
           if (AxboDataParser.log.isDebugEnabled()) {
-            AxboDataParser.log.debug("protocol type: " + (char) data[17]);
+            AxboDataParser.log.debug("protocol type: " + (char) data[16]);
           }
 
           // reduce sender ids from 8 two 2
-          final SensorID sensorId = (data[1]) % 2 != 0 ? SensorID.P1
+          final SensorID sensorId = (data[0]) % 2 != 0 ? SensorID.P1
               : SensorID.P2;
 
           // create movement event from record
           final MovementData movementData = new MovementData();
           final Calendar cal = GregorianCalendar.getInstance();
           cal.clear();
-          cal.set(2000 + Integer.valueOf("" + (char) data[2] + (char) data[3]),
-              Integer.valueOf(("" + (char) data[4] + (char) data[5])) - 1,
-              Integer.valueOf("" + (char) data[6] + (char) data[7]),
-              Integer.valueOf("" + (char) data[8] + (char) data[9]),
-              Integer.valueOf("" + (char) data[10] + (char) data[11]),
-              Integer.valueOf("" + (char) data[12] + (char) data[13]));
+          cal.set(2000 + Integer.valueOf("" + (char) data[1] + (char) data[2]),
+              Integer.valueOf(("" + (char) data[3] + (char) data[4])) - 1,
+              Integer.valueOf("" + (char) data[5] + (char) data[6]),
+              Integer.valueOf("" + (char) data[7] + (char) data[8]),
+              Integer.valueOf("" + (char) data[9] + (char) data[10]),
+              Integer.valueOf("" + (char) data[11] + (char) data[12]));
           movementData.setTimestamp(cal.getTime());
-          movementData.setMovementsX(ByteUtil.upperNibble(data[15]) + ByteUtil.
-              lowerNibble(data[15]));
-          movementData.setMovementsY(ByteUtil.upperNibble(data[16]) + ByteUtil
-              .lowerNibble(data[16]));
-          
+          movementData.setMovementsX(ByteUtil.upperNibble(data[14]) + ByteUtil.
+              lowerNibble(data[14]));
+          movementData.setMovementsY(ByteUtil.upperNibble(data[15]) + ByteUtil
+              .lowerNibble(data[15]));
 
           final MovementEvent movementEvent = new MovementEvent(this,
               movementData,
-              sensorId.toString(), "" + (char) data[17], data);
+              sensorId.toString(), "" + (char) data[16], data);
           if (AxboDataParser.log.isDebugEnabled()) {
             AxboDataParser.log.debug("movement event: " + movementEvent);
           }
@@ -479,15 +527,24 @@ enum AxboDataStates implements AxboDataState {
           DeviceContext.getDeviceType().getDataInterface().dataReceived();
           break;
 
-        case AxboDataParser.DUMMY_DATA_BYTE:
-
+        case AxboDataParser.DUMMY_COMMAND_BYTE:
+          // set the aXbo memory size to 1 MB
+          AxboDataParser.INSTANCE.setMemSize(1);
           // notify data processed successfully
           DeviceContext.getDeviceType().getDataInterface().dataReceived();
           break;
+
+        case AxboDataParser.DUMMY_COMMAND_BYTE_HW12:
+          // set the aXbo memory size to 2 MB for new Hardware
+          AxboDataParser.INSTANCE.setMemSize(2);
+          // notify data processed successfully
+          DeviceContext.getDeviceType().getDataInterface().dataReceived();
+          break;
+
         default:
           if (AxboDataParser.log.isDebugEnabled())
             AxboDataParser.log.debug("Unhandled command: " + ByteUtil.dumpByte(
-                data[0]));
+                command));
       }
     } catch (RuntimeException ex) {
       AxboDataParser.log.error("failed to process data:" + ByteUtil.
