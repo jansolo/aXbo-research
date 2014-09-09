@@ -31,11 +31,15 @@ public class AxboCommandUtil {
   /**
    * The size of an aXbo memory frame in bytes.
    */
-  public static final int FRAME_SIZE = 66;
+  public static final int MEM_BUFFER_SIZE = 66;
   /**
    * The size of an aXbo memory page in bytes.
    */
-  public static final int PAGE_SIZE = 66 * 4;
+  public static final int MEM_PAGE_SIZE = 66 * 4;
+
+  private static final int PROTOCOL_PREFIX_LEN = 8;
+
+  private static final int PROTOCOL_SUFFIX_LEN = 4;
 
   /**
    * Sleeps the current thread.
@@ -310,7 +314,7 @@ public class AxboCommandUtil {
       (byte) digits[1],
       (byte) digits[2],
       (byte) digits[3],
-      (byte) digits[4],
+      (byte) digits[PROTOCOL_SUFFIX_LEN],
       (byte) digits[5],
       (byte) digits[6],
       (byte) digits[7],
@@ -384,7 +388,8 @@ public class AxboCommandUtil {
     // sync communication first
     syncInterface(portName);
     // clear serial number
-    getDataInterface().writeData(portName, AxboCommandUtil.getClearSerialNumberCmd(), 1);
+    getDataInterface().writeData(portName, AxboCommandUtil
+        .getClearSerialNumberCmd(), 1);
   }
 
   /**
@@ -532,30 +537,47 @@ public class AxboCommandUtil {
     //final byte highByte = bufferToggle ? (byte)0x00 : (byte)0x80;
     final byte highByte = (byte) 0x00;
     boolean protocolToggle = true;
+    final int pageSize = MEM_PAGE_SIZE * AxboDataParser.INSTANCE.getMemSize();
+    final int frameSize = MEM_BUFFER_SIZE;
     // write frames to page buffer
-    for (int frame = 0; frame < PAGE_SIZE / FRAME_SIZE; frame++) {
-      final int framePos = frame * FRAME_SIZE;
+    for (int frame = 0; frame < pageSize / frameSize; frame++) {
+      final int framePos = frame * frameSize;
       // protocol len = prefix len + frame len + suffix len
-      byte[] protocol = new byte[8 + FRAME_SIZE + 4];
+      byte[] protocol = new byte[PROTOCOL_PREFIX_LEN + frameSize
+          + PROTOCOL_SUFFIX_LEN];
       // prefix
-      protocol[0] = (byte) 0x00;
-      protocol[1] = (byte) 0x10;
-      protocol[2] = (byte) 0x02;
-      protocol[3] = protocolToggle ? (byte) 0x01 : (byte) 0x81;
-      protocol[4] = (byte) 0xBC;
-      protocol[5] = highByte;
-      protocol[6] = (byte) (framePos);
-      protocol[7] = (byte) FRAME_SIZE;
+      int pos = 0;
+      protocol[pos] = (byte) 0x00;
+      pos++;
+      protocol[pos] = (byte) 0x10;
+      pos++;
+      protocol[pos] = (byte) 0x02;
+      pos++;
+      protocol[pos] = protocolToggle ? (byte) 0x01 : (byte) 0x81;
+      pos++;
+      protocol[pos] = (byte) 0xBC;
+      pos++;
+      protocol[pos] = ByteUtil.highByte(framePos);
+      pos++;
+      protocol[pos] = ByteUtil.lowByte(framePos);
+      pos++;
+      protocol[pos] = (byte) frameSize;
+      pos++;
       // copy frame data to protocol
-      System.arraycopy(soundData, (page * PAGE_SIZE) + framePos, protocol, 8,
-          FRAME_SIZE);
+      System.arraycopy(soundData, (page * pageSize) + framePos, protocol, pos,
+          frameSize);
       // suffix
-      protocol[FRAME_SIZE + 8] = (byte) 0x10;
-      protocol[FRAME_SIZE + 9] = (byte) 0x03;
+      pos += frameSize;
+      protocol[pos] = (byte) 0x10;
+      pos++;
+      protocol[pos] = (byte) 0x03;
       // checksum
-      int checksum = ByteUtil.calcChecksum(protocol, 3, 8 + FRAME_SIZE);
-      protocol[FRAME_SIZE + 10] = ByteUtil.highByte(checksum);
-      protocol[FRAME_SIZE + 11] = ByteUtil.lowByte(checksum);
+      int checksum = ByteUtil.calcChecksum(protocol, 3, PROTOCOL_PREFIX_LEN
+          + frameSize);
+      pos++;
+      protocol[pos] = ByteUtil.highByte(checksum);
+      pos++;
+      protocol[pos] = ByteUtil.lowByte(checksum);
 
       // write frame to buffer
       getDataInterface().writeData(portName, escapeDLE(protocol), 3);
@@ -608,7 +630,8 @@ public class AxboCommandUtil {
     int b = 0;
     int pos = 0;
     while ((b = in.read()) != -1) {
-      if (b == 0x10 && pos > 4 && pos < data.length - 4) {
+      if (b == 0x10 && pos > PROTOCOL_SUFFIX_LEN && pos < data.length
+          - PROTOCOL_SUFFIX_LEN) {
         out.write(b);
       }
       out.write(b);

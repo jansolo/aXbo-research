@@ -1,7 +1,6 @@
 package com.dreikraft.axbo.data;
 
 import com.dreikraft.events.ApplicationEventDispatcher;
-import com.dreikraft.axbo.Axbo;
 import com.dreikraft.axbo.OS;
 import com.dreikraft.axbo.events.AxboConnected;
 import com.dreikraft.axbo.events.AxboDisconnected;
@@ -110,13 +109,8 @@ public enum RXTXSerialDataInterface implements DataInterface {
       // notify gui about successful connection
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new AxboConnected(
           this, true));
-    } catch (PortInUseException ex) {
-      serialPort.close();
-      throw new DataInterfaceException(ex.getMessage(), ex);
-    } catch (UnsupportedCommOperationException ex) {
-      serialPort.close();
-      throw new DataInterfaceException(ex.getMessage(), ex);
-    } catch (TooManyListenersException ex) {
+    } catch (PortInUseException | UnsupportedCommOperationException |
+        TooManyListenersException ex) {
       serialPort.close();
       throw new DataInterfaceException(ex.getMessage(), ex);
     }
@@ -194,9 +188,7 @@ public enum RXTXSerialDataInterface implements DataInterface {
           retryCount++;
         }
       }
-    } catch (InterruptedException ex) {
-      log.error(ex.getMessage(), ex);
-    } catch (IOException ex) {
+    } catch (InterruptedException | IOException ex) {
       log.error(ex.getMessage(), ex);
     }
 
@@ -240,7 +232,7 @@ public enum RXTXSerialDataInterface implements DataInterface {
   @Override
   public List<String> getCommPortNames() {
 
-    final List<String> commPortNames = new ArrayList<String>();
+    final List<String> commPortNames = new ArrayList<>();
     if (OS.Mac.isCurrent()) {
       // on mac os there is only this device
       commPortNames.add("/dev/tty.SLAB_USBtoUART");
