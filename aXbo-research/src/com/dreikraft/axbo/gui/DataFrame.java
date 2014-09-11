@@ -104,7 +104,7 @@ public class DataFrame extends JPanel implements Printable {
   }
 
   public void createNewChart(final SleepData sleepData) {
-    
+
     this.sleepData = sleepData;
 
     final IntervalXYDataset dataset = TimeSeriesUtil.createDataset(sleepData,
@@ -118,24 +118,20 @@ public class DataFrame extends JPanel implements Printable {
     dateAxis.setTickLabelPaint(AXIS_COLOR);
 
     // create movement plot
-    final XYPlot movementsPlot = createMovementsPlot(dataset, 
-        sleepData.calculateStartTime(), sleepData.getWakeIntervalStart(), 
+    final XYPlot movementsPlot = createMovementsPlot(dataset,
+        sleepData.calculateStartTime(), sleepData.getWakeIntervalStart(),
         sleepData.calculateWakeIntervalEnd(),
-        TimeSeriesUtil.createKeyDataset(sleepData, 
-            BundleUtil.getMessage("chart.keyseries.label")), 
-        TimeSeriesUtil.createSnoozeDataset(sleepData, 
-            BundleUtil.getMessage("chart.snoozeseries.label")), 
+        TimeSeriesUtil.createKeyDataset(sleepData,
+            BundleUtil.getMessage("chart.keyseries.label")),
+        TimeSeriesUtil.createSnoozeDataset(sleepData,
+            BundleUtil.getMessage("chart.snoozeseries.label")),
         sleepData.getWakeupTime(), dateAxis);
-
-    // create moving average plot
-    //final XYPlot distributionPlot = createMovementDistributionPlot(timeSeries, 
-    //    dateAxis, 10);
 
     // create moving average plot
     final XYPlot mvgAvgPlot = createMovementDistributionPlot(
         TimeSeriesUtil.createMovingAverage(
             ((TimeSeriesCollection) dataset).getSeries(0), 1, 1), dateAxis, 4);
-    
+
     CombinedDomainXYPlot plot = new CombinedDomainXYPlot(dateAxis);
     plot.add(movementsPlot, 15);
     //plot.add(distributionPlot, 1);
@@ -152,7 +148,7 @@ public class DataFrame extends JPanel implements Printable {
     chart.setAntiAlias(false);
     chart.setTextAntiAlias(true);
     chart.removeLegend();
-    
+
     // create a new chart panel
     if (chartPanel != null) {
       pnlChart.removeAll();
@@ -176,15 +172,15 @@ public class DataFrame extends JPanel implements Printable {
     renderer.setSeriesOutlinePaint(0, null);
 
     final double max = timeSeries.getMaxY() / 3;
-    final LookupPaintScale paintScale = new LookupPaintScale(0, 
+    final LookupPaintScale paintScale = new LookupPaintScale(0,
         timeSeries.getMaxY(), BAR_COLOR2);
     int diffR = BAR_COLOR2.getRed() - BAR_COLOR.getRed();
     int diffG = BAR_COLOR2.getGreen() - BAR_COLOR.getGreen();
     int diffB = BAR_COLOR2.getBlue() - BAR_COLOR.getBlue();
     for (int i = 1; i <= steps; i++) {
       paintScale.add(max / steps * i, new Color(
-          BAR_COLOR2.getRed() - (diffR * i / steps), 
-          BAR_COLOR2.getGreen() - (diffG * i / steps), 
+          BAR_COLOR2.getRed() - (diffR * i / steps),
+          BAR_COLOR2.getGreen() - (diffG * i / steps),
           BAR_COLOR2.getBlue() - (diffB * i / steps)));
     }
 
@@ -352,10 +348,13 @@ public class DataFrame extends JPanel implements Printable {
         end = start + (duration * 60 * 1000);
       }
 
-      chartPanel.getChart().getXYPlot().getDomainAxis().setRange(start - 1000,
-          end + 1000);
-      chartPanel.getChart().getXYPlot().getRangeAxis().setAutoRange(false);
-      chartPanel.getChart().getXYPlot().getRangeAxis().setRange(range);
+      final CombinedDomainXYPlot plot = (CombinedDomainXYPlot) chartPanel
+          .getChart().getXYPlot();
+      final XYPlot barPlot = (XYPlot) plot.getSubplots().get(0);
+      barPlot.getDomainAxis().setRange(start - 1000, end + 1000);
+      barPlot.getRangeAxis().setAutoRange(false);
+      barPlot.getRangeAxis().setRange(range);
+      
     } catch (Exception ex) {
       log.warn("invalid zoom input", ex);
       chartPanel.restoreAutoBounds();
