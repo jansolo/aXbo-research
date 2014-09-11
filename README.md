@@ -84,3 +84,10 @@ If you like to contribute, there are some areas of specific interest:
 - [ ] A nice GUI for creating custom sound packages. The required utility classes for creating sound packages are already there.
 - [ ] Uploading firmware updates to aXbo. The current firmware update tool supports Windows only.
 - [ ] Rewrite/Rethink the AxboCommandUtil class. This is old and very ugly code. I did not come up with a better solution yet.
+
+Discussion
+----------
+
+Please discuss all topics regarding the development of aXbo-research in following mail group:
+
+https://groups.google.com/forum/#!forum/axbo-research-dev

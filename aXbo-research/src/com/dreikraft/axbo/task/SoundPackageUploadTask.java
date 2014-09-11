@@ -2,6 +2,8 @@ package com.dreikraft.axbo.task;
 
 import com.dreikraft.axbo.Axbo;
 import com.dreikraft.axbo.data.AxboCommandUtil;
+import static com.dreikraft.axbo.data.AxboCommandUtil.MEM_PAGE_SIZE;
+import com.dreikraft.axbo.data.AxboDataParser;
 import com.dreikraft.axbo.data.DataInterfaceException;
 import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.axbo.events.SoundUpload;
@@ -20,8 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -117,10 +117,11 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
         byteOut.flush();
 
         // fill the last page with 0xFF
-        int pageCount = pos / AxboCommandUtil.PAGE_SIZE;
-        final int rest = pos - (pageCount * AxboCommandUtil.PAGE_SIZE);
+        int pageSize = MEM_PAGE_SIZE * AxboDataParser.INSTANCE.getMemSize();
+        int pageCount = pos / pageSize;
+        final int rest = pos - (pageCount * pageSize);
         if (rest > 0) {
-          byte[] fillBytes = new byte[AxboCommandUtil.PAGE_SIZE - rest];
+          byte[] fillBytes = new byte[pageSize - rest];
           Arrays.fill(fillBytes, (byte) 0xFF);
           byteOut.write(fillBytes);
           pageCount++;
@@ -138,9 +139,7 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
         startPage += pageCount;
         step++;
         setProgress((int) (step * stepRate));
-      } catch (IOException ex) {
-        throw new DataInterfaceException(ex.getMessage(), ex);
-      } catch (SoundPackageException ex) {
+      } catch (IOException | SoundPackageException ex) {
         throw new DataInterfaceException(ex.getMessage(), ex);
       } finally {
         try {
@@ -164,7 +163,7 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
   private boolean containsDataKeyword(ByteArrayOutputStream headerOut)
       throws UnsupportedEncodingException, IOException {
     headerOut.flush();
-    return headerOut.toString("US-ASCII").indexOf("data") > -1;
+    return headerOut.toString("US-ASCII").contains("data");
   }
 
   private void writeSoundData(final String portName, final Sound sound,
@@ -195,10 +194,7 @@ public class SoundPackageUploadTask extends AxboTask<SoundPackage, String> {
       final SoundPackage soundPackage = get();
       log.info("task " + getClass().getSimpleName() + " performed successfully");
       setResult(AxboTask.Result.SUCCESS);
-    } catch (InterruptedException ex) {
-      log.error("failed to upload sound package", ex);
-      setResult(AxboTask.Result.FAILED);
-    } catch (ExecutionException ex) {
+    } catch (InterruptedException | ExecutionException ex) {
       log.error("failed to upload sound package", ex);
       setResult(AxboTask.Result.FAILED);
     }
