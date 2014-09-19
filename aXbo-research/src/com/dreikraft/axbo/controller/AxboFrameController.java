@@ -382,8 +382,8 @@ public final class AxboFrameController implements ApplicationEventEnabled {
         // open select Sleepdates
         final DataFrameController dataViewCtrl =
             new DataFrameController(sleepData);
-        dataViewCtrl.init();
         frame.addDataView(dataViewCtrl.getView());
+        dataViewCtrl.init();
         countNew++;
       }
       if (openSleepDataList.size() + countNew > MAX_OPEN_DIAGRAMS) {
