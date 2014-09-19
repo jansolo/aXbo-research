@@ -14,6 +14,7 @@ import com.install4j.api.update.UpdateSchedule;
 import com.install4j.api.update.UpdateScheduleRegistry;
 import de.javasoft.plaf.synthetica.SyntheticaBlackEyeLookAndFeel;
 import de.javasoft.plaf.synthetica.SyntheticaLookAndFeel;
+import com.dreikraft.axbo.model.SupportedLanguage;
 import com.dreikraft.axbo.sound.SoundPackage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -23,13 +24,13 @@ import java.util.regex.Pattern;
 import javax.swing.UIManager;
 import org.apache.commons.logging.*;
 import java.io.IOException;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.plaf.basic.BasicHeaderUI;
 import org.jdesktop.swingx.plaf.basic.BasicHyperlinkUI;
 import org.jdesktop.swingx.plaf.basic.BasicMonthViewUI;
-
 
 /**
  * aXbo startup class.
@@ -39,54 +40,64 @@ import org.jdesktop.swingx.plaf.basic.BasicMonthViewUI;
 public final class Axbo implements ApplicationEventEnabled {
 
   public static final Log log = LogFactory.getLog(Axbo.class);
+
   // default dirs
   public static final String APPLICATION_DIR = "aXbo";
-  public static final String PROJECT_DIR_DEFAULT =
-      System.getProperty("user.home") + System.getProperty("file.separator")
+  public static final String PROJECT_DIR_DEFAULT = System.getProperty(
+      "user.home") + System.getProperty("file.separator")
       + Axbo.APPLICATION_DIR + System.getProperty("file.separator") + "projects";
-  public static final String SOUND_PACKAGES_DIR =
-      System.getProperty("user.home") + System.getProperty("file.separator")
+  public static final String SOUND_PACKAGES_DIR = System
+      .getProperty("user.home") + System.getProperty("file.separator")
       + Axbo.APPLICATION_DIR + System.getProperty("file.separator") + "sounds";
+
   // file constants
   public static final String SOUND_DATA_FILE_EXT = ".axs";
+
   // images and icons
-  public static final String BACKGROUND_IMAGE_DEFAULT =
-      "/resources/images/background_soft.jpg";
-  public static final String ICON_IMAGE_DEFAULT =
-      "/resources/images/32x32px_researchicon.png";
-  public static final String INTERNAL_ICON_IMAGE_DEFAULT =
-      "/resources/images/32x32px_researchicon.png";
+  public static final String BACKGROUND_IMAGE_DEFAULT
+      = "/resources/images/background_soft.jpg";
+  public static final String ICON_IMAGE_DEFAULT
+      = "/resources/images/32x32px_researchicon.png";
+  public static final String INTERNAL_ICON_IMAGE_DEFAULT
+      = "/resources/images/32x32px_researchicon.png";
+
   // sleep data constants
   public static final int MAX_MOVEMENTS_DEFAULT = 100;
   public static final long CLEANER_INTERVAL_DEFAULT = 3 * 60 * 60 * 1000;
   public static final float AVERAGE_MOVEMENTS_THRESHOLD = 10;
   public static final long MINIMUM_SLEEP_DURATION = 30 * 60 * 1000;
   public static final int MINIMUM_MOVEMENTS = 100;
+
   // === preferences ===
   // serial port prefs
   public static final String SERIAL_PORT_NAME_PREF = "serialPort.name";
+
   // language prefs
-  public static final String LANGUAGES_PREF = "languages";
-  public static final String LANGUAGES_DEFAULT = "en,de,fr,ja,ru";
   public static final String LANGUAGE_PREF = "language";
-  public static final String LANGUAGE_DEFAULT = "en";
+
   // diagramm prefs
   public static final String TIME_PERIOD_CLASS_PREF = "timePeriodClass";
-  public static final String TIME_PERIOD_CLASS_DEFAULT =
-      "org.jfree.data.time.Minute";
+  public static final String TIME_PERIOD_CLASS_DEFAULT
+      = "org.jfree.data.time.Minute";
+
   // deviceType pref
   public static final String DEVICE_TYPE_PREF = "deviceType";
   public static final String DEVICE_TYPE_DEFAULT = "AXBO";
   public static final int COMPARE_OFFSET = 12;
   public static final String STANDALONE_UPDATER_ID = "349";
   public static final String SILENT_UPDATER_ID = "389";
+
+  // chart type
+  public static final String CHART_TYPE_PREF = "chartType";
+
   // === members ===
-  // application singleton
-  private static Axbo CONTROLLER = new Axbo();
+  /**
+   * Application singleton.
+   */
+  private static final Axbo CONTROLLER = new Axbo();
+
   private AxboFrameController axboFrameController;
-  //private DataFramesController internalFrameListController;
   private PreferencesController prefCtrl;
-  //private SoundPackageFrameController soundPkgCtrl;
 
   public static void main(final String[] args) {
     Axbo controller = getApplicationController();
@@ -138,20 +149,22 @@ public final class Axbo implements ApplicationEventEnabled {
 
     // set desired locale
     try {
-      String langsPref = getApplicationPreferences().get(LANGUAGES_PREF,
-          LANGUAGES_DEFAULT);
-      String langPref = getApplicationPreferences().get(LANGUAGE_PREF, "unset");
-      if (!langPref.equals("unset")) {
-        Locale.setDefault(new Locale(langPref));
-      }
-      if (langsPref.indexOf(Locale.getDefault().getLanguage()) == -1) {
-        Locale.setDefault(new Locale(LANGUAGE_DEFAULT));
-      }
-    } catch (Exception ex) {
-      log.error(ex.getMessage(), ex);
+      final String langPref = getApplicationPreferences().get(LANGUAGE_PREF,
+          Locale.getDefault().getLanguage());
+      final SupportedLanguage lang = SupportedLanguage.valueOf(langPref);
+      Locale.setDefault(Locale.forLanguageTag(lang.name()));
+    } catch (IllegalArgumentException ex) {
+      Locale.setDefault(Locale.ENGLISH);
+      log.warn(ex.getMessage(), ex);
     }
-    if (log.isDebugEnabled()) {
-      log.debug("Current Locale: " + Locale.getDefault());
+    if (log.isDebugEnabled())
+      log.debug("configured application locale: " + Locale.getDefault());
+
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (ClassNotFoundException | InstantiationException |
+        IllegalAccessException | UnsupportedLookAndFeelException ex) {
+      log.warn("failed to set system look & feel", ex);
     }
 
     // set gui prefs
@@ -203,7 +216,7 @@ public final class Axbo implements ApplicationEventEnabled {
     //initial
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
         new ApplicationInitialize(
-        this));
+            this));
   }
 
   public void handle(final UpdateCheck evt)
@@ -238,6 +251,7 @@ public final class Axbo implements ApplicationEventEnabled {
     }
   };
 }
+
 class AxboShutdownHook extends Thread {
 
   @Override

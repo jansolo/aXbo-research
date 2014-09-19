@@ -61,7 +61,7 @@ public class DataFrameController implements ApplicationEventEnabled
         SleepDataSave.class, this);
 
     view.init();
-    view.createNewChart(sleepData);
+    view.createChartPanel(sleepData);
 
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new DiagramStatsUpdate(
         this));
