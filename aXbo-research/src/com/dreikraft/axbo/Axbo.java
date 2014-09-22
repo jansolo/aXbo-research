@@ -60,6 +60,7 @@ public final class Axbo implements ApplicationEventEnabled {
   public static final float AVERAGE_MOVEMENTS_THRESHOLD = 10;
   public static final long MINIMUM_SLEEP_DURATION = 30 * 60 * 1000;
   public static final int MINIMUM_MOVEMENTS = 100;
+  public static final int MAXIMUM_SLEEP_DURATION = 14 * 60 * 60 * 1000;;
 
   // === preferences ===
   // serial port prefs

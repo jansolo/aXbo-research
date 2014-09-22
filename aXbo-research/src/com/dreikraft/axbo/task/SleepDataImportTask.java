@@ -156,7 +156,7 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
       SleepData sleepData = new SleepData(sensorId.toString(), name,
           DeviceType.AXBO, "");
       long currentSleepEnd = movementEvents.get(0).getMovementData().
-          getTimestamp().getTime() + 8 * SleepData.HOUR;
+          getTimestamp().getTime() + Axbo.MAXIMUM_SLEEP_DURATION * SleepData.HOUR;
 
       // iterate over all movements for current sensor id
       for (int i = 0; i < movementEvents.size(); i++) {
@@ -181,7 +181,7 @@ public class SleepDataImportTask extends AxboTask<Integer, Integer>
           sleepData = new SleepData(sensorId.toString(), name,
               DeviceType.AXBO, "");
           currentSleepEnd = movement.getTimestamp().getTime() + 
-              8 * SleepData.HOUR;
+              Axbo.MAXIMUM_SLEEP_DURATION * SleepData.HOUR;
         }
 
         sleepData.addMovement(movement);
