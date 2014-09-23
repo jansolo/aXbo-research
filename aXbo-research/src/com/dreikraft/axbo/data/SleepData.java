@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
  * @author jan.illetschko@3kraft.com
  */
 public class SleepData implements Serializable {
-
+  
   public static final long serialVersionUID = 1L;
   public static final Log log = LogFactory.getLog(SleepData.class);
   public static final long MINUTE = 60 * 1000;
@@ -54,6 +54,7 @@ public class SleepData implements Serializable {
 
   /**
    * Creates a new instance of SleepData
+   *
    * @param id
    * @param name
    * @param deviceType
@@ -107,7 +108,7 @@ public class SleepData implements Serializable {
       // calculate a default value from start time and default duration
       endTime = new Date(new Date().getTime()
           + DEFAULT_SLEEP_DURATION);
-
+      
       if (powerNap) {
         // use start time plus wake interval for powernap
         endTime = new Date(calculateStartTime().getTime() + getWakeInterval()
@@ -141,12 +142,12 @@ public class SleepData implements Serializable {
     if (sleepStart != null) {
       return new Date(sleepStart.getTime());
     }
-
+    
     sleepStart = calculateStartTime();
     if (powerNap) {
       return new Date(sleepStart.getTime());
     }
-
+    
     if (movements.size() > 0) {
       MovementData prevMove = movements.get(0);
       for (int i = 1; i < movements.size(); i++) {
@@ -209,15 +210,20 @@ public class SleepData implements Serializable {
   }
 
   /**
-   * Calculates the sum of all movements of this sleep record.
+   * Calculates the sum of all movements between sleep start and wake up of this
+   * sleep record.
    *
    * @return the movements sum
    */
   public int calculateMovementCount() {
+    final Date start = calculateStartTime();
+    final Date end = wakeupTime != null ? wakeupTime : calculateEndTime();
+    
     int count = 0;
     for (MovementData move : movements) {
-      count += move.getMovementsX() + move.getMovementsY()
-          + move.getMovementsZ();
+      if (move.getTimestamp().after(start) && move.getTimestamp().before(end))
+        count += move.getMovementsX() + move.getMovementsY()
+            + move.getMovementsZ();
     }
     return count;
   }
@@ -282,135 +288,135 @@ public class SleepData implements Serializable {
     }
     return s;
   }
-
+  
   public String getId() {
     return id;
   }
-
+  
   public void setId(String id) {
     this.id = id;
   }
-
+  
   public String getName() {
     return name;
   }
-
+  
   public void setName(String name) {
     this.name = name;
   }
-
+  
   public Date getWakeupTime() {
     return wakeupTime != null ? new Date(wakeupTime.getTime()) : null;
   }
-
+  
   public void setWakeupTime(Date wakeupTime) {
     this.wakeupTime = new Date(wakeupTime.getTime());
   }
-
+  
   public List<MovementData> getMovements() {
     return movements;
   }
-
+  
   public void setMovements(List<MovementData> movements) {
     this.movements = movements;
   }
-
+  
   public MovementData getMovement(int index) {
     return movements.get(index);
   }
-
+  
   public void setMovements(int index, MovementData movement) {
     movements.set(index, movement);
   }
-
+  
   public int addMovement(MovementData movement) {
     int index = movements.size();
     movements.add(movement);
     return index;
   }
-
+  
   public DeviceType getDeviceType() {
     return deviceType;
   }
-
+  
   public void setDeviceType(DeviceType deviceType) {
     this.deviceType = deviceType;
   }
-
+  
   public void setDataFile(File dataFile) {
     this.dataFile = dataFile;
   }
-
+  
   public File getDataFile() {
     return dataFile;
   }
-
+  
   public Date getWakeIntervalStart() {
     return wakeIntervalStart != null ? new Date(wakeIntervalStart.getTime())
         : null;
   }
-
+  
   public void setWakeIntervalStart(Date wakeIntervalStart) {
     this.wakeIntervalStart = new Date(wakeIntervalStart.getTime());
   }
-
+  
   public WakeInterval getWakeInterval() {
     if (wakeInterval == null) {
       wakeInterval = WakeInterval.LONG;
     }
     return wakeInterval;
   }
-
+  
   public void setWakeInterval(WakeInterval wakeInterval) {
     this.wakeInterval = wakeInterval;
   }
-
+  
   public String getComment() {
     return comment == null ? "" : comment;
   }
-
+  
   public void setComment(String comment) {
     this.comment = comment;
   }
-
+  
   public boolean isPowerNap() {
     return powerNap;
   }
-
+  
   public void setPowerNap(boolean powerNap) {
     this.powerNap = powerNap;
   }
-
+  
   public WakeType getWakeType() {
     return wakeType;
   }
-
+  
   public void setWakeType(WakeType wakeType) {
     this.wakeType = wakeType;
   }
-
+  
   public int getCompareStartHour() {
     return compareStartHour;
   }
-
+  
   public void setCompareStartHour(int compareStartHour) {
     this.compareStartHour = compareStartHour;
   }
-
+  
   public String getFirmwareVersion() {
     return firmwareVersion;
   }
-
+  
   public void setFirmwareVersion(String firmwareVersion) {
     this.firmwareVersion = firmwareVersion;
   }
-
+  
   public String getSleepDataFilename() {
     return getName().replaceAll(" ", "_") + "_" + new SimpleDateFormat(
         "yyyy_MM_dd_HH_mm").format(new Date(
-        calculateStartTime().getTime())) + SLEEP_DATA_FILE_EXT;
+                calculateStartTime().getTime())) + SLEEP_DATA_FILE_EXT;
   }
-
+  
   @Override
   public boolean equals(Object obj) {
     if (obj == null) {
@@ -437,7 +443,7 @@ public class SleepData implements Serializable {
     }
     return true;
   }
-
+  
   @Override
   public int hashCode() {
     int hash = 7;
