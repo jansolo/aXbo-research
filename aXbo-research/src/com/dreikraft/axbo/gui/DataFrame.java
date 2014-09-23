@@ -205,6 +205,10 @@ public class DataFrame extends JPanel implements Printable {
     chartPanel.setBorder(null);
     chartPanel.setRangeZoomable(false);
     chartPanel.setPopupMenu(chartPanelPopupMenu);
+    chartPanel.setMaximumDrawHeight(2000);
+    chartPanel.setMaximumDrawWidth(2000);
+    chartPanel.setMinimumDrawWidth(10);
+    chartPanel.setMinimumDrawHeight(10);
     pnlChart.add(chartPanel);
   }
 
