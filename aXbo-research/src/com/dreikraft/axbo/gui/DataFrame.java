@@ -150,7 +150,7 @@ public class DataFrame extends JPanel implements Printable {
     final DateAxis dateAxis = new DateAxis();
     dateAxis.setTickLabelPaint(AXIS_COLOR);
     
-    final Date startTime = sleepData.calculateStartTime();
+    final Date startTime = sleepData.calculateSleepStart();
     final Date wakeIntervalStart = sleepData.getWakeIntervalStart();
     final Date wakeIntervalEnd = sleepData.calculateWakeIntervalEnd();
     final Date wakeupTime = sleepData.getWakeupTime();
