@@ -1,6 +1,5 @@
 /*
  * © 2010 3kraft IT GmbH & Co KG
- * $Id: PreferencesController.java,v 1.13 2010-11-29 15:42:24 illetsch Exp $
  */
 package com.dreikraft.axbo.controller;
 
@@ -11,6 +10,7 @@ import com.dreikraft.axbo.Axbo;
 import com.dreikraft.axbo.OS;
 import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.axbo.data.SensorID;
+import com.dreikraft.axbo.events.ChartTypeChanged;
 import com.dreikraft.axbo.events.PrefsClose;
 import com.dreikraft.axbo.events.PrefsOpen;
 import com.dreikraft.axbo.util.GuiUtils;
@@ -18,18 +18,15 @@ import com.dreikraft.axbo.gui.PreferencesDialog;
 import com.dreikraft.axbo.model.ChartType;
 import com.dreikraft.axbo.model.SupportedLanguage;
 import com.dreikraft.axbo.util.BundleUtil;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import org.apache.commons.logging.*;
 
-
-/*
- * $Id: PreferencesController.java,v 1.13 2010-11-29 15:42:24 illetsch Exp $
+/**
+ * Controller for the preferences dialog.
  *
- * @author  3Kraft - $Author: illetsch $
+ * @author jan.illetschko@3kraft.com
  */
 public class PreferencesController implements ApplicationEventEnabled {
 
@@ -82,9 +79,7 @@ public class PreferencesController implements ApplicationEventEnabled {
           .append(".").append(ChartType.values()[i]).toString();
       chartTypes[i] = BundleUtil.getMessage(key);
     }
-    final int selectedChartTypeIdx = ChartType.valueOf(Axbo
-        .getApplicationPreferences().get(Axbo.CHART_TYPE_PREF, ChartType.BAR
-            .name())).ordinal();
+    final int selectedChartTypeIdx = Axbo.getChartType().ordinal();
     view.initChartTypeCB(chartTypes, selectedChartTypeIdx);
 
     // set sensor user names
@@ -108,16 +103,26 @@ public class PreferencesController implements ApplicationEventEnabled {
       Axbo.getApplicationPreferences().put(Axbo.SERIAL_PORT_NAME_PREF,
           view.getComPortValue());
 
-      // save chart type preference
-      Axbo.getApplicationPreferences().put(Axbo.CHART_TYPE_PREF, ChartType
-          .values()[view.getChartTypeIndex()].name());
-
       // set persons
       Axbo.getApplicationPreferences().put(SensorID.P1.toString(),
           view.getSensor1Name());
       Axbo.getApplicationPreferences().put(SensorID.P2.toString(),
           view.getSensor2Name());
+
+      // save chart type preference
+      final ChartType oldChartType = Axbo.getChartType();
+      final ChartType chartType
+          = ChartType.values()[view.getChartTypeIndex()];
+      Axbo.getApplicationPreferences().put(Axbo.CHART_TYPE_PREF, chartType
+          .name());
+
+      // reopen the charts with selected chart type
+      if (!chartType.equals(oldChartType)) {
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new ChartTypeChanged(this, chartType));
+      }
     }
+
     view.dispose();
   }
 }
