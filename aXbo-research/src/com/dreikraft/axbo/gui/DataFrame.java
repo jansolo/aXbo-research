@@ -94,7 +94,8 @@ public class DataFrame extends JPanel implements Printable {
   public static final Stroke MARKER_STROKE = new BasicStroke(1.5f);
   public static final int INSET = 20;
   public static final int PRINT_FONT_SIZE = 8;
-  private static final int DISTRIBUTION_STEPS = 6;
+  private static final int DISTRIBUTION_MAX_LIMIT = 4;
+  private static final int DISTRIBUTION_STEPS = 10;
   private ChartPanel chartPanel;
   private SleepData sleepData;
 
@@ -244,13 +245,16 @@ public class DataFrame extends JPanel implements Printable {
     renderer.setBlockAnchor(RectangleAnchor.BOTTOM_LEFT);
     renderer.setSeriesOutlinePaint(0, null);
 
-    final double max = timeSeries.getMaxY() / 3;
+    final double max = timeSeries.getMaxY() / DISTRIBUTION_MAX_LIMIT;
+    int diffR = getBackground().getRed() - BAR_COLOR.getRed();
+    int diffG = getBackground().getGreen() - BAR_COLOR.getGreen();
+    int diffB = getBackground().getBlue() - BAR_COLOR.getBlue();
     final LookupPaintScale paintScale = new LookupPaintScale(0,
-        timeSeries.getMaxY(), getBackground());
-    int diffR = getBackground().getRed() - BAR_COLOR2.getRed();
-    int diffG = getBackground().getGreen() - BAR_COLOR2.getGreen();
-    int diffB = getBackground().getBlue() - BAR_COLOR2.getBlue();
-    for (int i = 1; i <= steps; i++) {
+        timeSeries.getMaxY(), new Color(
+          getBackground().getRed() - (diffR / (steps * 3)),
+          getBackground().getGreen() - (diffG / (steps * 3)),
+          getBackground().getBlue() - (diffB / (steps * 3))));
+    for (int i = 2; i <= steps; i++) {
       paintScale.add(max / steps * i, new Color(
           getBackground().getRed() - (diffR * i / steps),
           getBackground().getGreen() - (diffG * i / steps),
