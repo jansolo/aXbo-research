@@ -90,7 +90,16 @@ public class AxboFrame extends JFrame {
     return dataViews;
   }
 
-  public void addDataView(final DataFrame view) {
+  /**
+   * Adds a sleep data frame to the data panel. Depending on the chart type
+   * different layout constraints will be set.
+   *
+   * @param view a view instance
+   * @param chartType the requested chart type
+   * @param sleepData the sleepData
+   */
+  public void addDataView(final DataFrame view, final ChartType chartType,
+      final SleepData sleepData) {
     final GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 0;
     gbc.gridy = GridBagConstraints.RELATIVE;
@@ -98,21 +107,20 @@ public class AxboFrame extends JFrame {
     gbc.gridheight = 1;
     gbc.anchor = GridBagConstraints.NORTH;
     gbc.weightx = 1.0;
+    final int heightExt = sleepData.getComment() != null && sleepData
+        .getComment().trim().length() > 0 ? 16 : 0;
 
-    final ChartType chartType = ChartType.valueOf(Axbo
-        .getApplicationPreferences().get(
-            Axbo.CHART_TYPE_PREF, ChartType.BAR.name()));
     if (chartType.equals(ChartType.MOVING_AVG)) {
       gbc.fill = GridBagConstraints.HORIZONTAL;
       gbc.weighty = 0;
-      view.setMinimumSize(new Dimension(300, 85));
-      view.setPreferredSize(new Dimension(300, 85));
-      view.setMaximumSize(new Dimension(300, 85));
+      view.setMinimumSize(new Dimension(300, 85 + heightExt));
+      view.setPreferredSize(new Dimension(300, 85 + heightExt));
+      view.setMaximumSize(new Dimension(300, 85 + heightExt));
     } else {
       gbc.fill = GridBagConstraints.BOTH;
       gbc.weighty = 1.0;
-      view.setMinimumSize(new Dimension(300, 200));
-      view.setPreferredSize(new Dimension(300, 200));
+      view.setMinimumSize(new Dimension(300, 200 + heightExt));
+      view.setPreferredSize(new Dimension(300, 200 + heightExt));
     }
 
     dataViewsPanel.add(view, gbc);
@@ -1204,14 +1212,10 @@ private void checkUpdateMenuItemActionPerformed(java.awt.event.ActionEvent evt) 
 
       final FileFilter filter = new FileFilter() {
         @Override
-        public boolean accept(File f) {
-          if (!(f.getName().toLowerCase(Locale.ENGLISH).indexOf(
-              Axbo.SOUND_DATA_FILE_EXT.
-              toLowerCase()) < 0) || f.isDirectory()) {
-            return true;
-          } else {
-            return false;
-          }
+        public boolean accept(final File f) {
+          return f.getName().toLowerCase(Locale.ENGLISH)
+              .contains(Axbo.SOUND_DATA_FILE_EXT.
+                  toLowerCase()) || f.isDirectory();
         }
 
         @Override

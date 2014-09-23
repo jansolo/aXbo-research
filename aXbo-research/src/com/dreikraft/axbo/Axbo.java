@@ -9,6 +9,7 @@ import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.axbo.data.DeviceType;
 import com.dreikraft.axbo.data.SleepData;
 import com.dreikraft.axbo.events.UpdateCheck;
+import com.dreikraft.axbo.model.ChartType;
 import com.install4j.api.launcher.ApplicationLauncher;
 import com.install4j.api.update.UpdateSchedule;
 import com.install4j.api.update.UpdateScheduleRegistry;
@@ -112,6 +113,16 @@ public final class Axbo implements ApplicationEventEnabled {
     return Preferences.userNodeForPackage(Axbo.class);
   }
 
+  /**
+   * Returns the currently configured chart type.
+   *
+   * @return the configured chart type
+   */
+  public static ChartType getChartType() {
+    return ChartType.valueOf(Axbo.getApplicationPreferences().get(
+        Axbo.CHART_TYPE_PREF, ChartType.BAR.name()));
+  }
+
   public static String getPortName() {
     return getApplicationPreferences().get(DeviceContext.getDeviceType() + "."
         + Axbo.SERIAL_PORT_NAME_PREF, OS.get().getDefaultPort());
@@ -121,22 +132,16 @@ public final class Axbo implements ApplicationEventEnabled {
     super();
   }
 
-  public void init()
-  {
+  public void init() {
     // check for update
-    if (UpdateScheduleRegistry.getUpdateSchedule() == null)
-    {
+    if (UpdateScheduleRegistry.getUpdateSchedule() == null) {
       UpdateScheduleRegistry.setUpdateSchedule(UpdateSchedule.WEEKLY);
     }
-    if (UpdateScheduleRegistry.checkAndReset())
-    {
-      try
-      {
+    if (UpdateScheduleRegistry.checkAndReset()) {
+      try {
         ApplicationLauncher.launchApplication(SILENT_UPDATER_ID, null, true,
             null);
-      }
-      catch (IOException ex)
-      {
+      } catch (IOException ex) {
         log.error(ex.getMessage(), ex);
       }
     }
@@ -168,8 +173,7 @@ public final class Axbo implements ApplicationEventEnabled {
     }
 
     // set gui prefs
-    String[] li =
-    {
+    String[] li = {
       "Licensee=3kraft",
       "LicenseRegistrationNumber=50031127",
       "Product=Synthetica",
@@ -183,7 +187,7 @@ public final class Axbo implements ApplicationEventEnabled {
     SyntheticaLookAndFeel.setLookAndFeel(SyntheticaBlackEyeLookAndFeel.class.
         getName());
     SyntheticaLookAndFeel.setFont("SansSerif", 11);
-    
+
     // OSX laf 
     System.setProperty("apple.laf.useScreenMenuBar", "true");
     System.setProperty("apple.awt.brushMetalLook", "true");
@@ -219,21 +223,16 @@ public final class Axbo implements ApplicationEventEnabled {
             this));
   }
 
-  public void handle(final UpdateCheck evt)
-  {
-    try
-    {
+  public void handle(final UpdateCheck evt) {
+    try {
       ApplicationLauncher.launchApplication(Axbo.STANDALONE_UPDATER_ID, null,
           false, null);
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       log.error(ex.getMessage(), ex);
     }
   }
 
-  public static class SPWFilenameFilter implements FilenameFilter
-  {
+  public static class SPWFilenameFilter implements FilenameFilter {
 
     @Override
     public boolean accept(File dir, String name) {

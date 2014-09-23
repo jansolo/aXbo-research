@@ -161,7 +161,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     // enable view
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
         new ApplicationInitialized(
-        this));
+            this));
 
     // load stored data
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new SleepDataLoad(
@@ -197,7 +197,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     final AxboFindTask task = new AxboFindTask(evt.getFollowUpTask());
     task.addPropertyChangeListener(new TaskProgressListener(frame, BundleUtil.
         getMessage("statusLabel.findAxbo"), BundleUtil.getErrorMessage(
-        "info.axboFound"),
+            "info.axboFound"),
         BundleUtil.getErrorMessage("globalError.axboNotFound"), false));
     task.execute();
   }
@@ -312,9 +312,9 @@ public final class AxboFrameController implements ApplicationEventEnabled {
       task.addPropertyChangeListener(new TaskProgressListener(frame,
           BundleUtil.getMessage("statusLabel.loadProject"),
           MessageFormat.format(BundleUtil
-          .getMessage("statusLabel.projectLoaded"), files.length),
+              .getMessage("statusLabel.projectLoaded"), files.length),
           MessageFormat.format(BundleUtil
-          .getMessage("statusLabel.projectLoaded"), 0), false));
+              .getMessage("statusLabel.projectLoaded"), 0), false));
       task.execute();
     }
   }
@@ -330,7 +330,7 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     if (dataView != null) {
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
           new DiagramClose(
-          this, dataView));
+              this, dataView));
     }
   }
 
@@ -371,6 +371,11 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     calculateSummary();
   }
 
+  /**
+   * Opens a sleep data record selected in the list of records.
+   * 
+   * @param evt a SleepDataOpen application event 
+   */
   public void handle(final SleepDataOpen evt) {
     final List<SleepData> selectedSleepDataList = evt.getSleepDataList();
     final List<SleepData> openSleepDataList = getOpenSleepDataList();
@@ -380,17 +385,19 @@ public final class AxboFrameController implements ApplicationEventEnabled {
       curSleepData = sleepData;
       if (!openSleepDataList.contains(sleepData)) {
         // open select Sleepdates
-        final DataFrameController dataViewCtrl =
-            new DataFrameController(sleepData);
-        frame.addDataView(dataViewCtrl.getView());
+        final DataFrameController dataViewCtrl = new DataFrameController(
+            sleepData);
+        frame
+            .addDataView(dataViewCtrl.getView(), Axbo.getChartType(), sleepData);
         dataViewCtrl.init();
         countNew++;
       }
       if (openSleepDataList.size() + countNew > MAX_OPEN_DIAGRAMS) {
         ApplicationEventDispatcher.getInstance().dispatchEvent(
             new ApplicationMessageEvent(
-            this, BundleUtil.getErrorMessage("globalError.toManyOpenDiagrams"),
-            true));
+                this, BundleUtil.getErrorMessage(
+                    "globalError.toManyOpenDiagrams"),
+                true));
         break;
       }
     }
@@ -402,6 +409,9 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     calculateSummary();
   }
 
+  /**
+   * Calculates and displays the overall summary of all open sleep data records.
+   */
   private void calculateSummary() {
     final List<SleepData> openSleepDataList = getOpenSleepDataList();
 
@@ -428,17 +438,28 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     final long avgDuration = count > 0 ? sumDuration / count : 0;
     frame
         .showSummary(sumDuration, avgDuration, minDuration, maxDuration, saving,
-        count, openSleepDataList.size());
+            count, openSleepDataList.size());
   }
 
+  /**
+   * Returns a list with opened sleep data records.
+   *
+   * @return open sleep data records
+   */
   private List<SleepData> getOpenSleepDataList() {
-    final List<SleepData> openSleepDataList = new ArrayList<SleepData>();
+    final List<SleepData> openSleepDataList = new ArrayList<>();
     for (final DataFrame dataView : frame.getDataViews()) {
       openSleepDataList.add(dataView.getSleepData());
     }
     return openSleepDataList;
   }
 
+  /**
+   * Returns the view for a sleep data record.
+   *
+   * @param sleepData a sleep data record
+   * @return the corresponding view
+   */
   private DataFrame getDataViewForSleepData(final SleepData sleepData) {
     for (final DataFrame dataView : frame.getDataViews()) {
       if (dataView.getSleepData().equals(sleepData)) {
@@ -490,38 +511,48 @@ public final class AxboFrameController implements ApplicationEventEnabled {
           maxEndHour = endHour;
         }
       }
-      
+
       // zoom all diagrams to the same range
       for (final SleepData sleepData : openSleepDataList) {
         ApplicationEventDispatcher.getInstance().dispatchEvent(new DiagramZoom(
-            this, minStartHour + ":01", (maxEndHour - minStartHour) * 60, COMPARE_RANGE));
+            this, minStartHour + ":01", (maxEndHour - minStartHour) * 60,
+            COMPARE_RANGE));
 
         final String msgParam = new StringBuffer(sleepData.getName()).append(
             " ").append(DateFormat.getDateInstance(DateFormat.SHORT).format(
-            sleepData.
-            calculateStartTime())).toString();
+                    sleepData.
+                    calculateStartTime())).toString();
         final String msg = BundleUtil.getMessage("statusLabel.compareData",
             msgParam);
         ApplicationEventDispatcher.getInstance().dispatchEvent(
             new ApplicationMessageEvent(
-            this, msg, false));
+                this, msg, false));
       }
     }
   }
 
+  /**
+   * Saves sleep data to file.
+   *
+   * @param evt a SleepDataSave application event
+   */
   public void handle(final SleepDataSave evt) {
     final SleepData sleepData = evt.getSleepData();
-    try {
-      final XMLEncoder encoder =
-          new XMLEncoder(new BufferedOutputStream(new FileOutputStream(sleepData
-          .getDataFile())), Charset.forName("UTF-8").name(), true, 0);
-      encoder.writeObject(sleepData);
-      encoder.close();
-    } catch (FileNotFoundException ex) {
-      log.error("failed to save file" + sleepData.getDataFile(), ex);
-    }
+    try (XMLEncoder encoder
+        = new XMLEncoder(new BufferedOutputStream(
+                new FileOutputStream(sleepData
+                    .getDataFile())), Charset.forName("UTF-8").name(), true, 0)) {
+                  encoder.writeObject(sleepData);
+                } catch (FileNotFoundException ex) {
+                  log.error("failed to save file" + sleepData.getDataFile(), ex);
+                }
   }
 
+  /**
+   * Filters the meta data table.
+   *
+   * @param evt a DataSearch application event
+   */
   public void handle(final DataSearch evt) {
     // recalculate the table model
     frame.getMetaDataTableModel().filterData(evt.getName(), evt.getFrom(), evt.
@@ -536,14 +567,15 @@ public final class AxboFrameController implements ApplicationEventEnabled {
   public void handle(final SoundPackageUpload evt) {
 
     // prepare upload task
-    final SoundPackageUploadTask uploadTask =
-        new SoundPackageUploadTask(evt.getSoundPackageFile());
+    final SoundPackageUploadTask uploadTask = new SoundPackageUploadTask(evt
+        .getSoundPackageFile());
     // register progress bar updates
     uploadTask.addPropertyChangeListener(new TaskProgressListener(frame,
         BundleUtil.getMessage("statusLabel.uploadSoundPackage"),
         MessageFormat.format(BundleUtil.getMessage(
-        "statusLabel.uploadSoundPackageSuccess"), evt.getSoundPackageFile()
-        .getName()),
+                "statusLabel.uploadSoundPackageSuccess"), evt
+            .getSoundPackageFile()
+            .getName()),
         BundleUtil.getErrorMessage("globalError.uploadFailed"),
         false));
     // find aXbo first, then execute upload
@@ -561,6 +593,9 @@ public final class AxboFrameController implements ApplicationEventEnabled {
         "statusLabel.uploadProgress", evt.getSoundName()));
   }
 
+  /**
+   * Registers OSX specific handlers.
+   */
   private void registerForMacOSXEvents() {
     if (OS.Mac.isCurrent()) {
       try {
@@ -576,16 +611,25 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     }
   }
 
+  /**
+   * Opens the preferences dialog.
+   */
   public void showPrefs() {
     ApplicationEventDispatcher.getInstance().dispatchEvent(new PrefsOpen(
         this, frame));
   }
 
+  /**
+   * Exits aXbo research. Stops the data interface first.
+   */
   public void exit() {
     DeviceContext.getDeviceType().getDataInterface().stop();
     System.exit(0);
   }
 
+  /**
+   * A progress listener for background tasks.
+   */
   private class TaskProgressListener implements
       PropertyChangeListener {
 
@@ -595,6 +639,15 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     private final String failedMsg;
     private final boolean indeterminate;
 
+    /**
+     * Creates a new listener.
+     *
+     * @param view for a view
+     * @param msg with a message
+     * @param successMsg with a success message
+     * @param failedMsg with an error message
+     * @param indeterminate is indeterminate
+     */
     public TaskProgressListener(final AxboFrame view, final String msg,
         final String successMsg, final String failedMsg,
         final boolean indeterminate) {
@@ -605,40 +658,51 @@ public final class AxboFrameController implements ApplicationEventEnabled {
       this.indeterminate = indeterminate;
     }
 
+    /**
+     * Handles progress status updates for property types progress, state and
+     * result.
+     *
+     * @param evt the event.
+     */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
 
-      if ("progress".equals(evt.getPropertyName())) {
-        if (!indeterminate) {
-          view.setStatusProgressBarValue((Integer) evt.getNewValue());
-        }
-      } else if ("state".equals(evt.getPropertyName())) {
-        if (SwingWorker.StateValue.STARTED.equals(evt.getNewValue())) {
-          taskInProgress = true;
-          view.showStatusMessage(msg);
-          view.showDeviceEnabled();
-          view.setStatusProgressBarValue(0);
-          view.setStatusProgressBarStringPainted(!indeterminate);
-          view.setStatusProgressBarIndeterminate(indeterminate);
+      if (null != evt.getPropertyName())
+        switch (evt.getPropertyName()) {
+          case "progress":
+            if (!indeterminate) {
+              view.setStatusProgressBarValue((Integer) evt.getNewValue());
+            }
+            break;
+          case "state":
+            if (SwingWorker.StateValue.STARTED.equals(evt.getNewValue())) {
+              taskInProgress = true;
+              view.showStatusMessage(msg);
+              view.showDeviceEnabled();
+              view.setStatusProgressBarValue(0);
+              view.setStatusProgressBarStringPainted(!indeterminate);
+              view.setStatusProgressBarIndeterminate(indeterminate);
 
-        } else if (SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
-          taskInProgress = false;
-          view.showDeviceDisabled();
-          view.setStatusProgressBarValue(0);
-          view.setStatusProgressBarStringPainted(false);
-          view.setStatusProgressBarIndeterminate(false);
+            } else if (SwingWorker.StateValue.DONE.equals(evt.getNewValue())) {
+              taskInProgress = false;
+              view.showDeviceDisabled();
+              view.setStatusProgressBarValue(0);
+              view.setStatusProgressBarStringPainted(false);
+              view.setStatusProgressBarIndeterminate(false);
+            }
+            break;
+          case "result":
+            if (AxboTask.Result.SUCCESS.equals(evt.getNewValue())) {
+              view.showStatusMessage(successMsg);
+            } else if (AxboTask.Result.FAILED.equals(evt.getNewValue())) {
+              view.showMessage(failedMsg, true);
+              view.showStatusMessage("");
+            } else if (AxboTask.Result.INTERRUPTED.equals(evt.getNewValue())) {
+              view.showMessage(failedMsg, true);
+              view.showStatusMessage("");
+            }
+            break;
         }
-      } else if ("result".equals(evt.getPropertyName())) {
-        if (AxboTask.Result.SUCCESS.equals(evt.getNewValue())) {
-          view.showStatusMessage(successMsg);
-        } else if (AxboTask.Result.FAILED.equals(evt.getNewValue())) {
-          view.showMessage(failedMsg, true);
-          view.showStatusMessage("");
-        } else if (AxboTask.Result.INTERRUPTED.equals(evt.getNewValue())) {
-          view.showMessage(failedMsg, true);
-          view.showStatusMessage("");
-        }
-      }
     }
   }
 }
