@@ -8,6 +8,7 @@ import com.dreikraft.events.ApplicationInitialize;
 import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.axbo.data.DeviceType;
 import com.dreikraft.axbo.data.SleepData;
+import com.dreikraft.axbo.model.ChartType;
 import com.dreikraft.axbo.model.SupportedLanguage;
 import com.dreikraft.axbo.sound.SoundPackage;
 import java.io.File;
@@ -60,6 +61,7 @@ public final class Axbo implements ApplicationEventEnabled {
   public static final float AVERAGE_MOVEMENTS_THRESHOLD = 10;
   public static final long MINIMUM_SLEEP_DURATION = 30 * 60 * 1000;
   public static final int MINIMUM_MOVEMENTS = 100;
+  public static final int MAXIMUM_SLEEP_DURATION = 14 * 60 * 60 * 1000;;
 
   // === preferences ===
   // serial port prefs
@@ -100,6 +102,16 @@ public final class Axbo implements ApplicationEventEnabled {
 
   public static Preferences getApplicationPreferences() {
     return Preferences.userNodeForPackage(Axbo.class);
+  }
+
+  /**
+   * Returns the currently configured chart type.
+   *
+   * @return the configured chart type
+   */
+  public static ChartType getChartType() {
+    return ChartType.valueOf(Axbo.getApplicationPreferences().get(
+        Axbo.CHART_TYPE_PREF, ChartType.BAR.name()));
   }
 
   public static String getPortName() {

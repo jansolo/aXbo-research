@@ -83,7 +83,7 @@ public class DataFrame extends JPanel implements Printable {
   public static final Color SLEEP_MARKER_PAINT = new Color(0xF0, 0x00, 0XFF,
       0xFF);
   public static final Color WAKE_PAINT = new Color(0x10, 0xCE, 0x15, 0xFF);
-  public static final Color SNOOZE_PAINT = new Color(0xFF, 0xFF, 0xFF, 0xFF);
+  public static final Color SNOOZE_PAINT = new Color(0x00, 0xFF, 0xFF, 0xFF);
   public static final Color WAKE_INTERVALL_PAINT = new Color(0x9D, 0x84, 0x47,
       0x40);
   public static final Color WAKE_INTERVALL_END_PAINT = new Color(0x9D, 0x84,
@@ -150,7 +150,7 @@ public class DataFrame extends JPanel implements Printable {
     final DateAxis dateAxis = new DateAxis();
     dateAxis.setTickLabelPaint(AXIS_COLOR);
     
-    final Date startTime = sleepData.calculateStartTime();
+    final Date startTime = sleepData.calculateSleepStart();
     final Date wakeIntervalStart = sleepData.getWakeIntervalStart();
     final Date wakeIntervalEnd = sleepData.calculateWakeIntervalEnd();
     final Date wakeupTime = sleepData.getWakeupTime();
