@@ -246,9 +246,9 @@ public class DataFrame extends JPanel implements Printable {
     renderer.setSeriesOutlinePaint(0, null);
 
     final double max = timeSeries.getMaxY() / DISTRIBUTION_MAX_LIMIT;
-    int diffR = getBackground().getRed() - BAR_COLOR.getRed();
-    int diffG = getBackground().getGreen() - BAR_COLOR.getGreen();
-    int diffB = getBackground().getBlue() - BAR_COLOR.getBlue();
+    int diffR = getBackground().getRed() - BAR_COLOR2.getRed();
+    int diffG = getBackground().getGreen() - BAR_COLOR2.getGreen();
+    int diffB = getBackground().getBlue() - BAR_COLOR2.getBlue();
     final LookupPaintScale paintScale = new LookupPaintScale(0,
         timeSeries.getMaxY(), new Color(
           getBackground().getRed() - (diffR / (steps * 3)),
