@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="5.1.15" transformSequenceNumber="4">
   <directoryPresets config="../src/resources/images" />
-  <application name="aXbo research" distributionSourceDir="" applicationId="3914-4662-2767-1873" mediaDir="./install4j_output" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="aXbo" publisher="aXbo Ltd." publisherWeb="http://www.axbo.com" version="3.0.12_MAVG" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" installerName="" javaMinVersion="1.7" javaMaxVersion="" allowBetaVM="false" jdkMode="runtimeJre" jdkName="JDK 1.7">
+  <application name="aXbo research" distributionSourceDir="" applicationId="3914-4662-2767-1873" mediaDir="./install4j_output" mediaFilePattern="${compiler:sys.shortName}_${compiler:sys.platform}_${compiler:sys.version}" compression="6" lzmaCompression="true" pack200Compression="true" excludeSignedFromPacking="true" commonExternalFiles="false" createMd5Sums="true" shrinkRuntime="true" shortName="aXbo" publisher="aXbo Ltd." publisherWeb="http://www.axbo.com" version="3.0.13" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="true" macSignature="????" installerName="" javaMinVersion="1.7" javaMaxVersion="" allowBetaVM="false" jdkMode="runtimeJre" jdkName="JDK 1.7">
     <languages skipLanguageSelection="true" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="./resources/messages/messages_en.utf8" />
       <additionalLanguages>
@@ -89,7 +89,7 @@
   <launchers>
     <launcher name="aXbo research" id="19" customizedId="" external="false" excludeFromMenu="false" unixMode="755" menuName="" icnsFile="./resources/images/researchicon.icns" customMacBundleIdentifier="false" macBundleIdentifier="" swtApp="false" fileset="" macBundleBinary="JavaApplicationStub" addMacEntitlements="false" macEntitlementsFile="">
       <executable name="aXbo research" type="1" iconSet="true" iconFile="../src/resources/images/researchicon.ico" executableDir="" redirectStderr="true" stderrFile="axbo.log" stderrMode="overwrite" redirectStdout="true" stdoutFile="axbo.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="true" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" globalSingleInstance="false" singleInstanceActivate="true">
-        <versionInfo include="true" fileVersion="" fileDescription="aXbo research" legalCopyright="© aXbo Ldt. 2013" internalName="aXbo research" productName="" />
+        <versionInfo include="true" fileVersion="" fileDescription="aXbo research" legalCopyright="© aXbo Ldt. 2021" internalName="aXbo research" productName="" />
       </executable>
       <splashScreen show="true" autoOff="true" alwaysOnTop="true" width="402" height="282" bitmapFile="./resources/images/Splash_screen_research_aXbo_Limited.png" java6SplashScreen="false">
         <text>
@@ -452,7 +452,7 @@
                       <void property="arguments">
                         <array class="java.lang.String" length="1">
                           <void index="0">
-                            <string>./drivers/mac/SiliconLabsVCPDriverInstaller.mpkg</string>
+                            <string>./drivers/mac/SiLabsUSBDriverDisk.dmg</string>
                           </void>
                         </array>
                       </void>
@@ -1717,6 +1717,7 @@ if (wizardContext != null) {
       </excludedBeans>
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude>
+        <entry location="drivers/.DS_Store" fileType="regular" />
         <entry location="drivers/mac" fileType="regular" />
         <entry location="librxtxSerial.jnilib" fileType="regular" />
       </exclude>
@@ -1733,7 +1734,9 @@ if (wizardContext != null) {
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude>
         <entry location="lib/rxtxSerial.dll" fileType="regular" />
+        <entry location="drivers/.DS_Store" fileType="regular" />
         <entry location="drivers/win" fileType="regular" />
+        <entry location="drivers/mac/.DS_Store" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
