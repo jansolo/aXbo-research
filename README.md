@@ -10,7 +10,7 @@ Sources
 Clone the sources from:
 git pull https://github.com/jansolo/aXbo-research.git
 
-The master branch will be updated only very infrequently synchronized with the releases of the commercial variant. All development is done on the development branch. You need to change to the development branch, if you want to see the latest changes:
+The master branch will be updated infrequently. All development is done on the development branch. You need to change to the development branch, if you want to see the latest changes:
 
 	git checkout --track origin/development
 
@@ -54,7 +54,7 @@ Linux users may require to set the ``java.library.path`` system property to the 
 aXbo uses the ``CP2102 USB to UART Bridge Controller``from SiLabs. Therefore the used Linux kernel needs to include the corresponding modules (cp210x). For most standard distributions the modules should be already there. 
 Additionally Linux users need to have correct permissions to read and write from the serial interface (/dev/ttyUSB0 on Ubuntu). Typically assigning the group ``dailout`` to the user should be sufficient. 
 
-On Mac OSX one can simply start "aXbo research.app".
+On Mac OSX simply start "aXbo research.app".
 
 
 Development
