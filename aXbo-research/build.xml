@@ -99,7 +99,7 @@
         <filename name="*.jar"/>
       </classpath>
       <classpath file="dist/axbo.jar" />
-      <librarypath dir="src">
+      <librarypath dir="dist">
         <filename name="*.jnilib"/>
       </librarypath>
       <runtime dir="${java.home}/.." />
