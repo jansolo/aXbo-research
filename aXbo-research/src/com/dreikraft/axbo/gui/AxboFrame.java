@@ -21,6 +21,7 @@ import com.dreikraft.axbo.events.SleepDataImport;
 import com.dreikraft.axbo.events.SleepDataOpen;
 import com.dreikraft.axbo.events.UpdateCheck;
 import com.dreikraft.axbo.events.SoundPackageUpload;
+import com.dreikraft.axbo.model.ChartType;
 import com.dreikraft.axbo.model.MetaDataTableModel;
 import com.dreikraft.axbo.util.BundleUtil;
 import com.dreikraft.swing.SplashScreen;
@@ -53,7 +54,7 @@ import org.apache.commons.logging.*;
  */
 public class AxboFrame extends JFrame {
 
-  private static Log log = LogFactory.getLog(AxboFrame.class);
+  private static final Log log = LogFactory.getLog(AxboFrame.class);
   private SplashScreen splashScreen;
 
   public void init() {
@@ -80,26 +81,47 @@ public class AxboFrame extends JFrame {
   }
 
   public List<DataFrame> getDataViews() {
-    final List<DataFrame> dataViews = new ArrayList<DataFrame>();
+    final List<DataFrame> dataViews = new ArrayList<>();
     for (final Component component : dataViewsPanel.getComponents()) {
-      dataViews.add((DataFrame) component);
+      if (component instanceof DataFrame) {
+        dataViews.add((DataFrame) component);
+      }
     }
     return dataViews;
   }
 
-  public void addDataView(final DataFrame view) {
+  /**
+   * Adds a sleep data frame to the data panel. Depending on the chart type
+   * different layout constraints will be set.
+   *
+   * @param view a view instance
+   * @param chartType the requested chart type
+   * @param sleepData the sleepData
+   */
+  public void addDataView(final DataFrame view, final ChartType chartType,
+      final SleepData sleepData) {
     final GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 0;
     gbc.gridy = GridBagConstraints.RELATIVE;
     gbc.gridwidth = 1;
     gbc.gridheight = 1;
-    gbc.fill = GridBagConstraints.BOTH;
-    gbc.anchor = GridBagConstraints.NORTHWEST;
+    gbc.anchor = GridBagConstraints.NORTH;
     gbc.weightx = 1.0;
-    gbc.weighty = 1.0;
+    final int heightExt = sleepData.getComment() != null && sleepData
+        .getComment().trim().length() > 0 ? 16 : 0;
 
-    view.setMinimumSize(new Dimension(300, 200));
-    view.setPreferredSize(new Dimension(300, 200));
+    if (chartType.equals(ChartType.MOVING_AVG)) {
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.weighty = 0;
+      view.setMinimumSize(new Dimension(300, 85 + heightExt));
+      view.setPreferredSize(new Dimension(300, 85 + heightExt));
+      view.setMaximumSize(new Dimension(300, 85 + heightExt));
+    } else {
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.weighty = 1.0;
+      view.setMinimumSize(new Dimension(300, 200 + heightExt));
+      view.setPreferredSize(new Dimension(300, 200 + heightExt));
+    }
 
     dataViewsPanel.add(view, gbc);
   }
@@ -208,7 +230,7 @@ public class AxboFrame extends JFrame {
   public void showSummary(final long sumDuration, final long avgDuration,
       final long minDuration, final long maxDuration, final long timeSaving,
       final int count, final int countOpen) {
-    
+
     legendPanel.setVisible(getDataViews().size() > 0);
     if (sumDuration != 0) {
       summaryPanel.setVisible(true);
@@ -1008,9 +1030,9 @@ public class AxboFrame extends JFrame {
   }// </editor-fold>//GEN-END:initComponents
   private void resetClockMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_resetClockMenuItemActionPerformed
   {//GEN-HEADEREND:event_resetClockMenuItemActionPerformed
-    int result =
-        showOptionMessage(BundleUtil.getMessage("message.confirmReset"),
-        BundleUtil.getMessage("infoMessageBox.title"));
+    int result
+        = showOptionMessage(BundleUtil.getMessage("message.confirmReset"),
+            BundleUtil.getMessage("infoMessageBox.title"));
 
     if (result == JOptionPane.OK_OPTION) {
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(new AxboReset(
@@ -1023,11 +1045,11 @@ public class AxboFrame extends JFrame {
     if (metaDataTable.getSelectedRowCount() > 0) {
       int response = showOptionMessage(BundleUtil.getMessage(
           "notification.message.delete"), BundleUtil.getMessage(
-          "infoMessageBox.title"));
+              "infoMessageBox.title"));
       if (response == JOptionPane.OK_OPTION) {
         int selectedRows[] = metaDataTable.getSelectedRows();
-        ArrayList<SleepData> tmpSleepData =
-            new ArrayList<SleepData>(Array.getLength(selectedRows));
+        ArrayList<SleepData> tmpSleepData = new ArrayList<>(Array
+            .getLength(selectedRows));
         for (int selectedRowIdx : selectedRows) {
           tmpSleepData.add(getMetaDataTableModel().getSleepDataAt(
               metaDataTable.convertRowIndexToModel(selectedRowIdx)));
@@ -1035,7 +1057,7 @@ public class AxboFrame extends JFrame {
         for (SleepData sleepData : tmpSleepData) {
           ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
               new SleepDataDelete(
-              this, sleepData));
+                  this, sleepData));
         }
       }
     } else {
@@ -1048,14 +1070,14 @@ public class AxboFrame extends JFrame {
   {//GEN-HEADEREND:event_formWindowClosed
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
         new AxboDisconnect(
-        this));
+            this));
   }//GEN-LAST:event_formWindowClosed
 
   private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_loadDataButtonActionPerformed
   {//GEN-HEADEREND:event_loadDataButtonActionPerformed
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
         new SleepDataImport(
-        this));
+            this));
   }//GEN-LAST:event_loadDataButtonActionPerformed
 
   private void clearDataMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_clearDataMenuItemActionPerformed
@@ -1066,10 +1088,11 @@ public class AxboFrame extends JFrame {
 
   private void closeAllMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_closeAllMenuItemActionPerformed
   {//GEN-HEADEREND:event_closeAllMenuItemActionPerformed
-    for (final Component dataView : dataViewsPanel.getComponents()) {
-      ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
-          new DiagramClose(
-          log, (DataFrame) dataView));
+    for (final Component component : dataViewsPanel.getComponents()) {
+      if (component instanceof DataFrame)
+        ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+            new DiagramClose(
+                log, (DataFrame) component));
     }
   }//GEN-LAST:event_closeAllMenuItemActionPerformed
 
@@ -1094,7 +1117,7 @@ public class AxboFrame extends JFrame {
   {//GEN-HEADEREND:event_readStoredDataMenuItemActionPerformed
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
         new SleepDataImport(
-        this));
+            this));
   }//GEN-LAST:event_readStoredDataMenuItemActionPerformed
 
   private void prefsMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_prefsMenuItemActionPerformed
@@ -1113,7 +1136,7 @@ public class AxboFrame extends JFrame {
     // is it a double click, open a new internal frame with the selected sleep data
     if (evt.getClickCount() == 2) {
       int[] selectedRows = metaDataTable.getSelectedRows();
-      final List<SleepData> sleepDataList = new ArrayList<SleepData>();
+      final List<SleepData> sleepDataList = new ArrayList<>();
       for (int row : selectedRows) {
         sleepDataList.add(getMetaDataTableModel().getSleepDataAt(metaDataTable.
             convertRowIndexToModel(row)));
@@ -1121,7 +1144,7 @@ public class AxboFrame extends JFrame {
       if (sleepDataList.size() > 0) {
         ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
             new SleepDataOpen(
-            this, sleepDataList));
+                this, sleepDataList));
       }
     }
   }//GEN-LAST:event_metaDataTableMouseClicked
@@ -1145,7 +1168,7 @@ public class AxboFrame extends JFrame {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
       ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
           new ApplicationExit(
-          this));
+              this));
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void deletePopupMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_deletePopupMenuItemActionPerformed
@@ -1161,7 +1184,7 @@ public class AxboFrame extends JFrame {
             "MetaDataTableModel.nothingSelected"), true);
         return;
       }
-      final List<SleepData> sleepDataList = new ArrayList<SleepData>(
+      final List<SleepData> sleepDataList = new ArrayList<>(
           selectedRows.length);
       for (int selectedRowIdx : selectedRows) {
         sleepDataList.add(getMetaDataTableModel().getSleepDataAt(metaDataTable.
@@ -1170,7 +1193,7 @@ public class AxboFrame extends JFrame {
       if (sleepDataList.size() > 0) {
         ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
             new SleepDataOpen(
-            this, sleepDataList));
+                this, sleepDataList));
       }
     }//GEN-LAST:event_viewMenuItemActionPerformed
 
@@ -1187,17 +1210,12 @@ private void checkUpdateMenuItemActionPerformed(java.awt.event.ActionEvent evt) 
     private void uploadSoundPackageMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_uploadSoundPackageMenuItemActionPerformed
     {//GEN-HEADEREND:event_uploadSoundPackageMenuItemActionPerformed
 
-
       final FileFilter filter = new FileFilter() {
         @Override
-        public boolean accept(File f) {
-          if (!(f.getName().toLowerCase(Locale.ENGLISH).indexOf(
-              Axbo.SOUND_DATA_FILE_EXT.
-              toLowerCase()) < 0) || f.isDirectory()) {
-            return true;
-          } else {
-            return false;
-          }
+        public boolean accept(final File f) {
+          return f.getName().toLowerCase(Locale.ENGLISH)
+              .contains(Axbo.SOUND_DATA_FILE_EXT.
+                  toLowerCase()) || f.isDirectory();
         }
 
         @Override
@@ -1226,7 +1244,7 @@ private void btnCompareActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRS
 {//GEN-HEADEREND:event_btnCompareActionPerformed
   ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
       new SleepDataCompare(
-      this));
+          this));
 }//GEN-LAST:event_btnCompareActionPerformed
 
 private void btnCloseAllActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnCloseAllActionPerformed
@@ -1252,7 +1270,7 @@ private void btnPrintActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:
         log.error(msg, ex);
         ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
             new ApplicationMessageEvent(
-            this, msg, true));
+                this, msg, true));
       }
     }
   }

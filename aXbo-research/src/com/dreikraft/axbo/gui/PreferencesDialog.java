@@ -7,8 +7,6 @@ package com.dreikraft.axbo.gui;
 import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.axbo.controller.PreferencesController;
 import com.dreikraft.axbo.events.PrefsClose;
-import java.util.List;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -30,7 +28,12 @@ public class PreferencesDialog extends javax.swing.JDialog
     initComponents();
   }
 
-  /** Creates new form PreferencesDialog */
+  /** 
+   * Creates new form PreferencesDialog
+   * 
+   * @param parent a parent frame
+   * @param modal is modal?
+   */
   public PreferencesDialog(java.awt.Frame parent, boolean modal)
   {
     this(parent, modal, null);
@@ -41,37 +44,41 @@ public class PreferencesDialog extends javax.swing.JDialog
     this.ctrl = ctrl;
   }
 
-  public void initComPortCB(final List<String> items, final String sel)
+  public void initComPortCB(final String[] items, final String sel)
   {
-    @SuppressWarnings("rawtypes")
-    final ComboBoxModel model = new DefaultComboBoxModel(
-        items.toArray(new String[0]));
-    this.comPortCB.setModel(model);
-    this.comPortCB.setSelectedItem(sel);
+    comPortCB.setModel(new DefaultComboBoxModel<>(items));
+    comPortCB.setSelectedItem(sel);
   }
 
-  public void initLanguageCB(final List<String> items, String sel)
+  public void initLanguageCB(final String[] items, final int sel)
   {
-    @SuppressWarnings("rawtypes")
-    final ComboBoxModel model = new DefaultComboBoxModel(
-        items.toArray(new String[0]));
-    this.languageCB.setModel(model);
-    this.languageCB.setSelectedItem(sel);
+    languageCB.setModel(new DefaultComboBoxModel<>(items));
+    languageCB.setSelectedIndex(sel);
+  }
+
+  public void initChartTypeCB(final String[] items, final int sel)
+  {
+    chartTypeCB.setModel(new DefaultComboBoxModel<>(items));
+    chartTypeCB.setSelectedIndex(sel);
   }
 
   public String getComPortValue()
   {
-    return (String) this.comPortCB.getSelectedItem();
+    return (String)comPortCB.getSelectedItem();
   }
 
   public int getLanguageIndex()
   {
-    return this.languageCB.getSelectedIndex();
+    return languageCB.getSelectedIndex();
   }
 
   public void setSelectedComPort(String comPortName)
   {
-    this.comPortCB.setSelectedItem(comPortName);
+    comPortCB.setSelectedItem(comPortName);
+  }
+  
+  public int getChartTypeIndex() {
+    return chartTypeCB.getSelectedIndex();
   }
 
   public String getSensor1Name()
@@ -106,15 +113,17 @@ public class PreferencesDialog extends javax.swing.JDialog
     preferencesPanel = new javax.swing.JPanel();
     comPortLabel = new javax.swing.JLabel();
     languageLabel = new javax.swing.JLabel();
-    languageCB = new javax.swing.JComboBox();
+    languageCB = new javax.swing.JComboBox<String>();
     saveButton = new javax.swing.JButton();
     cancelButton = new javax.swing.JButton();
-    comPortCB = new javax.swing.JComboBox();
+    comPortCB = new javax.swing.JComboBox<String>();
     sensor1NameLabel = new javax.swing.JLabel();
     sensor2NameLabel = new javax.swing.JLabel();
     sensor1NameTextField = new javax.swing.JTextField();
     sensor2NameTextField = new javax.swing.JTextField();
     restartLabel = new javax.swing.JLabel();
+    chartTypeLabel = new javax.swing.JLabel();
+    chartTypeCB = new javax.swing.JComboBox<String>();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("resources/default"); // NOI18N
@@ -167,17 +176,14 @@ public class PreferencesDialog extends javax.swing.JDialog
     restartLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
     restartLabel.setText(bundle.getString("preference.label.restart")); // NOI18N
 
+    chartTypeLabel.setText(bundle.getString("preferences.label.chartType")); // NOI18N
+
     javax.swing.GroupLayout preferencesPanelLayout = new javax.swing.GroupLayout(preferencesPanel);
     preferencesPanel.setLayout(preferencesPanelLayout);
     preferencesPanelLayout.setHorizontalGroup(
       preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(preferencesPanelLayout.createSequentialGroup()
-        .addContainerGap()
         .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, preferencesPanelLayout.createSequentialGroup()
-            .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(saveButton))
           .addGroup(preferencesPanelLayout.createSequentialGroup()
             .addGap(13, 13, 13)
             .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -185,43 +191,56 @@ public class PreferencesDialog extends javax.swing.JDialog
               .addComponent(sensor1NameLabel)
               .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(languageLabel)
-                .addComponent(comPortLabel)))
+                .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                  .addComponent(chartTypeLabel)
+                  .addComponent(comPortLabel))))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-              .addGroup(preferencesPanelLayout.createSequentialGroup()
-                .addComponent(languageCB, 0, 216, Short.MAX_VALUE)
+            .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, preferencesPanelLayout.createSequentialGroup()
+                .addComponent(languageCB, 0, 208, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(restartLabel))
-              .addComponent(comPortCB, javax.swing.GroupLayout.Alignment.LEADING, 0, 280, Short.MAX_VALUE)
-              .addComponent(sensor1NameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-              .addComponent(sensor2NameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))))
+              .addComponent(comPortCB, 0, 290, Short.MAX_VALUE)
+              .addComponent(sensor1NameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+              .addComponent(sensor2NameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+              .addComponent(chartTypeCB, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, preferencesPanelLayout.createSequentialGroup()
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(saveButton)))
         .addContainerGap())
     );
     preferencesPanelLayout.setVerticalGroup(
       preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(preferencesPanelLayout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(restartLabel)
-          .addComponent(languageCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(languageLabel))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(comPortCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(comPortLabel))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(sensor1NameLabel)
-          .addComponent(sensor1NameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(sensor2NameLabel)
-          .addComponent(sensor2NameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+          .addGroup(preferencesPanelLayout.createSequentialGroup()
+            .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+              .addComponent(restartLabel)
+              .addComponent(languageCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(languageLabel))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+              .addComponent(comPortCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(comPortLabel))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+              .addComponent(chartTypeLabel)
+              .addComponent(chartTypeCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+              .addComponent(sensor1NameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(sensor1NameLabel))
+            .addGap(32, 32, 32))
+          .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+            .addComponent(sensor2NameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(sensor2NameLabel)))
         .addGroup(preferencesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(saveButton)
           .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addContainerGap(28, Short.MAX_VALUE))
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
 
     getContentPane().add(preferencesPanel, java.awt.BorderLayout.CENTER);
@@ -247,11 +266,11 @@ public class PreferencesDialog extends javax.swing.JDialog
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton cancelButton;
-  @SuppressWarnings("rawtypes")
-  private javax.swing.JComboBox comPortCB;
+  private javax.swing.JComboBox<String> chartTypeCB;
+  private javax.swing.JLabel chartTypeLabel;
+  private javax.swing.JComboBox<String> comPortCB;
   private javax.swing.JLabel comPortLabel;
-  @SuppressWarnings("rawtypes")
-  private javax.swing.JComboBox languageCB;
+  private javax.swing.JComboBox<String> languageCB;
   private javax.swing.JLabel languageLabel;
   private javax.swing.JPanel preferencesPanel;
   private javax.swing.JLabel restartLabel;

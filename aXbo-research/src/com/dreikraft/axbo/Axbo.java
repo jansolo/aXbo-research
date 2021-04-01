@@ -9,11 +9,14 @@ import com.dreikraft.axbo.data.DeviceContext;
 import com.dreikraft.axbo.data.DeviceType;
 import com.dreikraft.axbo.data.SleepData;
 import com.dreikraft.axbo.events.UpdateCheck;
+import com.dreikraft.axbo.model.ChartType;
 import com.install4j.api.launcher.ApplicationLauncher;
 import com.install4j.api.update.UpdateSchedule;
 import com.install4j.api.update.UpdateScheduleRegistry;
 import de.javasoft.plaf.synthetica.SyntheticaBlackEyeLookAndFeel;
 import de.javasoft.plaf.synthetica.SyntheticaLookAndFeel;
+import com.dreikraft.axbo.model.ChartType;
+import com.dreikraft.axbo.model.SupportedLanguage;
 import com.dreikraft.axbo.sound.SoundPackage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -23,13 +26,13 @@ import java.util.regex.Pattern;
 import javax.swing.UIManager;
 import org.apache.commons.logging.*;
 import java.io.IOException;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.plaf.basic.BasicHeaderUI;
 import org.jdesktop.swingx.plaf.basic.BasicHyperlinkUI;
 import org.jdesktop.swingx.plaf.basic.BasicMonthViewUI;
-
 
 /**
  * aXbo startup class.
@@ -39,23 +42,27 @@ import org.jdesktop.swingx.plaf.basic.BasicMonthViewUI;
 public final class Axbo implements ApplicationEventEnabled {
 
   public static final Log log = LogFactory.getLog(Axbo.class);
+
   // default dirs
   public static final String APPLICATION_DIR = "aXbo";
-  public static final String PROJECT_DIR_DEFAULT =
-      System.getProperty("user.home") + System.getProperty("file.separator")
+  public static final String PROJECT_DIR_DEFAULT = System.getProperty(
+      "user.home") + System.getProperty("file.separator")
       + Axbo.APPLICATION_DIR + System.getProperty("file.separator") + "projects";
-  public static final String SOUND_PACKAGES_DIR =
-      System.getProperty("user.home") + System.getProperty("file.separator")
+  public static final String SOUND_PACKAGES_DIR = System
+      .getProperty("user.home") + System.getProperty("file.separator")
       + Axbo.APPLICATION_DIR + System.getProperty("file.separator") + "sounds";
+
   // file constants
   public static final String SOUND_DATA_FILE_EXT = ".axs";
+
   // images and icons
-  public static final String BACKGROUND_IMAGE_DEFAULT =
-      "/resources/images/background_soft.jpg";
-  public static final String ICON_IMAGE_DEFAULT =
-      "/resources/images/32x32px_researchicon.png";
-  public static final String INTERNAL_ICON_IMAGE_DEFAULT =
-      "/resources/images/32x32px_researchicon.png";
+  public static final String BACKGROUND_IMAGE_DEFAULT
+      = "/resources/images/background_soft.jpg";
+  public static final String ICON_IMAGE_DEFAULT
+      = "/resources/images/32x32px_researchicon.png";
+  public static final String INTERNAL_ICON_IMAGE_DEFAULT
+      = "/resources/images/32x32px_researchicon.png";
+
   // sleep data constants
   public static final int MAX_MOVEMENTS_DEFAULT = 100;
   public static final long CLEANER_INTERVAL_DEFAULT = 3 * 60 * 60 * 1000;
@@ -67,28 +74,33 @@ public final class Axbo implements ApplicationEventEnabled {
   // === preferences ===
   // serial port prefs
   public static final String SERIAL_PORT_NAME_PREF = "serialPort.name";
+
   // language prefs
-  public static final String LANGUAGES_PREF = "languages";
-  public static final String LANGUAGES_DEFAULT = "en,de,fr,ja,ru";
   public static final String LANGUAGE_PREF = "language";
-  public static final String LANGUAGE_DEFAULT = "en";
+
   // diagramm prefs
   public static final String TIME_PERIOD_CLASS_PREF = "timePeriodClass";
-  public static final String TIME_PERIOD_CLASS_DEFAULT =
-      "org.jfree.data.time.Minute";
+  public static final String TIME_PERIOD_CLASS_DEFAULT
+      = "org.jfree.data.time.Minute";
+
   // deviceType pref
   public static final String DEVICE_TYPE_PREF = "deviceType";
   public static final String DEVICE_TYPE_DEFAULT = "AXBO";
   public static final int COMPARE_OFFSET = 12;
   public static final String STANDALONE_UPDATER_ID = "349";
   public static final String SILENT_UPDATER_ID = "389";
+
+  // chart type
+  public static final String CHART_TYPE_PREF = "chartType";
+
   // === members ===
-  // application singleton
-  private static Axbo CONTROLLER = new Axbo();
+  /**
+   * Application singleton.
+   */
+  private static final Axbo CONTROLLER = new Axbo();
+
   private AxboFrameController axboFrameController;
-  //private DataFramesController internalFrameListController;
   private PreferencesController prefCtrl;
-  //private SoundPackageFrameController soundPkgCtrl;
 
   public static void main(final String[] args) {
     Axbo controller = getApplicationController();
@@ -103,6 +115,16 @@ public final class Axbo implements ApplicationEventEnabled {
     return Preferences.userNodeForPackage(Axbo.class);
   }
 
+  /**
+   * Returns the currently configured chart type.
+   *
+   * @return the configured chart type
+   */
+  public static ChartType getChartType() {
+    return ChartType.valueOf(Axbo.getApplicationPreferences().get(
+        Axbo.CHART_TYPE_PREF, ChartType.BAR.name()));
+  }
+
   public static String getPortName() {
     return getApplicationPreferences().get(DeviceContext.getDeviceType() + "."
         + Axbo.SERIAL_PORT_NAME_PREF, OS.get().getDefaultPort());
@@ -112,22 +134,16 @@ public final class Axbo implements ApplicationEventEnabled {
     super();
   }
 
-  public void init()
-  {
+  public void init() {
     // check for update
-    if (UpdateScheduleRegistry.getUpdateSchedule() == null)
-    {
+    if (UpdateScheduleRegistry.getUpdateSchedule() == null) {
       UpdateScheduleRegistry.setUpdateSchedule(UpdateSchedule.WEEKLY);
     }
-    if (UpdateScheduleRegistry.checkAndReset())
-    {
-      try
-      {
+    if (UpdateScheduleRegistry.checkAndReset()) {
+      try {
         ApplicationLauncher.launchApplication(SILENT_UPDATER_ID, null, true,
             null);
-      }
-      catch (IOException ex)
-      {
+      } catch (IOException ex) {
         log.error(ex.getMessage(), ex);
       }
     }
@@ -140,25 +156,26 @@ public final class Axbo implements ApplicationEventEnabled {
 
     // set desired locale
     try {
-      String langsPref = getApplicationPreferences().get(LANGUAGES_PREF,
-          LANGUAGES_DEFAULT);
-      String langPref = getApplicationPreferences().get(LANGUAGE_PREF, "unset");
-      if (!langPref.equals("unset")) {
-        Locale.setDefault(new Locale(langPref));
-      }
-      if (langsPref.indexOf(Locale.getDefault().getLanguage()) == -1) {
-        Locale.setDefault(new Locale(LANGUAGE_DEFAULT));
-      }
-    } catch (Exception ex) {
-      log.error(ex.getMessage(), ex);
+      final String langPref = getApplicationPreferences().get(LANGUAGE_PREF,
+          Locale.getDefault().getLanguage());
+      final SupportedLanguage lang = SupportedLanguage.valueOf(langPref);
+      Locale.setDefault(Locale.forLanguageTag(lang.name()));
+    } catch (IllegalArgumentException ex) {
+      Locale.setDefault(Locale.ENGLISH);
+      log.warn(ex.getMessage(), ex);
     }
-    if (log.isDebugEnabled()) {
-      log.debug("Current Locale: " + Locale.getDefault());
+    if (log.isDebugEnabled())
+      log.debug("configured application locale: " + Locale.getDefault());
+
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (ClassNotFoundException | InstantiationException |
+        IllegalAccessException | UnsupportedLookAndFeelException ex) {
+      log.warn("failed to set system look & feel", ex);
     }
 
     // set gui prefs
-    String[] li =
-    {
+    String[] li = {
       "Licensee=3kraft",
       "LicenseRegistrationNumber=50031127",
       "Product=Synthetica",
@@ -172,7 +189,7 @@ public final class Axbo implements ApplicationEventEnabled {
     SyntheticaLookAndFeel.setLookAndFeel(SyntheticaBlackEyeLookAndFeel.class.
         getName());
     SyntheticaLookAndFeel.setFont("SansSerif", 11);
-    
+
     // OSX laf 
     System.setProperty("apple.laf.useScreenMenuBar", "true");
     System.setProperty("apple.awt.brushMetalLook", "true");
@@ -205,24 +222,19 @@ public final class Axbo implements ApplicationEventEnabled {
     //initial
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
         new ApplicationInitialize(
-        this));
+            this));
   }
 
-  public void handle(final UpdateCheck evt)
-  {
-    try
-    {
+  public void handle(final UpdateCheck evt) {
+    try {
       ApplicationLauncher.launchApplication(Axbo.STANDALONE_UPDATER_ID, null,
           false, null);
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       log.error(ex.getMessage(), ex);
     }
   }
 
-  public static class SPWFilenameFilter implements FilenameFilter
-  {
+  public static class SPWFilenameFilter implements FilenameFilter {
 
     @Override
     public boolean accept(File dir, String name) {
@@ -240,6 +252,7 @@ public final class Axbo implements ApplicationEventEnabled {
     }
   };
 }
+
 class AxboShutdownHook extends Thread {
 
   @Override

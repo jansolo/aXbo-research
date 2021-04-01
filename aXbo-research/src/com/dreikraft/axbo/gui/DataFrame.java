@@ -1,14 +1,16 @@
 package com.dreikraft.axbo.gui;
 
+import com.dreikraft.axbo.Axbo;
 import com.dreikraft.events.ApplicationEventDispatcher;
 import com.dreikraft.events.ApplicationMessageEvent;
 import com.dreikraft.axbo.timeseries.KeyTimeSeries;
 import com.dreikraft.axbo.data.SleepData;
-import com.dreikraft.axbo.timeseries.SleepDataTimeSeries;
 import com.dreikraft.axbo.events.DiagramCopy;
 import com.dreikraft.axbo.events.DiagramPrint;
 import com.dreikraft.axbo.events.DiagramSaveAsPNG;
 import com.dreikraft.axbo.events.DiagramClose;
+import com.dreikraft.axbo.model.ChartType;
+import com.dreikraft.axbo.timeseries.TimeSeriesUtil;
 import com.dreikraft.axbo.util.BundleUtil;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -35,18 +37,24 @@ import javax.swing.RepaintManager;
 import javax.swing.border.TitledBorder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
+import org.jfree.chart.labels.XYToolTipGenerator;
+import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.Marker;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.SeriesRenderingOrder;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.LookupPaintScale;
+import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.renderer.xy.XYBlockRenderer;
 import org.jfree.data.Range;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -54,6 +62,7 @@ import org.jfree.data.time.TimeSeriesDataItem;
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.ui.Align;
 import org.jfree.ui.Layer;
+import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.RectangleInsets;
 
 /**
@@ -69,8 +78,8 @@ public class DataFrame extends JPanel implements Printable {
   public static final Color GRID_COLOR = new Color(0x7D, 0x7D, 0x7D, 0xFF);
   public static final Color BAR_COLOR = new Color(255, 212, 107, 255);
   public static final Color BAR_COLOR2 = new Color(155, 112, 7, 255);
-  public static final GradientPaint BAR_PAINT =
-      new GradientPaint(0f, 0f, BAR_COLOR, 0f, 0f, BAR_COLOR2);
+  public static final GradientPaint BAR_PAINT = new GradientPaint(0f, 0f,
+      BAR_COLOR, 0f, 0f, BAR_COLOR2);
   public static final Color SLEEP_MARKER_PAINT = new Color(0xF0, 0x00, 0XFF,
       0xFF);
   public static final Color WAKE_PAINT = new Color(0x10, 0xCE, 0x15, 0xFF);
@@ -83,8 +92,10 @@ public class DataFrame extends JPanel implements Printable {
       0xFF);
   public static final Color KEY_PAINT = new Color(0x7D, 0x9B, 0xFF, 0xFF);
   public static final Stroke MARKER_STROKE = new BasicStroke(1.5f);
-  private static final int INSET = 20;
-  private static final int PRINT_FONT_SIZE = 8;
+  public static final int INSET = 20;
+  public static final int PRINT_FONT_SIZE = 8;
+  private static final int DISTRIBUTION_MAX_LIMIT = 4;
+  private static final int DISTRIBUTION_STEPS = 10;
   private ChartPanel chartPanel;
   private SleepData sleepData;
 
@@ -92,35 +103,212 @@ public class DataFrame extends JPanel implements Printable {
     initComponents();
   }
 
-  public void createNewChart(
-      final IntervalXYDataset dataset,
-      final Date start,
-      final Date sleepStart,
-      final Date wakeIntervalStart,
-      final Date wakeIntervalEnd,
-      final Date wakeupTime,
-      final KeyTimeSeries keys,
-      final KeyTimeSeries snoozes) {
-    // set sleepData
-    final TimeSeries timeSeries = ((TimeSeriesCollection) dataset).getSeries(0);
-    sleepData = ((SleepDataTimeSeries) timeSeries).getSleepData();
+  /**
+   * Creates a new data chart from the sleep data. The chart is a combination of
+   * a bar chart and a moving average distribution plot.
+   *
+   * @param sleepData the movement data of one sleep
+   */
+  public void createChartPanel(final SleepData sleepData) {
 
-    // set title
+    this.sleepData = sleepData;
+
+    // set border title
     ((TitledBorder) getBorder()).setTitle(getTitle());
 
-    // create a new chart
-    ChartFactory.setChartTheme(StandardChartTheme.createLegacyTheme());
-    final JFreeChart chart = ChartFactory.createXYBarChart(null,
-        null, true, null, dataset, PlotOrientation.VERTICAL, false, true, false);
+    // create the chart
+    final JFreeChart chart = createChart(ChartType.valueOf(Axbo
+        .getApplicationPreferences().get(Axbo.CHART_TYPE_PREF, ChartType.BAR
+            .name())));
 
+    // create a new chart panel
+    if (chartPanel != null) {
+      pnlChart.removeAll();
+    }
+    chartPanel = new ChartPanel(chart, true);
+    chartPanel.setBorder(null);
+    chartPanel.setRangeZoomable(false);
+    chartPanel.setPopupMenu(chartPanelPopupMenu);
+    chartPanel.setMaximumDrawHeight(2000);
+    chartPanel.setMaximumDrawWidth(2000);
+    chartPanel.setMinimumDrawWidth(10);
+    chartPanel.setMinimumDrawHeight(10);
+    pnlChart.add(chartPanel);
+  }
+
+  /**
+   * Creates a new chart from sleep data.
+   *
+   * @param chartType the requested chart type
+   * @return a new chart instance
+   */
+  private JFreeChart createChart(final ChartType chartType) {
+
+    // set domain axis
+    final DateAxis dateAxis = new DateAxis();
+    dateAxis.setTickLabelPaint(AXIS_COLOR);
+
+    final Date startTime = sleepData.calculateSleepStart();
+    final Date wakeIntervalStart = sleepData.getWakeIntervalStart();
+    final Date wakeIntervalEnd = sleepData.calculateWakeIntervalEnd();
+    final Date wakeupTime = sleepData.getWakeupTime();
+
+    final KeyTimeSeries keyTimeSeries
+        = TimeSeriesUtil.createKeyDataset(sleepData,
+            BundleUtil.getMessage("chart.keyseries.label"));
+    final KeyTimeSeries snoozeTimeSeries
+        = TimeSeriesUtil.createSnoozeDataset(sleepData,
+            BundleUtil.getMessage("chart.snoozeseries.label"));
+    final IntervalXYDataset dataset
+        = TimeSeriesUtil.createDataset(sleepData,
+            BundleUtil.getMessage("chart.timeseries.label"));
+
+    // create a data plot
+    XYPlot plot = null;
+    if (chartType.equals(ChartType.BAR)) {
+      // create movement plot
+      plot = createMovementsPlot(dataset, dateAxis);
+      // add event markers
+      addMarkers(plot, startTime, wakeIntervalStart, wakeIntervalEnd,
+          keyTimeSeries, snoozeTimeSeries, wakeupTime);
+    } else if (chartType.equals(ChartType.MOVING_AVG)) {
+      // create moving average plot
+      plot = createMovementDistributionPlot(TimeSeriesUtil.createMovingAverage(
+          ((TimeSeriesCollection) dataset).getSeries(0), 1, 1), dateAxis,
+          DISTRIBUTION_STEPS);
+      // add event markers
+      addMarkers(plot, startTime, wakeIntervalStart, wakeIntervalEnd,
+          keyTimeSeries, snoozeTimeSeries, wakeupTime);
+    } else {
+      // create movement plot
+      XYPlot barPlot = createMovementsPlot(dataset, dateAxis);
+      addMarkers(barPlot, startTime, wakeIntervalStart, wakeIntervalEnd,
+          keyTimeSeries, snoozeTimeSeries, wakeupTime);
+      // create moving average plot
+      XYPlot mvgAvgPlot = createMovementDistributionPlot(
+          TimeSeriesUtil.createMovingAverage(
+              ((TimeSeriesCollection) dataset).getSeries(0), 1, 1), dateAxis,
+          DISTRIBUTION_STEPS);
+      addMarkers(mvgAvgPlot, startTime, wakeIntervalStart, wakeIntervalEnd,
+          keyTimeSeries, snoozeTimeSeries, wakeupTime);
+      // create combined plot
+      plot = createCombinedPlot(barPlot, mvgAvgPlot, dateAxis);
+    }
+
+    // create the chart
+    final JFreeChart chart = new JFreeChart(plot);
+    StandardChartTheme.createLegacyTheme().apply(chart);
     // customize the chart
     chart.setBackgroundPaint(CHART_BG_COLOR);
     chart.setBorderVisible(false);
-    chart.setAntiAlias(true);
+    chart.setAntiAlias(false);
     chart.setTextAntiAlias(true);
+    chart.removeLegend();
+
+    return chart;
+  }
+
+  /**
+   * Creates a plot with both chart types combined into one chart.
+   *
+   * @param movementPlot a movement plot
+   * @param movingAvgPlot a moving average plot of the same sleep date
+   * @param dateAxis the date axis for both diagrams
+   * @return a combined plot
+   */
+  public CombinedDomainXYPlot createCombinedPlot(XYPlot movementPlot,
+      XYPlot movingAvgPlot, final DateAxis dateAxis) {
+    final CombinedDomainXYPlot combinedPlot = new CombinedDomainXYPlot(dateAxis);
+    combinedPlot.setGap(1);
+    combinedPlot.add(movementPlot, 10);
+    combinedPlot.add(movingAvgPlot, 1);
+    return combinedPlot;
+  }
+
+  /**
+   * Creates the moving average plot from the movement data.
+   *
+   * @param timeSeries a moving average timeseries
+   * @param dateAxis the date axis (x)
+   * @param steps the number of shades of the chart
+   * @return a moving average plot
+   */
+  private XYPlot createMovementDistributionPlot(final TimeSeries timeSeries,
+      final DateAxis dateAxis, int steps) {
+
+    final NumberAxis numAxis = new NumberAxis();
+    numAxis.setVisible(false);
+    numAxis.setFixedAutoRange(1);
+
+    final XYBlockRenderer renderer = new XYBlockRenderer();
+    renderer.setBlockWidth(1000 * 60);
+    renderer.setBlockAnchor(RectangleAnchor.BOTTOM_LEFT);
+    renderer.setSeriesOutlinePaint(0, null);
+
+    final double max = timeSeries.getMaxY() / DISTRIBUTION_MAX_LIMIT;
+    int diffR = getBackground().getRed() - BAR_COLOR.getRed();
+    int diffG = getBackground().getGreen() - BAR_COLOR.getGreen();
+    int diffB = getBackground().getBlue() - BAR_COLOR.getBlue();
+    final LookupPaintScale paintScale = new LookupPaintScale(0,
+        timeSeries.getMaxY(), new Color(
+          getBackground().getRed() - (diffR / (steps * 3)),
+          getBackground().getGreen() - (diffG / (steps * 3)),
+          getBackground().getBlue() - (diffB / (steps * 3))));
+    for (int i = 2; i <= steps; i++) {
+      paintScale.add(max / steps * i, new Color(
+          getBackground().getRed() - (diffR * i / steps),
+          getBackground().getGreen() - (diffG * i / steps),
+          getBackground().getBlue() - (diffB * i / steps)));
+    }
+
+    renderer.setPaintScale(paintScale);
+
+    final XYPlot plot = new XYPlot(
+        TimeSeriesUtil.createXYZTimeSeries(timeSeries), dateAxis, numAxis,
+        renderer);
+    plot.setBackgroundPaint(CHART_BG_COLOR);
+    plot.setRangeGridlinesVisible(false);
+    plot.setDomainGridlinesVisible(false);
+    plot.setOutlineVisible(false);
+
+    return plot;
+  }
+
+  /**
+   * Creates a bar chart from the movement data.
+   *
+   * @param dataset the movement data set
+   * @param dateAxis the date axis
+   * @return a bar chart
+   */
+  private XYPlot createMovementsPlot(final IntervalXYDataset dataset,
+      final DateAxis dateAxis) {
+
+    // connfigure value axis
+    final NumberAxis valueAxis = new NumberAxis();
+    valueAxis.setStandardTickUnits(NumberAxis.
+        createIntegerTickUnits());
+    valueAxis.setAxisLineVisible(false);
+    valueAxis.setTickLabelsVisible(true);
+    valueAxis.setTickMarksVisible(false);
+    valueAxis.setTickLabelPaint(AXIS_COLOR);
+
+    // movements renderer
+    final XYBarRenderer renderer = new XYBarRenderer();
+    renderer.setBarPainter(new StandardXYBarPainter());
+    renderer.setShadowVisible(false);
+    renderer.setDrawBarOutline(false);
+    renderer.setSeriesPaint(0, BAR_PAINT);
+
+    // tool tips
+    final XYToolTipGenerator tooltipGenerator = StandardXYToolTipGenerator.
+        getTimeSeriesInstance();
+    renderer.setBaseToolTipGenerator(tooltipGenerator);
 
     // customize the plot
-    final XYPlot plot = chart.getXYPlot();
+    final XYPlot plot = new XYPlot(dataset, dateAxis,
+        valueAxis, renderer);
+    plot.setOrientation(PlotOrientation.VERTICAL);
     plot.setInsets(new RectangleInsets(5, 5, 5, 5));
     plot.setAxisOffset(new RectangleInsets(0, 0, 0, 0));
     plot.setBackgroundPaint(CHART_BG_COLOR);
@@ -131,25 +319,28 @@ public class DataFrame extends JPanel implements Printable {
     plot.setRangeGridlinePaint(GRID_COLOR);
     plot.setDomainGridlinesVisible(false);
     plot.setOutlineVisible(false);
+    plot.setSeriesRenderingOrder(SeriesRenderingOrder.FORWARD);
 
-    // set domain axis
-    final DateAxis domainAxis = (DateAxis) plot.getDomainAxis();
-    domainAxis.setTickLabelPaint(AXIS_COLOR);
+    return plot;
+  }
 
-    // set axis units
-    final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-    rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-    rangeAxis.setAxisLineVisible(false);
-    rangeAxis.setTickLabelsVisible(true);
-    rangeAxis.setTickMarksVisible(false);
-    rangeAxis.setTickLabelPaint(AXIS_COLOR);
-
-    // draw movements
-    final XYBarRenderer renderer = (XYBarRenderer) plot.getRenderer();
-    renderer.setShadowVisible(false);
-    renderer.setDrawBarOutline(false);
-    renderer.setSeriesPaint(0, BAR_PAINT);
-
+  /**
+   * Creates markers for various sleep events in xy plot.
+   *
+   * @param plot a XYPlot
+   * @param sleepStart the calculated start time of the sleep displayed in the
+   * chart or null
+   * @param wakeIntervalStart the received start time of the wake interval or
+   * null
+   * @param wakeIntervalEnd the calculated wake interval or null
+   * @param keys any key presses during the sleep interval as time series
+   * @param snoozes snooze key presses during the wakeup interval
+   * @param wakeupTime the calculated wakeup time or null
+   */
+  private void addMarkers(final XYPlot plot, final Date sleepStart,
+      final Date wakeIntervalStart, final Date wakeIntervalEnd,
+      final KeyTimeSeries keys, final KeyTimeSeries snoozes,
+      final Date wakeupTime) {
     // draw sleep start
     final Marker sleepStartMarker = new ValueMarker(sleepStart.getTime());
     sleepStartMarker.setPaint(SLEEP_MARKER_PAINT);
@@ -165,29 +356,26 @@ public class DataFrame extends JPanel implements Printable {
       wakeInterval.setOutlinePaint(null);
       plot.addDomainMarker(wakeInterval, Layer.BACKGROUND);
     }
-
     // sensor keys
     for (final Object series : keys.getItems()) {
       final TimeSeriesDataItem timeSeriesItem = (TimeSeriesDataItem) series;
-      final Marker keyMarker =
-          new ValueMarker(timeSeriesItem.getPeriod().getMiddleMillisecond());
+      final Marker keyMarker = new ValueMarker(timeSeriesItem.getPeriod()
+          .getMiddleMillisecond());
       keyMarker.setPaint(KEY_PAINT);
       keyMarker.setOutlinePaint(null);
       keyMarker.setStroke(MARKER_STROKE);
       plot.addDomainMarker(keyMarker, Layer.FOREGROUND);
     }
-
     // snooze keys
     for (final Object series : snoozes.getItems()) {
       final TimeSeriesDataItem timeSeriesItem = (TimeSeriesDataItem) series;
-      final Marker snoozeMarker =
-          new ValueMarker(timeSeriesItem.getPeriod().getMiddleMillisecond());
+      final Marker snoozeMarker = new ValueMarker(timeSeriesItem.getPeriod()
+          .getMiddleMillisecond());
       snoozeMarker.setPaint(SNOOZE_PAINT);
       snoozeMarker.setOutlinePaint(null);
       snoozeMarker.setStroke(MARKER_STROKE);
       plot.addDomainMarker(snoozeMarker, Layer.FOREGROUND);
     }
-
     // wakeup time
     if (wakeupTime != null) {
       final Marker wakeupMarker = new ValueMarker((double) wakeupTime.getTime());
@@ -196,20 +384,6 @@ public class DataFrame extends JPanel implements Printable {
       wakeupMarker.setStroke(MARKER_STROKE);
       plot.addDomainMarker(wakeupMarker, Layer.FOREGROUND);
     }
-
-    // create a new chart panel
-    if (chartPanel != null) {
-      pnlChart.removeAll();
-    }
-    chartPanel = new ChartPanel(chart, true);
-    chartPanel.setBorder(null);
-    chartPanel.setRangeZoomable(false);
-    chartPanel.setPopupMenu(chartPanelPopupMenu);
-    chartPanel.setMaximumDrawHeight(2000);
-    chartPanel.setMaximumDrawWidth(2000);
-    chartPanel.setMinimumDrawWidth(10);
-    chartPanel.setMinimumDrawHeight(10);
-    pnlChart.add(chartPanel);
   }
 
   private String getTitle() {
@@ -254,8 +428,8 @@ public class DataFrame extends JPanel implements Printable {
       long sleepDataStart = sleepData.calculateStartTime().getTime();
       long sleepDataEnd = sleepData.calculateEndTime().getTime();
 
-      int startHours = Integer.valueOf(fromText.split(":")[0]).intValue();
-      int minutes = Integer.valueOf(fromText.split(":")[1]).intValue();
+      int startHours = Integer.parseInt(fromText.split(":")[0]);
+      int minutes = Integer.parseInt(fromText.split(":")[1]);
       if (startHours < 0 || startHours > 23 || minutes < 0 || minutes > 59) {
         throw new NumberFormatException();
       }
@@ -274,11 +448,18 @@ public class DataFrame extends JPanel implements Printable {
         end = start + (duration * 60 * 1000);
       }
 
-      chartPanel.getChart().getXYPlot().getDomainAxis().setRange(start - 1000,
-          end + 1000);
-      chartPanel.getChart().getXYPlot().getRangeAxis().setAutoRange(false);
-      chartPanel.getChart().getXYPlot().getRangeAxis().setRange(range);
-    } catch (Exception ex) {
+      // perform the the zooming
+      XYPlot plot = chartPanel.getChart().getXYPlot();
+      if (plot instanceof CombinedDomainXYPlot) {
+        plot = (XYPlot) ((CombinedDomainXYPlot) plot).getSubplots().get(0);
+      }
+      if (plot.getRenderer() instanceof XYBarRenderer) {
+        plot.getRangeAxis().setAutoRange(false);
+        plot.getRangeAxis().setRange(range);
+      }
+      plot.getDomainAxis().setRange(start - 1000, end + 1000);
+
+    } catch (NumberFormatException | NullPointerException ex) {
       log.warn("invalid zoom input", ex);
       chartPanel.restoreAutoBounds();
     }
@@ -314,7 +495,7 @@ public class DataFrame extends JPanel implements Printable {
       double h = pageFormat.getImageableHeight() - 2 * INSET;
 
       disableDoubleBuffering(chartPanel);
-      chartPanel.getChart().draw(printer, new Rectangle2D.Double(x, y
+      createChart(ChartType.COMBINED).draw(printer, new Rectangle2D.Double(x, y
           + lineHeight * 3, w, h - lineHeight * 6));
       enableDoubleBuffering(chartPanel);
 
@@ -476,7 +657,6 @@ public class DataFrame extends JPanel implements Printable {
         sleepData.calculateMovementCount()));
     lblMovementsAverageValue.setText(String.format("%.1f",
         sleepData.calculateMovementsPerHour()));
-
 
     if (sleepData.getComment() == null || sleepData.getComment().trim().length()
         == 0) {
@@ -797,7 +977,7 @@ public class DataFrame extends JPanel implements Printable {
         log.error(msg, ex);
         ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
             new ApplicationMessageEvent(
-            this, msg, true));
+                this, msg, true));
       }
     }
   }//GEN-LAST:event_pmniPrintActionPerformed
@@ -806,7 +986,7 @@ public class DataFrame extends JPanel implements Printable {
   {//GEN-HEADEREND:event_pmniSaveAsPNGActionPerformed
     ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
         new DiagramSaveAsPNG(
-        this));
+            this));
   }//GEN-LAST:event_pmniSaveAsPNGActionPerformed
 
   private void btnCloseActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnCloseActionPerformed

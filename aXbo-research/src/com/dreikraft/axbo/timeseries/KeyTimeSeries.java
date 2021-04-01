@@ -19,7 +19,6 @@ import org.jfree.data.time.TimeSeriesDataItem;
 public class KeyTimeSeries extends TimeSeries
 {
   private final TimeZone timeZone = TimeZone.getDefault();
-  private final SleepData sleepData;
   private final int keyType;
 
   @SuppressWarnings("LeakingThisInConstructor")
@@ -27,7 +26,6 @@ public class KeyTimeSeries extends TimeSeries
       final Class<?> timePeriodClass, final int keyType)
   {
     super(name);
-    this.sleepData = sleepData;
     this.timePeriodClass = timePeriodClass;
     this.keyType = keyType;
 
@@ -35,11 +33,6 @@ public class KeyTimeSeries extends TimeSeries
     {
       addMovementData(movement);
     }
-  }
-
-  public SleepData getSleepData()
-  {
-    return sleepData;
   }
 
   public int getKeyType()

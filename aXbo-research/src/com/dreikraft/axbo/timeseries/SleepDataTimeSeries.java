@@ -24,7 +24,6 @@ public class SleepDataTimeSeries extends TimeSeries
 {
 
   private final TimeZone timeZone;
-  private final SleepData sleepData;
   private final int maxMovements;
   private final Map<TimePeriod, Integer> movementsX;
   private final Map<TimePeriod, Integer> movementsY;
@@ -34,7 +33,6 @@ public class SleepDataTimeSeries extends TimeSeries
       final Class<?> timePeriodClass, final int maxMovements)
   {
     super(name);
-    this.sleepData = sleepData;
     this.maxMovements = maxMovements;
 
     movementsX = new HashMap<>();
@@ -55,11 +53,6 @@ public class SleepDataTimeSeries extends TimeSeries
     {
       addMovementData(movement);
     }
-  }
-
-  public SleepData getSleepData()
-  {
-    return sleepData;
   }
 
   public int getMaxMovements()
