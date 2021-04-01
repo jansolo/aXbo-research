@@ -92,12 +92,10 @@ public class DataFrame extends JPanel implements Printable {
       0xFF);
   public static final Color KEY_PAINT = new Color(0x7D, 0x9B, 0xFF, 0xFF);
   public static final Stroke MARKER_STROKE = new BasicStroke(1.5f);
-  public static final Color MOVEMENTS__HIGH_PAINT = Color.RED;
-  public static final Color MOVEMENTS_MEDIUM_PAINT = Color.ORANGE;
-  public static final Color MOVEMENTS_LOW_PAINT = Color.YELLOW;
-  public static final Color MOVEMENTS_NONE_PAINT = Color.GREEN;
   public static final int INSET = 20;
   public static final int PRINT_FONT_SIZE = 8;
+  private static final int DISTRIBUTION_MAX_LIMIT = 4;
+  private static final int DISTRIBUTION_STEPS = 10;
   private ChartPanel chartPanel;
   private SleepData sleepData;
 
@@ -145,16 +143,16 @@ public class DataFrame extends JPanel implements Printable {
    * @return a new chart instance
    */
   private JFreeChart createChart(final ChartType chartType) {
-    
+
     // set domain axis
     final DateAxis dateAxis = new DateAxis();
     dateAxis.setTickLabelPaint(AXIS_COLOR);
-    
+
     final Date startTime = sleepData.calculateSleepStart();
     final Date wakeIntervalStart = sleepData.getWakeIntervalStart();
     final Date wakeIntervalEnd = sleepData.calculateWakeIntervalEnd();
     final Date wakeupTime = sleepData.getWakeupTime();
-    
+
     final KeyTimeSeries keyTimeSeries
         = TimeSeriesUtil.createKeyDataset(sleepData,
             BundleUtil.getMessage("chart.keyseries.label"));
@@ -164,7 +162,7 @@ public class DataFrame extends JPanel implements Printable {
     final IntervalXYDataset dataset
         = TimeSeriesUtil.createDataset(sleepData,
             BundleUtil.getMessage("chart.timeseries.label"));
-    
+
     // create a data plot
     XYPlot plot = null;
     if (chartType.equals(ChartType.BAR)) {
@@ -175,9 +173,9 @@ public class DataFrame extends JPanel implements Printable {
           keyTimeSeries, snoozeTimeSeries, wakeupTime);
     } else if (chartType.equals(ChartType.MOVING_AVG)) {
       // create moving average plot
-      plot = createMovementDistributionPlot(
-          TimeSeriesUtil.createMovingAverage(
-              ((TimeSeriesCollection) dataset).getSeries(0), 1, 1), dateAxis, 4);
+      plot = createMovementDistributionPlot(TimeSeriesUtil.createMovingAverage(
+          ((TimeSeriesCollection) dataset).getSeries(0), 1, 1), dateAxis,
+          DISTRIBUTION_STEPS);
       // add event markers
       addMarkers(plot, startTime, wakeIntervalStart, wakeIntervalEnd,
           keyTimeSeries, snoozeTimeSeries, wakeupTime);
@@ -189,13 +187,14 @@ public class DataFrame extends JPanel implements Printable {
       // create moving average plot
       XYPlot mvgAvgPlot = createMovementDistributionPlot(
           TimeSeriesUtil.createMovingAverage(
-              ((TimeSeriesCollection) dataset).getSeries(0), 1, 1), dateAxis, 4);
+              ((TimeSeriesCollection) dataset).getSeries(0), 1, 1), dateAxis,
+          DISTRIBUTION_STEPS);
       addMarkers(mvgAvgPlot, startTime, wakeIntervalStart, wakeIntervalEnd,
           keyTimeSeries, snoozeTimeSeries, wakeupTime);
       // create combined plot
       plot = createCombinedPlot(barPlot, mvgAvgPlot, dateAxis);
     }
-    
+
     // create the chart
     final JFreeChart chart = new JFreeChart(plot);
     StandardChartTheme.createLegacyTheme().apply(chart);
@@ -205,7 +204,7 @@ public class DataFrame extends JPanel implements Printable {
     chart.setAntiAlias(false);
     chart.setTextAntiAlias(true);
     chart.removeLegend();
-    
+
     return chart;
   }
 
@@ -246,17 +245,20 @@ public class DataFrame extends JPanel implements Printable {
     renderer.setBlockAnchor(RectangleAnchor.BOTTOM_LEFT);
     renderer.setSeriesOutlinePaint(0, null);
 
-    final double max = timeSeries.getMaxY() / 3;
+    final double max = timeSeries.getMaxY() / DISTRIBUTION_MAX_LIMIT;
+    int diffR = getBackground().getRed() - BAR_COLOR2.getRed();
+    int diffG = getBackground().getGreen() - BAR_COLOR2.getGreen();
+    int diffB = getBackground().getBlue() - BAR_COLOR2.getBlue();
     final LookupPaintScale paintScale = new LookupPaintScale(0,
-        timeSeries.getMaxY(), BAR_COLOR2);
-    int diffR = BAR_COLOR2.getRed() - BAR_COLOR.getRed();
-    int diffG = BAR_COLOR2.getGreen() - BAR_COLOR.getGreen();
-    int diffB = BAR_COLOR2.getBlue() - BAR_COLOR.getBlue();
-    for (int i = 1; i <= steps; i++) {
+        timeSeries.getMaxY(), new Color(
+          getBackground().getRed() - (diffR / (steps * 3)),
+          getBackground().getGreen() - (diffG / (steps * 3)),
+          getBackground().getBlue() - (diffB / (steps * 3))));
+    for (int i = 2; i <= steps; i++) {
       paintScale.add(max / steps * i, new Color(
-          BAR_COLOR2.getRed() - (diffR * i / steps),
-          BAR_COLOR2.getGreen() - (diffG * i / steps),
-          BAR_COLOR2.getBlue() - (diffB * i / steps)));
+          getBackground().getRed() - (diffR * i / steps),
+          getBackground().getGreen() - (diffG * i / steps),
+          getBackground().getBlue() - (diffB * i / steps)));
     }
 
     renderer.setPaintScale(paintScale);

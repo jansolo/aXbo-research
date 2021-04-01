@@ -22,13 +22,14 @@ import com.dreikraft.axbo.events.AxboStatusGet;
 import com.dreikraft.axbo.events.AxboStatusGot;
 import com.dreikraft.axbo.events.AxboTest;
 import com.dreikraft.axbo.events.AxboTimeSet;
+import com.dreikraft.axbo.events.ChartTypeChanged;
 import com.dreikraft.axbo.events.DataSearch;
 import com.dreikraft.axbo.events.DiagramClose;
 import com.dreikraft.axbo.events.DiagramZoom;
 import com.dreikraft.axbo.events.SoundPackageUpload;
-import com.dreikraft.axbo.events.PrefsOpen;
 import com.dreikraft.axbo.events.SleepDataAdded;
 import com.dreikraft.axbo.events.DiagramClosed;
+import com.dreikraft.axbo.events.PrefsOpen;
 import com.dreikraft.axbo.events.SleepDataCompare;
 import com.dreikraft.axbo.events.SleepDataDelete;
 import com.dreikraft.axbo.events.SleepDataImport;
@@ -130,6 +131,8 @@ public final class AxboFrameController implements ApplicationEventEnabled {
     // diagram events
     ApplicationEventDispatcher.getInstance().registerApplicationEventHandler(
         DiagramClosed.class, this);
+    ApplicationEventDispatcher.getInstance().registerApplicationEventHandler(
+        ChartTypeChanged.class, this);
 
     // sleep data events
     ApplicationEventDispatcher.getInstance().registerApplicationEventHandler(
@@ -372,9 +375,26 @@ public final class AxboFrameController implements ApplicationEventEnabled {
   }
 
   /**
+   * Reopens data frames with the selected chart type, if changed in
+   * preferences.
+   *
+   * @param evt the change event
+   */
+  public void handle(final ChartTypeChanged evt) {
+    List<SleepData> sleepDataList = getOpenSleepDataList();
+    for (final SleepData sleepData : sleepDataList) {
+      getDataViewForSleepData(sleepData).close();
+    }
+    ApplicationEventDispatcher.getInstance().dispatchGUIEvent(
+        new SleepDataOpen(
+            this, sleepDataList));
+    frame.repaint();
+  }
+
+  /**
    * Opens a sleep data record selected in the list of records.
-   * 
-   * @param evt a SleepDataOpen application event 
+   *
+   * @param evt a SleepDataOpen application event
    */
   public void handle(final SleepDataOpen evt) {
     final List<SleepData> selectedSleepDataList = evt.getSleepDataList();
